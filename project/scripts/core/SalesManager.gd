@@ -18,7 +18,7 @@ func set_game_data(data: GameData) -> void:
 func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 	print("🔥 SalesManager.sell_item() llamado:")
 	print("   - Tipo: %s, Item: %s, Cantidad: %d" % [item_type, item_name, quantity])
-	
+
 	if not game_data:
 		print("❌ ERROR: game_data es null")
 		return false
@@ -41,7 +41,7 @@ func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 	# Verificar disponibilidad
 	var actual_quantity = min(quantity, available)
 	print("   - Cantidad solicitada: %d, disponible: %d, vendiendo: %d" % [quantity, available, actual_quantity])
-	
+
 	if actual_quantity <= 0:
 		print("❌ ERROR: No hay cantidad disponible para vender")
 		return false

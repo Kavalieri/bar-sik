@@ -7,6 +7,7 @@ signal customer_served(customer_type: String, products_bought: Array, total_earn
 signal upgrade_purchased(upgrade_id: String, cost: float)
 
 var game_data: GameData
+var production_manager: ProductionManager  # Referencia para acceder a definiciones de estaciones
 var customer_timer: Timer
 var customer_timer_progress: float = 0.0
 
@@ -63,6 +64,10 @@ func _setup_customer_timer() -> void:
 ## Asignar datos del juego
 func set_game_data(data: GameData) -> void:
 	game_data = data
+
+## Asignar referencia al ProductionManager
+func set_production_manager(manager: ProductionManager) -> void:
+	production_manager = manager
 	_update_timer_settings()
 
 ## Actualizar configuración del timer según upgrades
@@ -91,23 +96,49 @@ func _process_automatic_customer() -> void:
 	if not game_data or not game_data.upgrades["auto_sell_enabled"]:
 		return
 
-	# Encontrar productos disponibles
+	# Encontrar productos disponibles CON OFERTA HABILITADA
 	var available_products = []
+	var station_definitions = production_manager.get_station_definitions() if production_manager else []
+	
 	for product_type in game_data.products.keys():
 		if game_data.products[product_type] > 0:
-			available_products.append(product_type)
+			# Verificar si hay alguna estación que produzca este producto y tenga oferta habilitada
+			var has_offer = false
+			for station_def in station_definitions:
+				if station_def.get("produces", "") == product_type:
+					var station_id = station_def.id
+					var offer_enabled = game_data.offers.get(station_id, {}).get("enabled", false)
+					if offer_enabled:
+						has_offer = true
+						break
+			
+			if has_offer:
+				available_products.append(product_type)
+				print("🛒 Producto disponible para clientes: %s (con oferta)" % product_type)
 
 	if available_products.is_empty():
+		print("❌ No hay productos con ofertas habilitadas")
 		return
 
-	# Elegir producto al azar
+	# Elegir producto al azar de los que tienen oferta
 	var chosen_product = available_products[randi() % available_products.size()]
 	var base_price = GameUtils.get_product_price(chosen_product)
-	var final_price = base_price
+	
+	# Aplicar multiplicador de precio de la oferta
+	var price_multiplier = 1.0
+	for station_def in station_definitions:
+		if station_def.get("produces", "") == chosen_product:
+			var station_id = station_def.id
+			price_multiplier = game_data.offers.get(station_id, {}).get("price_multiplier", 1.0)
+			break
+	
+	var final_price = base_price * price_multiplier
 
 	# Aplicar bonus de clientes premium
 	if game_data.upgrades.get("premium_customers", false):
 		final_price *= 1.5  # 50% más
+
+	print("💰 Cliente comprando %s por $%.2f (multiplicador: %.2f)" % [chosen_product, final_price, price_multiplier])
 
 	# Determinar cantidad (bulk buyers pueden comprar más)
 	var max_quantity = game_data.products[chosen_product]

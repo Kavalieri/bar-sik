@@ -38,6 +38,18 @@ class_name GameData
 	"bar_station": 0
 }
 
+## Sistema de ofertas automáticas para clientes
+@export var offers: Dictionary = {
+	"brewery": {
+		"enabled": false,
+		"price_multiplier": 1.0  # Multiplicador del precio base
+	},
+	"bar_station": {
+		"enabled": false,
+		"price_multiplier": 1.0
+	}
+}
+
 ## Sistema de upgrades
 @export var upgrades: Dictionary = {
 	"auto_sell_enabled": false,
@@ -77,6 +89,7 @@ func to_dict() -> Dictionary:
 		"products": products,
 		"generators": generators,
 		"stations": stations,
+		"offers": offers,
 		"upgrades": upgrades,
 		"milestones": milestones,
 		"statistics": statistics
@@ -89,6 +102,7 @@ func from_dict(data: Dictionary) -> void:
 	products = data.get("products", products)
 	generators = data.get("generators", generators)
 	stations = data.get("stations", stations)
+	offers = data.get("offers", offers)
 	upgrades = data.get("upgrades", upgrades)
 	milestones = data.get("milestones", milestones)
 	statistics = data.get("statistics", statistics)

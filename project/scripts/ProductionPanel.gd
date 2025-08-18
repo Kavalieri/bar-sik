@@ -12,6 +12,8 @@ var station_interfaces: Array[Control] = []
 # Señales para comunicación con GameScene
 signal station_purchased(station_index: int)
 signal manual_production_requested(station_index: int, quantity: int)
+signal offer_toggled(station_index: int, enabled: bool)
+signal offer_price_requested(station_index: int)
 
 
 func _ready() -> void:
@@ -79,6 +81,31 @@ func _create_station_interface(station: Dictionary, station_index: int) -> void:
 		production_buttons.add_child(prod_button)
 
 	station_group.add_child(production_buttons)
+
+	# Separador para OFERTA
+	var separator_offer = HSeparator.new()
+	station_group.add_child(separator_offer)
+
+	# Sistema de OFERTA AUTOMÁTICA
+	var offer_label = Label.new()
+	offer_label.text = "🛒 OFERTA AUTOMÁTICA:"
+	station_group.add_child(offer_label)
+
+	var offer_container = HBoxContainer.new()
+	
+	# Toggle de activar/desactivar oferta
+	var offer_toggle = CheckBox.new()
+	offer_toggle.text = "Disponible para clientes"
+	offer_toggle.pressed.connect(_on_offer_toggled.bind(station_index))
+	offer_container.add_child(offer_toggle)
+
+	# Botón para configurar precio de oferta
+	var price_button = Button.new()
+	price_button.text = "Precio Automático"
+	price_button.pressed.connect(_on_offer_price_requested.bind(station_index))
+	offer_container.add_child(price_button)
+
+	station_group.add_child(offer_container)
 
 	# Separador final
 	var separator2 = HSeparator.new()
@@ -208,6 +235,27 @@ func update_station_interfaces(production_stations: Array[Dictionary], game_data
 				else:
 					button.text = "x%d ❌" % quantity
 
+			# Actualizar interfaz de ofertas
+			var offer_container = station_group.get_child(7) as HBoxContainer  # Contenedor de oferta
+			var offer_toggle = offer_container.get_child(0) as CheckBox  # CheckBox
+			var price_button = offer_container.get_child(1) as Button   # Botón de precio
+
+			# Obtener estado de la oferta desde GameData
+			var offer_state = game_data["offers"].get(station.id, {"enabled": false, "price_multiplier": 1.0})
+			var is_enabled = offer_state.get("enabled", false)
+			var price_multiplier = offer_state.get("price_multiplier", 1.0)
+
+			# Actualizar checkbox sin disparar señal
+			offer_toggle.set_pressed_no_signal(is_enabled)
+			
+			# Actualizar texto del botón de precio
+			if price_multiplier == 1.0:
+				price_button.text = "Precio Normal"
+			elif price_multiplier > 1.0:
+				price_button.text = "Precio Alto (+%.0f%%)" % ((price_multiplier - 1.0) * 100)
+			else:
+				price_button.text = "Precio Bajo (%.0f%%)" % (price_multiplier * 100)
+
 
 func _can_produce(station: Dictionary, game_data: Dictionary, quantity: int) -> bool:
 	# Verificar si tiene suficientes ingredientes para producir
@@ -243,3 +291,18 @@ func _on_station_purchased(station_index: int) -> void:
 
 func _on_manual_production_requested(station_index: int, quantity: int) -> void:
 	manual_production_requested.emit(station_index, quantity)
+
+func _on_offer_toggled(station_index: int) -> void:
+	# Obtener el estado del checkbox
+	var station_group = station_interfaces[station_index]
+	# Buscar el checkbox en la estructura (posición específica)
+	var offer_container = station_group.get_child(7)  # HBoxContainer de oferta
+	var offer_toggle = offer_container.get_child(0) as CheckBox  # CheckBox
+	var enabled = offer_toggle.button_pressed
+	
+	print("🛒 Oferta toggled para estación %d: %s" % [station_index, "ACTIVADA" if enabled else "DESACTIVADA"])
+	offer_toggled.emit(station_index, enabled)
+
+func _on_offer_price_requested(station_index: int) -> void:
+	print("💰 Configuración de precio solicitada para estación %d" % station_index)
+	offer_price_requested.emit(station_index)

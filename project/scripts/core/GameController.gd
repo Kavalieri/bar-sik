@@ -1,6 +1,12 @@
 extends Control
 class_name GameController
-## GameController - Controlador principal del juego (versión ligera)
+## GameController - C		# Reassignar datos a managers
+	generator_manager.set_game_data(game_data)
+	production_manager.set_game_data(game_data)
+	sales_manager.set_game_data(game_data)
+	customer_manager.set_game_data(game_data)
+	customer_manager.set_production_manager(production_manager)
+	customer_manager.set_production_manager(production_manager)  # Para acceder a definiciones de estacioneslador principal del juego (versión ligera)
 ## Coordina managers y maneja la UI principal
 
 # Escenas precargadas
@@ -66,6 +72,7 @@ func _setup_managers() -> void:
 	production_manager.set_game_data(game_data)
 	sales_manager.set_game_data(game_data)
 	customer_manager.set_game_data(game_data)
+	customer_manager.set_production_manager(production_manager)  # Para acceder a definiciones de estaciones
 
 	# Conectar señales de managers
 	_connect_manager_signals()
@@ -132,6 +139,8 @@ func _setup_panels() -> void:
 		production_panel.setup_stations(station_defs)
 		production_panel.station_purchased.connect(_on_ui_station_purchase_requested)
 		production_panel.manual_production_requested.connect(_on_ui_manual_production_requested)
+		production_panel.offer_toggled.connect(_on_ui_offer_toggled)
+		production_panel.offer_price_requested.connect(_on_ui_offer_price_requested)
 
 	# Setup SalesPanel
 	if sales_panel.has_method("item_sell_requested"):
@@ -306,3 +315,43 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		_save_game()
 		get_tree().quit()
+
+## === CALLBACKS DE OFERTAS ===
+
+func _on_ui_offer_toggled(station_index: int, enabled: bool) -> void:
+	print("🛒 GameController - Oferta toggled:")
+	print("   - Estación: %d, Habilitada: %s" % [station_index, enabled])
+	
+	# Obtener la definición de la estación para conocer su ID
+	var station_defs = production_manager.get_station_definitions()
+	if station_index < station_defs.size():
+		var station_id = station_defs[station_index].id
+		print("   - ID de estación: %s" % station_id)
+		
+		# Actualizar GameData
+		if game_data.offers.has(station_id):
+			game_data.offers[station_id]["enabled"] = enabled
+			print("   - ✅ Oferta %s para %s" % ["ACTIVADA" if enabled else "DESACTIVADA", station_id])
+		else:
+			print("   - ❌ ERROR: ID de estación no encontrado en ofertas")
+
+func _on_ui_offer_price_requested(station_index: int) -> void:
+	print("💰 GameController - Configuración de precio solicitada:")
+	print("   - Estación: %d" % station_index)
+	
+	# Obtener la definición de la estación
+	var station_defs = production_manager.get_station_definitions()
+	if station_index < station_defs.size():
+		var station_id = station_defs[station_index].id
+		var current_multiplier = game_data.offers.get(station_id, {}).get("price_multiplier", 1.0)
+		
+		print("   - ID de estación: %s" % station_id)
+		print("   - Multiplicador actual: %.2f" % current_multiplier)
+		
+		# TODO: Aquí se podría abrir un diálogo para configurar el precio
+		# Por ahora, alternar entre valores comunes
+		var new_multiplier = 1.2 if current_multiplier <= 1.0 else (0.8 if current_multiplier >= 1.5 else 1.0)
+		game_data.offers[station_id]["price_multiplier"] = new_multiplier
+		
+		print("   - ✅ Nuevo multiplicador: %.2f" % new_multiplier)
+		_update_all_displays()  # Actualizar UI para mostrar el cambio

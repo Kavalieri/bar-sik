@@ -99,7 +99,7 @@ func create_sell_interface_for_item(
 
 		# Hacer los botones más visibles
 		button.custom_minimum_size = Vector2(80, 30)
-		
+
 		button.pressed.connect(func(): _on_sell_button_pressed(item_name, item_type, sell_quantity))
 		item_container.add_child(button)
 
