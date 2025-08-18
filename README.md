@@ -21,7 +21,7 @@ bar-sik/
 ├── docs/                      # Documentación técnica completa
 │   ├── README.md             # Índice de documentación organizada
 │   ├── development/         # Documentación de desarrollo
-│   ├── process/             # Procesos y soluciones técnicas  
+│   ├── process/             # Procesos y soluciones técnicas
 │   ├── changelog/           # Historial de cambios y logros
 │   ├── base.md              # Blueprint del proyecto
 │   ├── GDD-Bar-Sik.md       # Game Design Document

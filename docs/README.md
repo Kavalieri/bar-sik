@@ -38,7 +38,7 @@
 ```
 docs/
 ├── README.md                    # Este índice
-├── GDD-Bar-Sik.md              # Game Design Document  
+├── GDD-Bar-Sik.md              # Game Design Document
 ├── base.md                     # Estructura base
 ├── project-config.md           # Configuración Godot
 ├── scene-creation-guide.md     # Guía de escenas
@@ -57,7 +57,7 @@ docs/
 ## 📋 Convenciones de Documentación
 
 - **Archivos en MAYÚSCULAS**: Documentación de proceso o estado temporal
-- **Archivos en minúsculas**: Documentación permanente del proyecto  
+- **Archivos en minúsculas**: Documentación permanente del proyecto
 - **Directorios temáticos**: Organización por tipo de contenido
 - **Enlaces relativos**: Navegación entre documentos
 

@@ -15,7 +15,7 @@ This document explains the organization of all project documentation.
 docs/
 ├── README.md                               # Master documentation index
 ├── base.md                                # Project blueprint and foundation
-├── GDD-Bar-Sik.md                         # Complete Game Design Document  
+├── GDD-Bar-Sik.md                         # Complete Game Design Document
 ├── project-config.md                      # Godot project configuration
 ├── scene-creation-guide.md                # Guide for creating game scenes
 │
@@ -43,7 +43,7 @@ docs/
 
 - **Start Here**: [docs/README.md](README.md) - Complete documentation index
 - **For Developers**: [development/](development/) directory
-- **For Debugging**: [process/](process/) directory  
+- **For Debugging**: [process/](process/) directory
 - **For History**: [changelog/](changelog/) directory
 
 ---

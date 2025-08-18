@@ -129,7 +129,7 @@ func _setup_ui() -> void:
 	resource_title.add_theme_font_size_override("font_size", 16)
 	resource_container.add_child(resource_title)
 
-	for resource_name in game_data.resources.keys():
+	for resource_name in game_data["resources"].keys():
 		var label = Label.new()
 		resource_labels[resource_name] = label
 		resource_container.add_child(label)
@@ -145,7 +145,6 @@ func _setup_ui() -> void:
 	resource_container.add_child(generators_title)
 
 	for i in range(resource_generators.size()):
-		var generator = resource_generators[i]
 		var button = Button.new()
 		button.pressed.connect(_on_generator_purchased.bind(i))
 		resource_container.add_child(button)
@@ -157,7 +156,7 @@ func _setup_ui() -> void:
 	products_title.add_theme_font_size_override("font_size", 16)
 	beverage_container.add_child(products_title)
 
-	for product_name in game_data.products.keys():
+	for product_name in game_data["products"].keys():
 		var label = Label.new()
 		product_labels[product_name] = label
 		beverage_container.add_child(label)
@@ -173,7 +172,6 @@ func _setup_ui() -> void:
 	beverage_container.add_child(stations_title)
 
 	for i in range(production_stations.size()):
-		var station = production_stations[i]
 		var button = Button.new()
 		button.pressed.connect(_on_station_purchased.bind(i))
 		beverage_container.add_child(button)
@@ -247,14 +245,14 @@ func _input(event: InputEvent) -> void:
 func _generate_resources() -> void:
 	for i in range(resource_generators.size()):
 		var generator = resource_generators[i]
-		var owned_count = game_data.generators.get(generator.id, 0)
+		var owned_count = game_data["generators"].get(generator.id, 0)
 
 		if owned_count > 0:
 			var resource_type = generator.produces
 			var amount = int(generator.production_rate * owned_count)
 
-			game_data.resources[resource_type] += amount
-			game_data.statistics.resources_generated += amount
+			game_data["resources"][resource_type] += amount
+			game_data["statistics"]["resources_generated"] += amount
 
 			if GameEvents:
 				GameEvents.resource_generated.emit(resource_type, amount)
@@ -268,14 +266,16 @@ func _on_generator_purchased(generator_index: int) -> void:
 	var generator = resource_generators[generator_index]
 	var cost = _get_generator_cost(generator_index)
 
-	if game_data.money >= cost:
-		game_data.money -= cost
-		game_data.generators[generator.id] = game_data.generators.get(generator.id, 0) + 1
+	if game_data["money"] >= cost:
+		game_data["money"] -= cost
+		game_data["generators"][generator.id] = game_data["generators"].get(generator.id, 0) + 1
 
-		print("✅ Comprado: %s (Total: %d)" % [generator.name, game_data.generators[generator.id]])
+		print(
+			"✅ Comprado: %s (Total: %d)" % [generator.name, game_data["generators"][generator.id]]
+		)
 
 		if GameEvents:
-			GameEvents.generator_purchased.emit(generator.id, game_data.generators[generator.id])
+			GameEvents.generator_purchased.emit(generator.id, game_data["generators"][generator.id])
 
 		_update_all_displays()
 	else:
@@ -287,11 +287,11 @@ func _on_station_purchased(station_index: int) -> void:
 	var station = production_stations[station_index]
 	var cost = _get_station_cost(station_index)
 
-	if game_data.money >= cost:
-		game_data.money -= cost
-		game_data.stations[station.id] = game_data.stations.get(station.id, 0) + 1
+	if game_data["money"] >= cost:
+		game_data["money"] -= cost
+		game_data["stations"][station.id] = game_data["stations"].get(station.id, 0) + 1
 
-		print("✅ Comprado: %s (Total: %d)" % [station.name, game_data.stations[station.id]])
+		print("✅ Comprado: %s (Total: %d)" % [station.name, game_data["stations"][station.id]])
 		_start_production_timer(station.id)
 		_update_all_displays()
 	else:
@@ -317,7 +317,7 @@ func _produce_item(station_id: String) -> void:
 	if not station:
 		return
 
-	var owned_count = game_data.stations.get(station_id, 0)
+	var owned_count = game_data["stations"].get(station_id, 0)
 	if owned_count == 0:
 		return
 
@@ -328,7 +328,7 @@ func _produce_item(station_id: String) -> void:
 
 		# Producir el producto
 		var product_type = station.produces
-		game_data.products[product_type] += 1
+		game_data["products"][product_type] += 1
 
 		print("🍺 Producido: +1 %s" % product_type)
 
@@ -344,10 +344,10 @@ func _can_produce(station: Dictionary) -> bool:
 		var available = 0
 
 		# Buscar en recursos o productos
-		if game_data.resources.has(ingredient):
-			available = game_data.resources[ingredient]
-		elif game_data.products.has(ingredient):
-			available = game_data.products[ingredient]
+		if game_data["resources"].has(ingredient):
+			available = game_data["resources"][ingredient]
+		elif game_data["products"].has(ingredient):
+			available = game_data["products"][ingredient]
 
 		if available < required:
 			return false
@@ -359,10 +359,10 @@ func _consume_ingredients(station: Dictionary) -> void:
 	for ingredient in station.recipe.keys():
 		var required = station.recipe[ingredient]
 
-		if game_data.resources.has(ingredient):
-			game_data.resources[ingredient] -= required
-		elif game_data.products.has(ingredient):
-			game_data.products[ingredient] -= required
+		if game_data["resources"].has(ingredient):
+			game_data["resources"][ingredient] -= required
+		elif game_data["products"].has(ingredient):
+			game_data["products"][ingredient] -= required
 
 
 ## SISTEMA 3: VENTA DE PRODUCTOS
@@ -371,16 +371,16 @@ func _on_manual_sell() -> void:
 	var total_earned = 0.0
 
 	# Vender todos los productos disponibles
-	for product_type in game_data.products.keys():
-		var available = game_data.products[product_type]
+	for product_type in game_data["products"].keys():
+		var available = game_data["products"][product_type]
 		if available > 0:
 			var price = _get_product_price(product_type)
 			var earned = available * price
 
-			game_data.money += earned
-			game_data.statistics.total_money_earned += earned
-			game_data.statistics.products_sold += available
-			game_data.products[product_type] = 0
+			game_data["money"] += earned
+			game_data["statistics"]["total_money_earned"] += earned
+			game_data["statistics"]["products_sold"] += available
+			game_data["products"][product_type] = 0
 
 			total_earned += earned
 			products_sold += available
@@ -388,7 +388,7 @@ func _on_manual_sell() -> void:
 			print("💰 Vendido: %dx %s por $%.2f" % [available, product_type, earned])
 
 	if products_sold > 0:
-		game_data.statistics.customers_served += 1
+		game_data["statistics"]["customers_served"] += 1
 		print("💸 Total venta manual: $%.2f (%d productos)" % [total_earned, products_sold])
 
 		if GameEvents:
@@ -403,19 +403,19 @@ func _process_automatic_customers() -> void:
 	# Clientes automáticos compran productos aleatoriamente
 	if randf() < 0.3:  # 30% de posibilidad de cliente
 		var product_types = []
-		for product_type in game_data.products.keys():
-			if game_data.products[product_type] > 0:
+		for product_type in game_data["products"].keys():
+			if game_data["products"][product_type] > 0:
 				product_types.append(product_type)
 
 		if product_types.size() > 0:
 			var chosen_product = product_types[randi() % product_types.size()]
 			var price = _get_product_price(chosen_product)
 
-			game_data.money += price
-			game_data.statistics.total_money_earned += price
-			game_data.statistics.products_sold += 1
-			game_data.statistics.customers_served += 1
-			game_data.products[chosen_product] -= 1
+			game_data["money"] += price
+			game_data["statistics"]["total_money_earned"] += price
+			game_data["statistics"]["products_sold"] += 1
+			game_data["statistics"]["customers_served"] += 1
+			game_data["products"][chosen_product] -= 1
 
 			print("🤖 Cliente automático compró: %s por $%.2f" % [chosen_product, price])
 
@@ -435,13 +435,13 @@ func _find_station_by_id(station_id: String) -> Dictionary:
 
 func _get_generator_cost(generator_index: int) -> float:
 	var generator = resource_generators[generator_index]
-	var owned = game_data.generators.get(generator.id, 0)
+	var owned = game_data["generators"].get(generator.id, 0)
 	return generator.base_cost * pow(1.15, owned)
 
 
 func _get_station_cost(station_index: int) -> float:
 	var station = production_stations[station_index]
-	var owned = game_data.stations.get(station.id, 0)
+	var owned = game_data["stations"].get(station.id, 0)
 	return station.base_cost * pow(1.2, owned)
 
 
@@ -469,13 +469,13 @@ func _update_all_displays() -> void:
 
 func _update_money_display() -> void:
 	if money_label:
-		money_label.text = "💰 $%.2f" % game_data.money
+		money_label.text = "💰 $%.2f" % game_data["money"]
 
 
 func _update_resource_displays() -> void:
 	for resource_name in resource_labels.keys():
 		var label = resource_labels[resource_name]
-		var amount = game_data.resources.get(resource_name, 0)
+		var amount = game_data["resources"].get(resource_name, 0)
 		var icon = _get_resource_icon(resource_name)
 		label.text = "%s %s: %d" % [icon, resource_name.capitalize(), amount]
 
@@ -483,7 +483,7 @@ func _update_resource_displays() -> void:
 func _update_product_displays() -> void:
 	for product_name in product_labels.keys():
 		var label = product_labels[product_name]
-		var amount = game_data.products.get(product_name, 0)
+		var amount = game_data["products"].get(product_name, 0)
 		var icon = _get_product_icon(product_name)
 		var price = _get_product_price(product_name)
 		label.text = (
@@ -498,8 +498,8 @@ func _update_generator_buttons() -> void:
 			var generator = resource_generators[i]
 			var button = generator_buttons[i]
 			var cost = _get_generator_cost(i)
-			var owned = game_data.generators.get(generator.id, 0)
-			var can_afford = game_data.money >= cost
+			var owned = game_data["generators"].get(generator.id, 0)
+			var can_afford = game_data["money"] >= cost
 
 			button.text = (
 				"%s\nCosto: $%.0f\nPropiedad: %d\n%s"
@@ -514,8 +514,8 @@ func _update_station_buttons() -> void:
 			var station = production_stations[i]
 			var button = station_buttons[i]
 			var cost = _get_station_cost(i)
-			var owned = game_data.stations.get(station.id, 0)
-			var can_afford = game_data.money >= cost
+			var owned = game_data["stations"].get(station.id, 0)
+			var can_afford = game_data["money"] >= cost
 
 			var recipe_text = ""
 			for ingredient in station.recipe.keys():
@@ -531,11 +531,17 @@ func _update_station_buttons() -> void:
 func _update_stats_panel() -> void:
 	if stats_container.get_child_count() >= 5:
 		var stats_labels = stats_container.get_children()
-		stats_labels[0].text = "💰 Dinero total: $%.0f" % game_data.statistics.total_money_earned
-		stats_labels[1].text = "🌾 Recursos generados: %d" % game_data.statistics.resources_generated
+		stats_labels[0].text = (
+			"💰 Dinero total: $%.0f" % game_data["statistics"]["total_money_earned"]
+		)
+		stats_labels[1].text = (
+			"🌾 Recursos generados: %d" % game_data["statistics"]["resources_generated"]
+		)
 		stats_labels[2].text = "🍺 Productos fabricados: %d" % _count_total_products_made()
-		stats_labels[3].text = "💸 Productos vendidos: %d" % game_data.statistics.products_sold
-		stats_labels[4].text = "👥 Clientes atendidos: %d" % game_data.statistics.customers_served
+		stats_labels[3].text = "💸 Productos vendidos: %d" % game_data["statistics"]["products_sold"]
+		stats_labels[4].text = (
+			"👥 Clientes atendidos: %d" % game_data["statistics"]["customers_served"]
+		)
 
 
 func _get_resource_icon(resource_name: String) -> String:
@@ -566,9 +572,9 @@ func _get_product_icon(product_name: String) -> String:
 
 func _count_total_products_made() -> int:
 	var total = 0
-	for amount in game_data.products.values():
+	for amount in game_data["products"].values():
 		total += amount
-	total += game_data.statistics.products_sold
+	total += game_data["statistics"]["products_sold"]
 	return total
 
 
@@ -577,7 +583,7 @@ func _on_resource_generated(resource_type: String, amount: int) -> void:
 	print("📦 Evento: Recurso generado - %s: +%d" % [resource_type, amount])
 
 
-func _on_product_crafted(product_type: String, amount: int, ingredients_used: Dictionary) -> void:
+func _on_product_crafted(product_type: String, amount: int, _ingredients_used: Dictionary) -> void:
 	print("🍺 Evento: Producto fabricado - %s: +%d" % [product_type, amount])
 
 
