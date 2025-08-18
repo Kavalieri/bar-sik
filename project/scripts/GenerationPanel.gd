@@ -232,17 +232,10 @@ func _clear_generator_interfaces() -> void:
 	generator_interfaces.clear()
 
 
-func _calculate_bulk_cost(generator: Dictionary, game_data: Dictionary, quantity: int) -> float:
-	var base_cost = generator.get("base_cost", 10.0)
-	var cost_multiplier = generator.get("cost_multiplier", 1.15)  # Default multiplier
-	var owned = game_data["generators"].get(generator.get("id", ""), 0)
+	generator_interfaces.clear()
 
-	var total_cost = 0.0
-	for i in range(quantity):
-		var level_cost = base_cost * pow(cost_multiplier, owned + i)
-		total_cost += level_cost
 
-	return total_cost
+func update_with_game_data(game_data: Dictionary, generator_defs: Array[Dictionary]) -> void:
 
 
 func _clear_resource_labels() -> void:

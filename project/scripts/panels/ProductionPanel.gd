@@ -2,14 +2,14 @@ extends "res://scripts/ui/BasePanel.gd"
 ## ProductionPanel - Panel de producción con arquitectura limpia
 ## Maneja estaciones de producción y crafteo de productos
 
-# Referencias a contenedores
-@onready var main_container: VBoxContainer = $MainContainer
+# Referencias a contenedores específicos
 @onready var products_container: VBoxContainer = $MainContainer/ProductsSection/ProductContainer
-@onready var production_container: VBoxContainer = $MainContainer/ProductionSection/ProductionContainer
+@onready var production_container: VBoxContainer = (
+	$MainContainer/ProductionSection/ProductionContainer
+)
 @onready var stations_container: VBoxContainer = $MainContainer/StationsSection/StationContainer
 
-# Estado del panel
-var is_initialized: bool = false
+# Estado específico del panel
 var product_labels: Dictionary = {}
 var station_interfaces: Array[Control] = []
 var station_definitions: Array[Dictionary] = []

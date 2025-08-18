@@ -167,10 +167,10 @@ static func create_section_header(text: String, subtitle: String = "") -> Contro
 		header.custom_minimum_size = Vector2(0, 32)
 		header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		return header
-	
+
 	# Si hay subtítulo, crear un contenedor con ambos elementos
 	var container = VBoxContainer.new()
-	
+
 	# Header principal
 	var header = Label.new()
 	header.text = text
@@ -179,7 +179,7 @@ static func create_section_header(text: String, subtitle: String = "") -> Contro
 	header.custom_minimum_size = Vector2(0, 32)
 	header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	container.add_child(header)
-	
+
 	# Subtítulo
 	var subtitle_label = Label.new()
 	subtitle_label.text = subtitle
@@ -187,7 +187,7 @@ static func create_section_header(text: String, subtitle: String = "") -> Contro
 	subtitle_label.add_theme_color_override("font_color", colors.text_secondary)
 	subtitle_label.modulate = Color.GRAY
 	container.add_child(subtitle_label)
-	
+
 	return container
 
 ## Función privada para crear estilos de botón
