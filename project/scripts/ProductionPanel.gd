@@ -1,8 +1,9 @@
 extends ScrollContainer
-## ProductionPanel - Panel de producción y crafteo
-## Maneja los productos fabricados y las estaciones de producción
+## ProductionPanel - Panel de producción manual y crafteo
+## Maneja los productos fabricados, estaciones y producción manual por clicks
 
 @onready var product_container: VBoxContainer = $MainContainer/ProductsSection/ProductContainer
+@onready var production_container: VBoxContainer = $MainContainer/ProductionSection/ProductionContainer
 @onready var station_container: VBoxContainer = $MainContainer/StationsSection/StationContainer
 
 # Variables de UI
@@ -11,6 +12,7 @@ var station_buttons: Array[Button] = []
 
 # Señales para comunicación con GameScene
 signal station_purchased(station_index: int)
+signal manual_production_requested(station_index: int, quantity: int)
 
 
 func _ready() -> void:
@@ -40,6 +42,45 @@ func setup_stations(production_stations: Array[Dictionary]) -> void:
 		station_buttons.append(button)
 
 
+func setup_production_interfaces(production_stations: Array[Dictionary]) -> void:
+	# Limpiar contenido existente  
+	_clear_production_interfaces()
+	
+	# Crear interfaces de producción para cada estación
+	for i in range(production_stations.size()):
+		var station = production_stations[i]
+		var station_container_v = VBoxContainer.new()
+		production_container.add_child(station_container_v)
+		
+		# Label con información de la estación
+		var info_label = Label.new()
+		info_label.text = "%s\nReceta: %s" % [station.name, _format_recipe(station.recipe)]
+		station_container_v.add_child(info_label)
+		
+		# Contenedor horizontal para botones de producción
+		var button_container = HBoxContainer.new()
+		station_container_v.add_child(button_container)
+		
+		# Botones de producción por incrementos
+		var increments = [1, 5, 10, 50]
+		for increment in increments:
+			var button = Button.new()
+			button.text = str(increment)
+			button.pressed.connect(_on_manual_production.bind(i, increment))
+			button_container.add_child(button)
+		
+		# Separador
+		var separator = HSeparator.new()
+		station_container_v.add_child(separator)
+
+
+func _format_recipe(recipe: Dictionary) -> String:
+	var recipe_parts = []
+	for ingredient in recipe.keys():
+		recipe_parts.append("%dx %s" % [recipe[ingredient], ingredient])
+	return " + ".join(recipe_parts)
+
+
 func update_product_displays(game_data: Dictionary) -> void:
 	for product_name in product_labels.keys():
 		var label = product_labels[product_name]
@@ -50,6 +91,53 @@ func update_product_displays(game_data: Dictionary) -> void:
 			"%s %s: %d ($%.1f c/u)"
 			% [icon, product_name.replace("_", " ").capitalize(), amount, price]
 		)
+
+
+func update_production_interfaces(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
+	# Actualizar cada interfaz de producción
+	var production_interfaces = production_container.get_children()
+	
+	for i in range(min(production_interfaces.size(), production_stations.size())):
+		var station = production_stations[i]
+		var interface_container = production_interfaces[i]
+		var owned = game_data["stations"].get(station.id, 0)
+		
+		# Actualizar info label (primer hijo)
+		var info_label = interface_container.get_child(0) as Label
+		info_label.text = "%s (Propiedad: %d)\nReceta: %s → %s" % [
+			station.name, owned, _format_recipe(station.recipe), station.produces
+		]
+		
+		# Actualizar botones de producción (segundo hijo es el HBoxContainer)
+		var button_container = interface_container.get_child(1) as HBoxContainer
+		var buttons = button_container.get_children()
+		
+		for j in range(buttons.size()):
+			var button = buttons[j] as Button
+			var increment = int(button.text)
+			var can_produce = owned > 0 and _can_afford_production(station, game_data, increment)
+			
+			button.text = "%d\n%s" % [increment, station.produces.replace("_", " ")]
+			button.disabled = not can_produce
+
+
+func _can_afford_production(station: Dictionary, game_data: Dictionary, quantity: int) -> bool:
+	# Verificar si hay suficientes ingredientes para la receta
+	for ingredient in station.recipe.keys():
+		var needed = station.recipe[ingredient] * quantity
+		var available = game_data["resources"].get(ingredient, 0)
+		if available < needed:
+			return false
+	return true
+
+
+func _on_manual_production(station_index: int, quantity: int) -> void:
+	manual_production_requested.emit(station_index, quantity)
+
+
+func _clear_production_interfaces() -> void:
+	for child in production_container.get_children():
+		child.queue_free()
 
 
 func update_station_buttons(production_stations: Array[Dictionary], game_data: Dictionary) -> void:

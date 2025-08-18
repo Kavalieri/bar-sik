@@ -117,7 +117,9 @@ func _setup_modular_system() -> void:
 
 	production_panel.setup_products(game_data)
 	production_panel.setup_stations(production_stations)
+	production_panel.setup_production_interfaces(production_stations)
 	production_panel.station_purchased.connect(_on_station_purchased)
+	production_panel.manual_production_requested.connect(_on_manual_production_requested)
 
 	sales_panel.item_sell_requested.connect(_on_item_sell_requested)
 
@@ -188,7 +190,9 @@ func _setup_timers() -> void:
 		var station = station_id
 		var owned_count = game_data["stations"].get(station.id, 0)
 		if owned_count > 0:
-			_start_production_timer(station.id)
+			# Producción manual ahora - no iniciar timer automático
+			# _start_production_timer(station.id)
+			pass
 
 	# Timer para clientes automáticos (cada 8 segundos)
 	customer_timer = Timer.new()
@@ -215,6 +219,7 @@ func _update_all_displays() -> void:
 
 	production_panel.update_product_displays(game_data)
 	production_panel.update_station_buttons(production_stations, game_data)
+	production_panel.update_production_interfaces(production_stations, game_data)
 
 	sales_panel.update_statistics(game_data)
 	sales_panel.update_sell_interfaces(game_data)
@@ -284,10 +289,55 @@ func _on_station_purchased(station_index: int) -> void:
 		game_data["stations"][station.id] = game_data["stations"].get(station.id, 0) + 1
 
 		print("✅ Comprado: %s (Total: %d)" % [station.name, game_data["stations"][station.id]])
-		_start_production_timer(station.id)
+		# Producción manual ahora - no iniciar timer automático
+		# _start_production_timer(station.id)
 		_update_all_displays()
 	else:
 		print("❌ Dinero insuficiente para %s" % station.name)
+
+
+func _on_manual_production_requested(station_index: int, quantity: int) -> void:
+	var station = production_stations[station_index]
+	var owned = game_data["stations"].get(station.id, 0)
+	
+	if owned <= 0:
+		print("⚠️ No tienes %s para producir" % station.name)
+		return
+	
+	var successful_productions = 0
+	
+	# Intentar producir la cantidad solicitada
+	for i in range(quantity):
+		# Verificar ingredientes para una unidad
+		var can_produce = true
+		for ingredient in station.recipe.keys():
+			var needed = station.recipe[ingredient]
+			var available = game_data["resources"].get(ingredient, 0)
+			if available < needed:
+				can_produce = false
+				break
+		
+		if can_produce:
+			# Consumir ingredientes
+			for ingredient in station.recipe.keys():
+				var needed = station.recipe[ingredient]
+				game_data["resources"][ingredient] -= needed
+			
+			# Producir producto
+			game_data["products"][station.produces] = game_data["products"].get(station.produces, 0) + 1
+			successful_productions += 1
+		else:
+			break  # No más ingredientes disponibles
+	
+	if successful_productions > 0:
+		print("🍺 Producido: +%d %s" % [successful_productions, station.produces])
+		
+		if GameEvents:
+			GameEvents.product_crafted.emit(station.produces, successful_productions, station.recipe)
+		
+		_update_all_displays()
+	else:
+		print("⚠️ Ingredientes insuficientes para producir %s" % station.produces)
 
 
 func _start_production_timer(station_id: String) -> void:
