@@ -3,12 +3,13 @@ extends Control
 ## Maneja la navegación entre GenerationPanel, ProductionPanel y SalesPanel
 
 @onready var pause_button: Button = $MainContainer/TopPanel/PauseButton
+@onready var save_menu_button: MenuButton = $MainContainer/TopPanel/SaveMenuButton
 @onready var currency_container: HBoxContainer = $MainContainer/TopPanel/CurrencyContainer
 
-# Botones de pestañas
-@onready var generation_tab: Button = $MainContainer/TabButtons/GenerationTab
-@onready var production_tab: Button = $MainContainer/TabButtons/ProductionTab
-@onready var sales_tab: Button = $MainContainer/TabButtons/SalesTab
+# Botones de pestañas (ahora en la parte inferior)
+@onready var generation_tab: Button = $MainContainer/BottomNavigation/GenerationTab
+@onready var production_tab: Button = $MainContainer/BottomNavigation/ProductionTab
+@onready var sales_tab: Button = $MainContainer/BottomNavigation/SalesTab
 
 # Paneles de contenido
 @onready var generation_panel: Control = $MainContainer/ContentContainer/GenerationPanel
@@ -22,6 +23,8 @@ var money_label: Label
 # Señales para comunicación con GameScene
 signal tab_changed(tab_name: String)
 signal pause_pressed
+signal save_data_reset_requested
+signal new_save_slot_requested(slot_name: String)
 
 
 func _ready() -> void:
@@ -39,6 +42,9 @@ func _setup_ui() -> void:
 
 	# Setup pause button
 	pause_button.pressed.connect(_on_pause_pressed)
+
+	# Setup menú de guardado
+	_setup_save_menu()
 
 
 func _connect_signals() -> void:
@@ -106,4 +112,62 @@ func _on_sales_tab_pressed() -> void:
 
 
 func _on_pause_pressed() -> void:
+	print("⏸️ Botón pausa presionado")
 	pause_pressed.emit()
+
+
+## MENÚ DE GUARDADO
+func _setup_save_menu() -> void:
+	var popup = save_menu_button.get_popup()
+
+	# Limpiar opciones existentes
+	popup.clear()
+
+	# Agregar opciones del menú
+	popup.add_item("🗑️ Resetear Datos", 0)
+	popup.add_separator()
+	popup.add_item("💾 Nuevo Slot", 1)
+	popup.add_item("🔄 Cargar Slot 1", 2)
+	popup.add_item("🔄 Cargar Slot 2", 3)
+	popup.add_separator()
+	popup.add_item("📁 Guardar Manualmente", 4)
+
+	# Conectar señal del popup
+	popup.id_pressed.connect(_on_save_menu_option_selected)
+
+
+func _on_save_menu_option_selected(id: int) -> void:
+	match id:
+		0:  # Resetear datos
+			_confirm_reset_data()
+		1:  # Nuevo slot
+			_request_new_slot()
+		2:  # Cargar slot 1
+			_load_slot(1)
+		3:  # Cargar slot 2
+			_load_slot(2)
+		4:  # Guardar manualmente
+			_save_current_data()
+
+
+func _confirm_reset_data() -> void:
+	print("🗑️ Solicitando reset de datos...")
+	# Emitir señal para que GameScene maneje el reset
+	save_data_reset_requested.emit()
+
+
+func _request_new_slot() -> void:
+	print("💾 Solicitando nuevo slot...")
+	new_save_slot_requested.emit("Nuevo Slot")
+
+
+func _load_slot(slot_id: int) -> void:
+	print("🔄 Cargando slot: ", slot_id)
+	if Router:
+		Router.switch_save_slot(slot_id)
+
+
+func _save_current_data() -> void:
+	print("📁 Guardando datos manualmente...")
+	if GameEvents:
+		GameEvents.save_data_requested.emit()

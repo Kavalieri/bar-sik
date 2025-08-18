@@ -172,3 +172,40 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("💾 Guardando al cerrar aplicación...")
 		# El GameManager debería manejar el guardado real
+
+
+## GESTIÓN DE SLOTS Y RESET
+## Resetear a valores por defecto
+func reset_to_defaults() -> void:
+	print("🗑️ Reseteando datos a valores por defecto...")
+	var default_data = get_default_save_data()
+	save_game_data(default_data["game_data"])
+	print("✅ Datos reseteados exitosamente")
+
+
+## Obtener datos por defecto para nuevo juego
+func get_default_save_data() -> Dictionary:
+	return {
+		"version": "0.2.0",
+		"timestamp": Time.get_unix_time_from_system(),
+		"game_data":
+		{
+			"money": 50.0,
+			"resources": {"water": 10, "barley": 5, "hops": 3, "basic_beer": 0, "premium_beer": 0},
+			"generators": {"barley_farm": 0, "hops_farm": 0},
+			"stations": {"brewery": 1, "bar_station": 0}
+		}
+	}
+
+
+## Crear nuevo slot de guardado (funcionalidad básica)
+func create_new_slot(slot_name: String = "") -> void:
+	print("💾 Creando nuevo slot: ", slot_name if slot_name != "" else "Sin nombre")
+	reset_to_defaults()
+
+
+## Cambiar slot activo (funcionalidad básica)
+func switch_to_slot(slot_id: int) -> void:
+	print("🔄 Cambiando a slot: ", slot_id)
+	# Por ahora solo carga los datos actuales
+	load_game_data()

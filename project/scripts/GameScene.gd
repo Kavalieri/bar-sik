@@ -97,6 +97,8 @@ func _setup_modular_system() -> void:
 	# Conectar señales del TabNavigator
 	tab_navigator.tab_changed.connect(_on_tab_changed)
 	tab_navigator.pause_pressed.connect(_on_pause_pressed)
+	tab_navigator.save_data_reset_requested.connect(_on_reset_data_requested)
+	tab_navigator.new_save_slot_requested.connect(_on_new_slot_requested)
 
 	# Setup de cada panel
 	generation_panel.setup_resources(game_data)
@@ -425,7 +427,7 @@ func _on_tab_changed(tab_name: String) -> void:
 func _on_pause_pressed() -> void:
 	print("⏸️ Pausa presionada")
 	if Router:
-		Router.go_to_scene("res://scenes/MainMenu.tscn")
+		Router.goto_scene("main_menu")
 
 
 ## EVENTOS Y GUARDADO
@@ -458,4 +460,17 @@ func _timer() -> void:
 	save_timer.wait_time = 30.0
 	save_timer.autostart = true
 	save_timer.timeout.connect(_save_game)
+
+
+## GESTIÓN DE GUARDADO
+func _on_reset_data_requested() -> void:
+	print("🗑️ Reseteando datos del juego...")
+	if Router:
+		Router.reset_save_data()
+
+
+func _on_new_slot_requested(slot_name: String) -> void:
+	print("💾 Creando nuevo slot: ", slot_name)
+	if Router:
+		Router.create_new_save_slot(slot_name)
 	add_child(save_timer)

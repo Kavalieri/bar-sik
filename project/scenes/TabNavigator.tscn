@@ -31,33 +31,14 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "⏸️"
 
+[node name="SaveMenuButton" type="MenuButton" parent="MainContainer/TopPanel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "💾 Guardado"
+
 [node name="CurrencyContainer" type="HBoxContainer" parent="MainContainer/TopPanel"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="TabButtons" type="HBoxContainer" parent="MainContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-alignment = 1
-
-[node name="GenerationTab" type="Button" parent="MainContainer/TabButtons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-button_pressed = true
-text = "🏭 GENERACIÓN"
-
-[node name="ProductionTab" type="Button" parent="MainContainer/TabButtons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "🍺 PRODUCCIÓN"
-
-[node name="SalesTab" type="Button" parent="MainContainer/TabButtons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "💰 VENTAS"
 
 [node name="ContentContainer" type="Control" parent="MainContainer"]
 layout_mode = 2
@@ -97,3 +78,27 @@ visible = false
 
 [node name="SalesPanelInstance" parent="MainContainer/ContentContainer/SalesPanel" instance=ExtResource("4_sales_panel")]
 layout_mode = 1
+
+[node name="BottomNavigation" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
+
+[node name="GenerationTab" type="Button" parent="MainContainer/BottomNavigation"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+text = "🏭 GENERACIÓN"
+
+[node name="ProductionTab" type="Button" parent="MainContainer/BottomNavigation"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "⚒️ PRODUCCIÓN"
+
+[node name="SalesTab" type="Button" parent="MainContainer/BottomNavigation"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "💰 VENTAS"
