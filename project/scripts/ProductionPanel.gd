@@ -193,8 +193,8 @@ func _can_produce(station: Dictionary, game_data: Dictionary, quantity: int) -> 
 
 func _calculate_station_cost(station: Dictionary, game_data: Dictionary) -> float:
 	var owned = game_data["stations"].get(station.id, 0)
-	# Factor de escalado reducido de 1.2 a 1.15 para evitar overflow
-	return station.base_cost * pow(1.15, owned)
+	# Precio fijo simple (consistente con ProductionManager)
+	return station.base_cost
 
 
 func _clear_product_labels() -> void:
