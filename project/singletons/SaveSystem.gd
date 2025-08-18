@@ -89,10 +89,11 @@ func _get_default_game_data() -> Dictionary:
 		"money": 50.0,
 		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},
 		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
-		"generators": {"barley_farm": 0, "hops_farm": 0},
-		"stations": {"brewery": 1, "bar_station": 0},  # Comienza con 1 cervecería desbloqueada
-		"statistics":
-		{
+		"generators": {"barley_farm": 0, "hops_farm": 0, "water_collector": 0},
+		"stations": {"brewery": 1, "bar_station": 0},
+		"offers": {},
+		"upgrades": {},
+		"statistics": {
 			"total_money_earned": 0.0,
 			"products_sold": 0,
 			"customers_served": 0,
@@ -186,15 +187,9 @@ func reset_to_defaults() -> void:
 ## Obtener datos por defecto para nuevo juego
 func get_default_save_data() -> Dictionary:
 	return {
-		"version": "0.2.0",
+		"version": "0.3.0",
 		"timestamp": Time.get_unix_time_from_system(),
-		"game_data":
-		{
-			"money": 50.0,
-			"resources": {"water": 10, "barley": 5, "hops": 3, "basic_beer": 0, "premium_beer": 0},
-			"generators": {"barley_farm": 0, "hops_farm": 0},
-			"stations": {"brewery": 1, "bar_station": 0}
-		}
+		"game_data": _get_default_game_data()
 	}
 
 

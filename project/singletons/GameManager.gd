@@ -42,23 +42,28 @@ func has_upgrade(upgrade_name: String) -> bool:
 ## === ACCIONES RÁPIDAS ===
 
 func quick_sell_all_products() -> float:
-	if not sales_manager or not game_data:
+	if not sales_manager or not game_data or not StockManager:
 		return 0.0
 
 	var total_earned = 0.0
-	for product_name in game_data.products.keys():
-		var quantity = game_data.products[product_name]
+	var sellable_stock = StockManager.get_sellable_stock()
+	var products_stock = sellable_stock.get("products", {})
+
+	for product_name in products_stock.keys():
+		var quantity = StockManager.get_stock("product", product_name)
 		if quantity > 0:
 			if sales_manager.sell_item("product", product_name, quantity):
 				total_earned += quantity * GameUtils.get_product_price(product_name)
+				var earned = quantity * GameUtils.get_product_price(product_name)
+				print("💰 Quick-sell: %dx %s por $%.2f" % [quantity, product_name, earned])
 
 	return total_earned
 
 func can_craft_recipe(recipe: Dictionary) -> bool:
-	if not game_data:
+	if not game_data or not StockManager:
 		return false
 
-	return GameUtils.can_afford_recipe(game_data.resources, recipe)
+	return StockManager.can_afford_recipe(recipe)
 
 ## === DEBUG Y DESARROLLO ===
 
@@ -68,9 +73,11 @@ func debug_add_money(amount: float) -> void:
 		print("🐛 DEBUG: Añadido $%.0f (Total: $%.0f)" % [amount, game_data.money])
 
 func debug_add_resources(resource_name: String, amount: int) -> void:
-	if game_data:
-		game_data.resources[resource_name] = game_data.resources.get(resource_name, 0) + amount
-		print("🐛 DEBUG: Añadido %dx %s" % [amount, resource_name])
+	if game_data and StockManager:
+		StockManager.add_stock("ingredient", resource_name, amount)
+		print("🐛 DEBUG: Añadido %dx %s (usando StockManager)" % [amount, resource_name])
+	else:
+		print("❌ DEBUG: GameManager o StockManager no disponible")
 
 func debug_unlock_all_stations() -> void:
 	if production_manager:

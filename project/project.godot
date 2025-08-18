@@ -23,6 +23,7 @@ AppConfig="*res://singletons/AppConfig.gd"
 Router="*res://singletons/Router.gd"
 GameEvents="*res://singletons/GameEvents.gd"
 SaveSystem="*res://singletons/SaveSystem.gd"
+StockManager="*res://singletons/StockManager.gd"
 GameManager="*res://singletons/GameManager.gd"
 GameUtils="*res://scripts/core/GameUtils.gd"
 

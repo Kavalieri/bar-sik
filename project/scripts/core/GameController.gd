@@ -68,6 +68,10 @@ func _setup_managers() -> void:
 	customer_manager.set_game_data(game_data)
 	customer_manager.set_production_manager(production_manager)  # Para acceder a definiciones de estaciones
 
+	# Configurar StockManager singleton
+	StockManager.set_game_data(game_data)
+	print("📦 StockManager configurado con GameData")
+
 	# Conectar señales de managers
 	_connect_manager_signals()
 
@@ -137,13 +141,43 @@ func _setup_panels() -> void:
 		production_panel.offer_price_requested.connect(_on_ui_offer_price_requested)
 
 	# Setup SalesPanel
-	if sales_panel.has_method("item_sell_requested"):
-		sales_panel.item_sell_requested.connect(_on_ui_item_sell_requested)
+	print("🔧 GameController - Conectando SalesPanel...")
+	if sales_panel:
+		print("   - SalesPanel encontrado: %s" % sales_panel)
+		if sales_panel.has_signal("item_sell_requested"):
+			sales_panel.item_sell_requested.connect(_on_ui_item_sell_requested)
+			print("   - ✅ Señal item_sell_requested conectada")
+		else:
+			print("   - ❌ ERROR: SalesPanel no tiene señal item_sell_requested")
+	else:
+		print("   - ❌ ERROR: sales_panel es null")
 
 	# Setup CustomersPanel
-	if customers_panel.has_method("setup_autosell_upgrades"):
-		customers_panel.setup_autosell_upgrades(game_data.to_dict())
-		customers_panel.autosell_upgrade_purchased.connect(_on_ui_customer_upgrade_requested)
+	if customers_panel:
+		print("🔧 GameController - Conectando CustomersPanel...")
+		if customers_panel.has_method("setup_autosell_upgrades"):
+			customers_panel.setup_autosell_upgrades(game_data.to_dict())
+
+		# Conectar señales de upgrades
+		if customers_panel.has_signal("autosell_upgrade_purchased"):
+			customers_panel.autosell_upgrade_purchased.connect(_on_ui_customer_upgrade_requested)
+			print("   - ✅ Señal autosell_upgrade_purchased conectada")
+
+		# Conectar nuevas señales de ofertas
+		if customers_panel.has_signal("offer_toggled"):
+			customers_panel.offer_toggled.connect(_on_ui_offer_toggled_customers)
+			print("   - ✅ Señal offer_toggled (customers) conectada")
+
+		if customers_panel.has_signal("offer_price_requested"):
+			customers_panel.offer_price_requested.connect(_on_ui_offer_price_requested_customers)
+			print("   - ✅ Señal offer_price_requested (customers) conectada")
+
+		# Configurar ofertas de productos
+		if customers_panel.has_method("setup_product_offers"):
+			customers_panel.setup_product_offers(production_manager.get_station_definitions(), game_data.to_dict())
+			print("   - ✅ Ofertas de productos configuradas en CustomersPanel")
+	else:
+		print("   - ❌ ERROR: customers_panel es null")
 
 ## Configurar timer de guardado automático
 func _setup_save_timer() -> void:
@@ -165,23 +199,40 @@ func _update_all_displays() -> void:
 	# Actualizar paneles
 	if generation_panel.has_method("update_resource_displays"):
 		generation_panel.update_resource_displays(game_dict)
-		generation_panel.update_generator_displays(generator_manager.get_generator_definitions(), game_dict)
+		generation_panel.update_generator_displays(
+			generator_manager.get_generator_definitions(), game_dict
+		)
 
 	if production_panel.has_method("update_product_displays"):
 		production_panel.update_product_displays(game_dict)
-		production_panel.update_station_interfaces(production_manager.get_station_definitions(), game_dict)
+		production_panel.update_station_interfaces(
+			production_manager.get_station_definitions(), game_dict
+		)
 
 	if sales_panel.has_method("update_statistics"):
-		print("🔄 GameController - Actualizando SalesPanel")
-		print("📊 Datos para ventas: recursos=%s, productos=%s" % [game_dict["resources"], game_dict["products"]])
 		sales_panel.update_statistics(game_dict)
 		sales_panel.update_sell_interfaces(game_dict)
 
 	if customers_panel.has_method("update_customer_display"):
-		customers_panel.update_customer_display(game_dict, customer_manager.get_timer_progress())
+		customers_panel.update_customer_display(
+			game_dict, customer_manager.get_timer_progress()
+		)
+
+	# Actualizar interfaces de ofertas en CustomersPanel
+	if customers_panel.has_method("update_offer_interfaces"):
+		customers_panel.update_offer_interfaces(game_dict)
 
 	# Verificar desbloqueos automáticamente después de cada actualización
 	production_manager.check_unlock_stations()
+
+## Actualizar solo el panel de generadores (para recursos generados)
+func _update_generation_panel() -> void:
+	if generation_panel.has_method("update_resource_displays"):
+		var game_dict = game_data.to_dict()
+		generation_panel.update_resource_displays(game_dict)
+		generation_panel.update_generator_displays(
+			generator_manager.get_generator_definitions(), game_dict
+		)
 
 ## === EVENTOS DE MANAGERS ===
 
@@ -192,12 +243,12 @@ func _on_generator_purchased(generator_id: String, quantity: int) -> void:
 func _on_resource_generated(_resource_type: String, _amount: int) -> void:
 	# Los parámetros se reciben pero no se usan directamente ya que
 	# la información está disponible en game_data actualizado
-	print("🌾 Recurso generado: %dx %s - Actualizando todas las pantallas" % [_amount, _resource_type])
-	
-	# ACTUALIZAR TODOS LOS PANELES cuando se generan recursos
-	_update_all_displays()
-	
-	print("✅ Todas las pantallas actualizadas con nuevo inventario")
+
+	# Solo actualizar el panel de generadores para mejor performance
+	_update_generation_panel()
+
+	# Actualizar dinero display por si cambia por ventas automáticas
+	tab_navigator.update_money_display(game_data.money)
 
 func _on_station_purchased(station_id: String) -> void:
 	print("✅ Estación comprada: %s" % station_id)
@@ -350,3 +401,49 @@ func _on_ui_offer_price_requested(station_index: int) -> void:
 
 		print("   - ✅ Nuevo multiplicador: %.2f" % new_multiplier)
 		_update_all_displays()  # Actualizar UI para mostrar el cambio
+
+## === CALLBACKS PARA CUSTOMERSPANEL ===
+
+func _on_ui_offer_toggled_customers(station_id: String, enabled: bool) -> void:
+	"""Callback para toggle de ofertas desde CustomersPanel"""
+	print("🏪 GameController - Oferta toggled desde CustomersPanel:")
+	print("   - Estación ID: %s" % station_id)
+	print("   - Habilitado: %s" % enabled)
+
+	# Actualizar GameData
+	if game_data.offers.has(station_id):
+		game_data.offers[station_id]["enabled"] = enabled
+		print("   - ✅ Oferta actualizada en GameData")
+
+		# Actualizar ambos paneles para mantener sincronización
+		_update_all_displays()
+		print("   - ✅ Paneles sincronizados")
+	else:
+		print("   - ❌ ERROR: Estación no encontrada en ofertas")
+
+func _on_ui_offer_price_requested_customers(station_id: String) -> void:
+	"""Callback para cambio de precio desde CustomersPanel"""
+	print("💰 GameController - Cambio de precio desde CustomersPanel:")
+	print("   - Estación ID: %s" % station_id)
+
+	if game_data.offers.has(station_id):
+		var current_multiplier = game_data.offers[station_id].get("price_multiplier", 1.0)
+		print("   - Multiplicador actual: %.2f" % current_multiplier)
+
+		# Alternar entre valores: Normal (1.0) -> Alto (1.2) -> Bajo (0.8) -> Normal
+		var new_multiplier: float
+		if current_multiplier <= 0.8:
+			new_multiplier = 1.0  # Bajo -> Normal
+		elif current_multiplier <= 1.0:
+			new_multiplier = 1.2  # Normal -> Alto
+		else:
+			new_multiplier = 0.8  # Alto -> Bajo
+
+		game_data.offers[station_id]["price_multiplier"] = new_multiplier
+		print("   - ✅ Nuevo multiplicador: %.2f" % new_multiplier)
+
+		# Actualizar ambos paneles para mantener sincronización
+		_update_all_displays()
+		print("   - ✅ Paneles sincronizados")
+	else:
+		print("   - ❌ ERROR: Estación no encontrada en ofertas")

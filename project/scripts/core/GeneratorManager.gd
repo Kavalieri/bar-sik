@@ -60,13 +60,18 @@ func _generate_resources() -> void:
 	if not game_data:
 		return
 
+	if not StockManager:
+		print("❌ GeneratorManager: StockManager no disponible")
+		return
+
 	for generator_def in generator_definitions:
 		var owned_count = game_data.generators.get(generator_def.id, 0)
 		if owned_count > 0:
 			var resource_type = generator_def.produces
 			var amount = int(generator_def.production_rate * owned_count)
 
-			game_data.resources[resource_type] += amount
+			# Usar StockManager en lugar de acceso directo
+			StockManager.add_stock("ingredient", resource_type, amount)
 			game_data.statistics["resources_generated"] += amount
 
 			resource_generated.emit(resource_type, amount)

@@ -16,43 +16,34 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Title" type="Label" parent="MainContainer"]
-layout_mode = 2
-text = "🍺 PRODUCCIÓN Y CRAFTEO"
-horizontal_alignment = 1
-
 [node name="ProductsSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="ProductTitle" type="Label" parent="MainContainer/ProductsSection"]
-layout_mode = 2
-text = "🍺 PRODUCTOS FABRICADOS"
+custom_minimum_size = Vector2(0, 200)
 
 [node name="ProductContainer" type="VBoxContainer" parent="MainContainer/ProductsSection"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Separator1" type="HSeparator" parent="MainContainer"]
+[node name="VSeparator1" type="VSeparator" parent="MainContainer"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
 
 [node name="ProductionSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="ProductionTitle" type="Label" parent="MainContainer/ProductionSection"]
-layout_mode = 2
-text = "⚡ PRODUCCIÓN MANUAL (Click para fabricar)"
+custom_minimum_size = Vector2(0, 250)
 
 [node name="ProductionContainer" type="VBoxContainer" parent="MainContainer/ProductionSection"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Separator2" type="HSeparator" parent="MainContainer"]
+[node name="VSeparator2" type="VSeparator" parent="MainContainer"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
 
 [node name="StationsSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="StationTitle" type="Label" parent="MainContainer/StationsSection"]
-layout_mode = 2
-text = "⚙️ ESTACIONES DE PRODUCCIÓN (Comprar para fabricar productos)"
+custom_minimum_size = Vector2(0, 200)
 
 [node name="StationContainer" type="VBoxContainer" parent="MainContainer/StationsSection"]
 layout_mode = 2
+size_flags_horizontal = 3

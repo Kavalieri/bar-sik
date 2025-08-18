@@ -120,14 +120,20 @@ func manual_production(station_id: String, quantity: int) -> int:
 	if owned <= 0:
 		return 0
 
+	if not StockManager:
+		print("❌ ProductionManager: StockManager no disponible")
+		return 0
+
 	var successful_productions = 0
 
 	# Intentar producir la cantidad solicitada
 	for i in range(quantity):
-		if GameUtils.can_afford_recipe(game_data.resources, station_def.recipe):
-			if GameUtils.consume_recipe(game_data.resources, station_def.recipe):
-				game_data.products[station_def.produces] += 1
+		if StockManager.can_afford_recipe(station_def.recipe):
+			if StockManager.consume_recipe(station_def.recipe):
+				# Usar StockManager en lugar de acceso directo
+				StockManager.add_stock("product", station_def.produces, 1)
 				successful_productions += 1
+				print("🍺 Producido: +1 %s" % station_def.produces)
 			else:
 				break
 		else:
@@ -151,14 +157,14 @@ func get_station_cost(station_id: String) -> float:
 
 ## Verificar si se puede producir en una estación
 func can_produce(station_id: String, quantity: int = 1) -> bool:
-	if not game_data:
+	if not game_data or not StockManager:
 		return false
 
 	var station_def = _find_station_by_id(station_id)
 	if not station_def:
 		return false
 
-	return GameUtils.can_afford_recipe(game_data.resources, station_def.recipe, quantity)
+	return StockManager.can_afford_recipe(station_def.recipe, quantity)
 
 ## Obtener definición de estación por ID
 func _find_station_by_id(station_id: String) -> Dictionary:

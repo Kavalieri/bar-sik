@@ -98,10 +98,21 @@ func _process_automatic_customer() -> void:
 
 	# Encontrar productos disponibles CON OFERTA HABILITADA
 	var available_products = []
-	var station_definitions = production_manager.get_station_definitions() if production_manager else []
+	var station_definitions = []
+	if production_manager:
+		station_definitions = production_manager.get_station_definitions()
 
-	for product_type in game_data.products.keys():
-		if game_data.products[product_type] > 0:
+	# Usar StockManager para obtener productos disponibles
+	if not StockManager:
+		print("❌ StockManager no disponible")
+		return
+
+	var sellable_stock = StockManager.get_sellable_stock()
+	var products_stock = sellable_stock.get("products", {})
+
+	for product_type in products_stock.keys():
+		var stock_quantity = StockManager.get_stock("product", product_type)
+		if stock_quantity > 0:
 			# Verificar si hay alguna estación que produzca este producto y tenga oferta habilitada
 			var has_offer = false
 			for station_def in station_definitions:
@@ -114,7 +125,7 @@ func _process_automatic_customer() -> void:
 
 			if has_offer:
 				available_products.append(product_type)
-				print("🛒 Producto disponible para clientes: %s (con oferta)" % product_type)
+				print("🛒 Producto disponible: %s (stock: %d, con oferta)" % [product_type, stock_quantity])
 
 	if available_products.is_empty():
 		print("❌ No hay productos con ofertas habilitadas")
@@ -138,21 +149,27 @@ func _process_automatic_customer() -> void:
 	if game_data.upgrades.get("premium_customers", false):
 		final_price *= 1.5  # 50% más
 
-	print("💰 Cliente comprando %s por $%.2f (multiplicador: %.2f)" % [chosen_product, final_price, price_multiplier])
+	print("💰 Cliente comprando %s por $%.2f (x%.2f)" % [chosen_product, final_price, price_multiplier])
 
 	# Determinar cantidad (bulk buyers pueden comprar más)
-	var max_quantity = game_data.products[chosen_product]
+	var max_quantity = StockManager.get_stock("product", chosen_product)
 	var quantity = 1
 	if game_data.upgrades.get("bulk_buyers", false):
 		quantity = randi_range(1, min(3, max_quantity))
 
-	# Procesar la venta
+	# Procesar la venta usando StockManager
+	var removed = StockManager.remove_stock("product", chosen_product, quantity)
+	if not removed:
+		print("❌ ERROR: No se pudo remover stock para venta automática")
+		return
+
 	var total_earned = final_price * quantity
 	game_data.money += total_earned
 	game_data.statistics["total_money_earned"] += total_earned
 	game_data.statistics["products_sold"] += quantity
 	game_data.statistics["customers_served"] += 1
-	game_data.products[chosen_product] -= quantity
+
+	print("✅ Venta automática completada: %d %s por $%.2f" % [quantity, chosen_product, total_earned])
 
 	# Determinar tipo de cliente
 	var customer_type = "Cliente Normal"

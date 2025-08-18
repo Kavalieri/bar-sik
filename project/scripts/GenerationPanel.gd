@@ -1,141 +1,261 @@
 extends ScrollContainer
 ## GenerationPanel - Panel de generación de recursos
-## Maneja los recursos disponibles y los generadores para comprar
+## Nueva implementación limpia y modular
 
-@onready var resource_container: VBoxContainer = $MainContainer/ResourcesSection/ResourceContainer
-@onready var generator_container: VBoxContainer = $MainContainer/GeneratorsSection/GeneratorContainer
+# Referencias a contenedores
+@onready var main_container: VBoxContainer = $MainContainer
+@onready var resources_container: VBoxContainer = $MainContainer/ResourcesSection/ResourceContainer
+@onready var generators_container: VBoxContainer = $MainContainer/GeneratorsSection/GeneratorContainer
 
-# Variables de UI
+# Estado del panel
+var is_initialized: bool = false
 var resource_labels: Dictionary = {}
-var generator_buttons: Array[Button] = []
+var generator_interfaces: Array[Control] = []
+var generator_definitions: Array[Dictionary] = []
 
-# Señales para comunicación con GameScene
+# Señales
 signal generator_purchased(generator_index: int, quantity: int)
 
-
 func _ready() -> void:
-	print("📦 GenerationPanel inicializado")
+	print("📦 GenerationPanel inicializando...")
+	call_deferred("_initialize_panel")
+
+func _initialize_panel() -> void:
+	"""Inicialización completa del panel"""
+	_create_sections()
+	is_initialized = true
+	print("✅ GenerationPanel inicializado correctamente")
+
+func _create_sections() -> void:
+	"""Crear secciones del panel"""
+	_create_resources_section()
+	_create_generators_section()
+
+func _create_resources_section() -> void:
+	"""Crear sección de recursos"""
+	_clear_container(resources_container)
+	var header = UIStyleManager.create_section_header("📦 INGREDIENTES DISPONIBLES")
+	resources_container.add_child(header)
+
+func _create_generators_section() -> void:
+	"""Crear sección de generadores"""
+	_clear_container(generators_container)
+	var header = UIStyleManager.create_section_header(
+		"🌾 GENERADORES",
+		"Compra generadores para producir ingredientes automáticamente"
+	)
+	generators_container.add_child(header)
 
 
 func setup_resources(game_data: Dictionary) -> void:
-	# Limpiar contenido existente
-	_clear_resource_labels()
+	"""Configura los recursos del juego"""
+	if not is_initialized:
+		call_deferred("setup_resources", game_data)
+		return
+
+	resource_labels.clear()
 
 	# Crear labels para recursos
 	for resource_name in game_data["resources"].keys():
-		var label = Label.new()
-		resource_labels[resource_name] = label
-		resource_container.add_child(label)
+		var resource_card = UIStyleManager.create_styled_panel()
+		resource_card.set_custom_minimum_size(Vector2(0, 50))
 
+		var label = Label.new()
+		label.text = "%s: 0.0" % resource_name.capitalize()
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.add_theme_font_size_override("font_size", 14)
+
+		resource_card.add_child(label)
+		resources_container.add_child(resource_card)
+		resource_labels[resource_name] = label
 
 func setup_generators(resource_generators: Array[Dictionary]) -> void:
-	# Limpiar botones existentes
-	_clear_generator_buttons()
+	"""Configura los generadores disponibles"""
+	if not is_initialized:
+		call_deferred("setup_generators", resource_generators)
+		return
 
-	# Crear interfaces de compra para generadores
+	generator_definitions = resource_generators
+	_clear_generator_interfaces()
+
+	# Crear interface para cada generador
 	for i in range(resource_generators.size()):
 		var generator = resource_generators[i]
-		var generator_container_h = VBoxContainer.new()
-		generator_container.add_child(generator_container_h)
+		var interface = _create_generator_interface(generator, i)
+		generators_container.add_child(interface)
+		generator_interfaces.append(interface)
 
-		# Label con información del generador
-		var info_label = Label.new()
-		info_label.text = "%s\n%s" % [generator.name, generator.description]
-		generator_container_h.add_child(info_label)
+func _create_generator_interface(generator: Dictionary, index: int) -> Control:
+	"""Crea la interface de un generador"""
+	var card = UIStyleManager.create_styled_panel()
+	card.set_custom_minimum_size(Vector2(0, 120))
 
-		# Contenedor horizontal para botones de compra
-		var button_container = HBoxContainer.new()
-		generator_container_h.add_child(button_container)
+	var vbox = VBoxContainer.new()
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vbox.add_theme_constant_override("separation", 8)
+	card.add_child(vbox)
 
-		# Botones de compra por incrementos
-		var increments = [1, 5, 10, 25]
-		for increment in increments:
-			var button = Button.new()
-			button.text = str(increment)
-			# Guardar incremento original in metadata para no perderlo
-			button.set_meta("increment", increment)
-			button.pressed.connect(_on_generator_purchased.bind(i, increment))
-			button_container.add_child(button)
+	# Información del generador
+	var info_label = Label.new()
+	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	info_label.add_theme_font_size_override("font_size", 13)
+	info_label.text = _format_generator_info(generator, 0)
+	vbox.add_child(info_label)
 
-		# Agregar separador
-		var separator = HSeparator.new()
-		generator_container_h.add_child(separator)
+	# Contenedor de botones
+	var button_container = HBoxContainer.new()
+	button_container.set_custom_minimum_size(Vector2(0, 35))
+	button_container.add_theme_constant_override("separation", 4)
+	vbox.add_child(button_container)
+
+	# Botones de compra
+	var increments = [1, 5, 10, 25]
+	for increment in increments:
+		var button = UIStyleManager.create_styled_button("×%d\n$0" % increment)
+		button.set_custom_minimum_size(Vector2(65, 30))
+		button.add_theme_font_size_override("font_size", 11)
+		button.set_meta("generator_index", index)
+		button.set_meta("quantity", increment)
+		button.pressed.connect(_on_generator_purchase.bind(index, increment))
+		button_container.add_child(button)
+
+	return card
+
+func _format_generator_info(generator: Dictionary, owned_count: int) -> String:
+	"""Formatea la información del generador"""
+	var name = generator.get("name", "Generador")
+	var description = generator.get("description", "")
+	var base_cost = generator.get("base_cost", 10.0)
+	var production_rate = generator.get("production_rate", 1.0)
+	var production_per_sec = owned_count / production_rate if production_rate > 0 else 0
+
+	return "%s (Nivel: %d)\n%s\nCosto base: $%.0f • Produce: %.1f/s" % [
+		name, owned_count, description, base_cost, production_per_sec
+	]
 
 
 func update_resource_displays(game_data: Dictionary) -> void:
+	"""Actualiza las visualizaciones de recursos"""
+	if not is_initialized:
+		return
+
 	for resource_name in resource_labels.keys():
-		var label = resource_labels[resource_name]
-		var amount = game_data["resources"].get(resource_name, 0)
-		var icon = _get_resource_icon(resource_name)
-		label.text = "%s %s: %d" % [icon, resource_name.capitalize(), amount]
+		if resource_name in game_data["resources"]:
+			var amount = game_data["resources"][resource_name]
+			var label = resource_labels[resource_name]
+			if label:
+				label.text = "%s: %s" % [
+					resource_name.capitalize(),
+					GameUtils.format_large_number(amount)
+				]
 
 
-func update_generator_displays(
-	resource_generators: Array[Dictionary], game_data: Dictionary
-) -> void:
-	# Actualizar cada interfaz de generador
-	var generator_interfaces = generator_container.get_children()
+func update_generator_displays(resource_generators: Array[Dictionary], game_data: Dictionary) -> void:
+	"""Actualiza las interfaces de generadores"""
+	if not is_initialized:
+		return
+
+	var generators_owned = game_data.get("generators", {})
+	var money = game_data.get("money", 0.0)
 
 	for i in range(min(generator_interfaces.size(), resource_generators.size())):
+		var interface = generator_interfaces[i]
 		var generator = resource_generators[i]
-		var interface_container = generator_interfaces[i]
+		var generator_id = generator.get("id", "")
+		var owned_count = generators_owned.get(generator_id, 0)
 
-		# Actualizar info label (primer hijo)
-		var info_label = interface_container.get_child(0) as Label
-		var owned = game_data["generators"].get(generator.id, 0)
-		var base_cost = generator.base_cost
-		var production_rate = generator.production_rate
-		var total_production_per_sec = owned * (1.0 / production_rate)
+		_update_generator_interface(interface, generator, owned_count, money)
 
-		info_label.text = "%s (Nivel: %d)\n%s\nCosto base: $%.0f\nProducción total: %.1f/s" % [
-			generator.name, owned, generator.description, base_cost, total_production_per_sec
-		]
+func _update_generator_interface(interface: Control, generator: Dictionary, owned: int, money: float) -> void:
+	"""Actualiza una interface específica de generador"""
+	var vbox = interface.get_child(0) as VBoxContainer
+	if not vbox or vbox.get_child_count() < 2:
+		return
 
-		# Actualizar botones de compra (segundo hijo es el HBoxContainer)
-		var button_container = interface_container.get_child(1) as HBoxContainer
-		var buttons = button_container.get_children()
+	# Actualizar información
+	var info_label = vbox.get_child(0) as Label
+	if info_label:
+		info_label.text = _format_generator_info(generator, owned)
 
-		for j in range(buttons.size()):
-			var button = buttons[j] as Button
-			# Usar metadata en lugar de parsear el texto formateado
-			var increment = button.get_meta("increment", 1)  # default 1 si no existe
-			var total_cost = _calculate_bulk_cost(generator, game_data, increment)
-			var can_afford = game_data["money"] >= total_cost
+	# Actualizar botones
+	var button_container = vbox.get_child(1) as HBoxContainer
+	if button_container:
+		_update_generator_buttons(button_container, generator, owned, money)
 
-			button.text = "%d\n$%s" % [increment, GameUtils.format_large_number(total_cost)]
-			button.disabled = not can_afford
+func _update_generator_buttons(button_container: HBoxContainer, generator: Dictionary, owned: int, money: float) -> void:
+	"""Actualiza los botones de compra"""
+	for button_node in button_container.get_children():
+		var button = button_node as Button
+		if not button:
+			continue
+
+		var quantity = button.get_meta("quantity", 1)
+		var total_cost = _calculate_bulk_cost(generator, owned, quantity)
+		var can_afford = money >= total_cost
+
+		button.text = "×%d\n$%s" % [quantity, GameUtils.format_large_number(total_cost)]
+		button.disabled = not can_afford
+		button.modulate = Color.WHITE if can_afford else Color.GRAY
+
+func _calculate_bulk_cost(generator: Dictionary, owned_count: int, quantity: int) -> float:
+	"""Calcula el costo de comprar múltiples generadores"""
+	var base_cost = generator.get("base_cost", 10.0)
+	var multiplier = generator.get("cost_multiplier", 1.15)
+
+	var total_cost = 0.0
+	for i in range(quantity):
+		var cost = base_cost * pow(multiplier, owned_count + i)
+		total_cost += cost
+
+	return total_cost
+
+func _on_generator_purchase(generator_index: int, quantity: int) -> void:
+	"""Maneja la compra de generador"""
+	generator_purchased.emit(generator_index, quantity)
+
+# Funciones de limpieza
+func _clear_container(container: Container) -> void:
+	"""Limpia un contenedor de forma segura"""
+	if not container:
+		return
+	for child in container.get_children():
+		container.remove_child(child)
+		child.queue_free()
+
+func _clear_generator_interfaces() -> void:
+	"""Limpia las interfaces de generadores"""
+	for interface in generator_interfaces:
+		if interface:
+			interface.queue_free()
+	generator_interfaces.clear()
+func _on_generator_purchase(generator_index: int, quantity: int) -> void:
+	generator_purchased.emit(generator_index, quantity)
 
 
-func _calculate_bulk_cost(generator: Dictionary, _game_data: Dictionary, quantity: int) -> float:
-	# Precio fijo simple (consistente con GeneratorManager)
-	return generator.base_cost * quantity
+func _calculate_bulk_cost(generator: Dictionary, game_data: Dictionary, quantity: int) -> float:
+	var base_cost = generator.get("base_cost", 10.0)
+	var cost_multiplier = generator.get("cost_multiplier", 1.15)  # Default multiplier
+	var owned = game_data["generators"].get(generator.get("id", ""), 0)
 
+	var total_cost = 0.0
+	for i in range(quantity):
+		var level_cost = base_cost * pow(cost_multiplier, owned + i)
+		total_cost += level_cost
 
-func _get_resource_icon(resource_name: String) -> String:
-	match resource_name:
-		"barley":
-			return "🌾"
-		"hops":
-			return "🌿"
-		"water":
-			return "💧"
-		"yeast":
-			return "🦠"
-		_:
-			return "📦"
+	return total_cost
 
 
 func _clear_resource_labels() -> void:
-	for child in resource_container.get_children():
-		child.queue_free()
+	for label in resource_labels.values():
+		if label != null:
+			label.queue_free()
 	resource_labels.clear()
 
 
 func _clear_generator_buttons() -> void:
 	for child in generator_container.get_children():
-		child.queue_free()
+		if child != null:
+			child.queue_free()
 	generator_buttons.clear()
-
-
-func _on_generator_purchased(generator_index: int, quantity: int) -> void:
-	generator_purchased.emit(generator_index, quantity)
