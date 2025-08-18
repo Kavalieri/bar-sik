@@ -211,7 +211,7 @@ func _update_all_displays() -> void:
 
 	# Actualizar cada panel según esté visible
 	generation_panel.update_resource_displays(game_data)
-	generation_panel.update_generator_buttons(resource_generators, game_data)
+	generation_panel.update_generator_displays(resource_generators, game_data)
 
 	production_panel.update_product_displays(game_data)
 	production_panel.update_station_buttons(production_stations, game_data)
@@ -239,16 +239,18 @@ func _generate_resources() -> void:
 	_update_all_displays()
 
 
-func _on_generator_purchased(generator_index: int) -> void:
+func _on_generator_purchased(generator_index: int, quantity: int) -> void:
 	var generator = resource_generators[generator_index]
-	var cost = _get_generator_cost(generator_index)
+	var total_cost = _get_bulk_generator_cost(generator_index, quantity)
 
-	if game_data["money"] >= cost:
-		game_data["money"] -= cost
-		game_data["generators"][generator.id] = (game_data["generators"].get(generator.id, 0) + 1)
+	if game_data["money"] >= total_cost:
+		game_data["money"] -= total_cost
+		var current_owned = game_data["generators"].get(generator.id, 0)
+		game_data["generators"][generator.id] = current_owned + quantity
 
 		print(
-			"✅ Comprado: %s (Total: %d)" % [generator.name, game_data["generators"][generator.id]]
+			"✅ Comprado: %dx %s (Total: %d) por $%.0f" % 
+			[quantity, generator.name, game_data["generators"][generator.id], total_cost]
 		)
 
 		if GameEvents:
@@ -256,7 +258,20 @@ func _on_generator_purchased(generator_index: int) -> void:
 
 		_update_all_displays()
 	else:
-		print("❌ Dinero insuficiente para %s" % generator.name)
+		print("❌ Dinero insuficiente para %dx %s (Costo: $%.0f)" % [quantity, generator.name, total_cost])
+
+
+func _get_bulk_generator_cost(generator_index: int, quantity: int) -> float:
+	var generator = resource_generators[generator_index]
+	var owned = game_data["generators"].get(generator.id, 0)
+	var total_cost = 0.0
+	
+	# Calcular costo acumulativo para compras múltiples
+	for i in range(quantity):
+		var cost = generator.base_cost * pow(1.15, owned + i)
+		total_cost += cost
+	
+	return total_cost
 
 
 ## SISTEMA 2: PRODUCCIÓN DE BEBIDAS
