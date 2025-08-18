@@ -192,11 +192,12 @@ func _on_generator_purchased(generator_id: String, quantity: int) -> void:
 func _on_resource_generated(_resource_type: String, _amount: int) -> void:
 	# Los parámetros se reciben pero no se usan directamente ya que
 	# la información está disponible en game_data actualizado
-	# Solo actualizar recursos, no toda la UI
-	if generation_panel.has_method("update_resource_displays"):
-		generation_panel.update_resource_displays(game_data.to_dict())
-	if production_panel.has_method("update_product_displays"):
-		production_panel.update_product_displays(game_data.to_dict())
+	print("🌾 Recurso generado: %dx %s - Actualizando todas las pantallas" % [_amount, _resource_type])
+	
+	# ACTUALIZAR TODOS LOS PANELES cuando se generan recursos
+	_update_all_displays()
+	
+	print("✅ Todas las pantallas actualizadas con nuevo inventario")
 
 func _on_station_purchased(station_id: String) -> void:
 	print("✅ Estación comprada: %s" % station_id)

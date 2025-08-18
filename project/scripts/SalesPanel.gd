@@ -129,9 +129,10 @@ func update_sell_interfaces(game_data: Dictionary) -> void:
 	print("🔍 SalesPanel - Actualizando interfaces de venta")
 	print("📦 Productos disponibles: ", game_data["products"])
 	print("🌾 Recursos disponibles: ", game_data["resources"])
+	print("💰 Dinero actual: $%.2f" % game_data["money"])
 
-	# FORZAR CREACIÓN DE INTERFACES BÁSICAS PARA TESTING
-	# Crear al menos una interfaz de prueba para productos
+	# Crear interfaces para productos REALES (no de prueba)
+	var products_created = 0
 	if not game_data["products"].is_empty():
 		print("🎯 CREANDO INTERFACES DE PRODUCTOS...")
 		for product_name in game_data["products"].keys():
@@ -139,10 +140,8 @@ func update_sell_interfaces(game_data: Dictionary) -> void:
 			if quantity > 0:
 				var price = GameUtils.get_product_price(product_name)
 				create_sell_interface_for_item(product_name, "product", quantity, price)
-	else:
-		# Crear interfaz de prueba forzada
-		print("⚠️ No hay productos, creando interfaz de prueba")
-		create_sell_interface_for_item("basic_beer", "product", 1, 5.0)
+				products_created += 1
+				print("✅ Producto creado: %s (cantidad: %d)" % [product_name, quantity])
 
 	# Crear interfaces para ingredientes (excepto agua)
 	print("🌾 CREANDO INTERFACES DE INGREDIENTES...")
@@ -155,10 +154,18 @@ func update_sell_interfaces(game_data: Dictionary) -> void:
 			ingredients_created += 1
 			print("✅ Ingrediente creado: %s (cantidad: %d)" % [ingredient_name, quantity])
 
-	# Si no hay ingredientes, crear al menos uno de prueba
-	if ingredients_created == 0:
-		print("⚠️ No hay ingredientes, creando interfaz de prueba")
-		create_sell_interface_for_item("barley", "ingredient", 5, 0.5)
+	# SOLO MOSTRAR MENSAJE SI NO HAY NADA REAL QUE VENDER
+	if products_created == 0 and ingredients_created == 0:
+		print("⚠️ No hay productos ni ingredientes vendibles")
+		print("💡 SUGERENCIA: Compra generadores en la pestaña Generado y produce en Producción")
+		
+		# Mostrar un mensaje informativo en lugar de interfaces falsas
+		var info_label = Label.new()
+		info_label.text = "💡 No hay productos para vender.\n🌾 Compra generadores en 'Generado'\n🍺 Fabrica productos en 'Producción'"
+		info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		products_container.add_child(info_label)
+	else:
+		print("✅ Total creado: %d productos, %d ingredientes" % [products_created, ingredients_created])
 
 
 func _clear_sell_interfaces() -> void:
