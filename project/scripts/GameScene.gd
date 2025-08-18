@@ -6,13 +6,18 @@ extends Control
 # Referencias al sistema de navegación
 @onready var tab_navigator: Control = $TabNavigator
 
+# Datos principales del juego
+var game_data: Dictionary = {}
+
 # Referencias a los paneles individuales
 var generation_panel: Control
 var production_panel: Control
 var sales_panel: Control
 
-# Datos principales del juego
-var game_data: Dictionary = {}
+# Variables de sistema
+var resource_timer: Timer
+var production_timers: Dictionary = {}
+var customer_timer: Timer
 
 # Sistema de generación de ingredientes
 var resource_generators: Array[Dictionary] = [
@@ -59,11 +64,6 @@ var production_stations: Array[Dictionary] = [
 		"description": "Mejora cerveza básica a premium"
 	}
 ]
-
-# Variables de sistema
-var resource_timer: Timer
-var production_timers: Dictionary = {}
-var customer_timer: Timer
 
 
 func _ready() -> void:
@@ -167,7 +167,7 @@ func _setup_timers() -> void:
 	# Timer para generación de recursos (cada 3 segundos)
 	resource_timer = Timer.new()
 	resource_timer.wait_time = 3.0
-	resource_timer.autostart = True
+	resource_timer.autostart = true
 	resource_timer.timeout.connect(_generate_resources)
 	add_child(resource_timer)
 
