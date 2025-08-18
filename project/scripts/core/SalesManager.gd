@@ -18,10 +18,17 @@ func set_game_data(data: GameData) -> void:
 func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 	print("🔥 SalesManager.sell_item() llamado:")
 	print("   - Tipo: %s, Item: %s, Cantidad: %d" % [item_type, item_name, quantity])
+	print("   - game_data válido: %s" % (game_data != null))
 
 	if not game_data:
 		print("❌ ERROR: game_data es null")
 		return false
+	
+	# DEBUGGING: Mostrar estado completo del inventory
+	print("   - 📦 Estado actual del inventario:")
+	print("     • Productos: %s" % game_data.products)
+	print("     • Recursos: %s" % game_data.resources)
+	print("     • Dinero actual: $%.2f" % game_data.money)
 
 	var available = 0
 	var price = 0.0

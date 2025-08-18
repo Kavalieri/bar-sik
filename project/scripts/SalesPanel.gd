@@ -109,8 +109,17 @@ func _on_sell_button_pressed(item_name: String, item_type: String, quantity: int
 	print("   - Item: %s (%s)" % [item_name, item_type])
 	print("   - Cantidad: %d" % quantity)
 	print("   - Emitiendo señal item_sell_requested...")
+	
+	# VERIFICAR CONEXIONES DE LA SEÑAL
+	var connections = item_sell_requested.get_connections()
+	print("   - Señal tiene %d conexiones: %s" % [connections.size(), connections])
+	
 	item_sell_requested.emit(item_type, item_name, quantity)
 	print("   - ✅ Señal emitida")
+	
+	# FORZAR ACTUALIZACIÓN INMEDIATA PARA DEBUGGING
+	await get_tree().process_frame
+	print("   - 🔄 Frame procesado, esperando actualización...")
 
 
 func update_sell_interfaces(game_data: Dictionary) -> void:
