@@ -12,7 +12,7 @@ var station_definitions: Array[Dictionary] = [
 	{
 		"id": "brewery",
 		"name": "🍺 Cervecería",
-		"base_cost": 500.0,
+		"base_cost": 50.0,
 		"recipe": {"barley": 2, "hops": 1, "water": 3},
 		"produces": "basic_beer",
 		"production_time": 10.0,
@@ -26,7 +26,7 @@ var station_definitions: Array[Dictionary] = [
 	{
 		"id": "bar_station",
 		"name": "🍹 Estación de Bar",
-		"base_cost": 2500.0,
+		"base_cost": 250.0,
 		"recipe": {"basic_beer": 2, "water": 1},
 		"produces": "premium_beer",
 		"production_time": 15.0,

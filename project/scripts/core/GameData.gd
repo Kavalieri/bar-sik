@@ -6,6 +6,10 @@ class_name GameData
 ## Datos económicos
 @export var money: float = 50.0
 
+## Estado del tutorial
+@export var tutorial_completed: bool = false
+@export var first_generator_bought: bool = false
+
 ## Recursos disponibles
 @export var resources: Dictionary = {
 	"barley": 0,

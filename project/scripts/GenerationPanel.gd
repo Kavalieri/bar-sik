@@ -84,9 +84,11 @@ func update_generator_displays(
 		var info_label = interface_container.get_child(0) as Label
 		var owned = game_data["generators"].get(generator.id, 0)
 		var base_cost = generator.base_cost
+		var production_rate = generator.production_rate
+		var total_production_per_sec = owned * (1.0 / production_rate)
 
-		info_label.text = "%s (Propiedad: %d)\n%s\nCosto base: $%.0f" % [
-			generator.name, owned, generator.description, base_cost
+		info_label.text = "%s (Nivel: %d)\n%s\nCosto base: $%.0f\nProducción total: %.1f/s" % [
+			generator.name, owned, generator.description, base_cost, total_production_per_sec
 		]
 
 		# Actualizar botones de compra (segundo hijo es el HBoxContainer)

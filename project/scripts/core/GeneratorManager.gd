@@ -11,7 +11,7 @@ var generator_definitions: Array[Dictionary] = [
 	{
 		"id": "water_collector",
 		"name": "💧 Recolector de Agua",
-		"base_cost": 10.0,
+		"base_cost": 1.0,
 		"produces": "water",
 		"production_rate": 2.0,
 		"scale_factor": 1.10,
@@ -20,7 +20,7 @@ var generator_definitions: Array[Dictionary] = [
 	{
 		"id": "barley_farm",
 		"name": "🌾 Granja de Cebada",
-		"base_cost": 100.0,
+		"base_cost": 10.0,
 		"produces": "barley",
 		"production_rate": 1.0,
 		"scale_factor": 1.10,
@@ -29,7 +29,7 @@ var generator_definitions: Array[Dictionary] = [
 	{
 		"id": "hops_farm",
 		"name": "🌿 Granja de Lúpulo",
-		"base_cost": 1000.0,
+		"base_cost": 100.0,
 		"produces": "hops",
 		"production_rate": 1.0,
 		"scale_factor": 1.10,
@@ -89,6 +89,11 @@ func purchase_generator(generator_id: String, quantity: int) -> bool:
 	var owned = game_data.generators.get(generator_id, 0)
 	game_data.money -= total_cost
 	game_data.generators[generator_id] = owned + quantity
+
+	# Detectar primera compra post-agua para tutorial
+	if not game_data.first_generator_bought and generator_id != "water_collector":
+		game_data.first_generator_bought = true
+		print("🎓 Tutorial: Primera compra post-agua completada!")
 
 	generator_purchased.emit(generator_id, quantity)
 	return true
