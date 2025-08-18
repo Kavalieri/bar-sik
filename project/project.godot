@@ -19,6 +19,7 @@ boot_splash/minimum_display_time=50
 
 [autoload]
 
+AppConfig="*res://singletons/AppConfig.gd"
 Router="*res://singletons/Router.gd"
 GameEvents="*res://singletons/GameEvents.gd"
 SaveSystem="*res://singletons/SaveSystem.gd"

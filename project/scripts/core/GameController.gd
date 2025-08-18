@@ -1,12 +1,6 @@
 extends Control
 class_name GameController
-## GameController - C		# Reassignar datos a managers
-	generator_manager.set_game_data(game_data)
-	production_manager.set_game_data(game_data)
-	sales_manager.set_game_data(game_data)
-	customer_manager.set_game_data(game_data)
-	customer_manager.set_production_manager(production_manager)
-	customer_manager.set_production_manager(production_manager)  # Para acceder a definiciones de estacioneslador principal del juego (versión ligera)
+## GameController - Coordinador principal del juego (versión ligera)
 ## Coordina managers y maneja la UI principal
 
 # Escenas precargadas
