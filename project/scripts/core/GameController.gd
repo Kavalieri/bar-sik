@@ -240,7 +240,12 @@ func _on_ui_manual_production_requested(station_index: int, quantity: int) -> vo
 		production_manager.manual_production(station_id, quantity)
 
 func _on_ui_item_sell_requested(item_type: String, item_name: String, quantity: int) -> void:
+	print("💰 GameController recibió solicitud de venta:")
+	print("   - Item: %s (%s)" % [item_name, item_type])
+	print("   - Cantidad: %d" % quantity)
+	print("   - Llamando sales_manager.sell_item()...")
 	sales_manager.sell_item(item_type, item_name, quantity)
+	print("   - ✅ Venta procesada")
 
 func _on_ui_customer_upgrade_requested(upgrade_id: String) -> void:
 	customer_manager.purchase_upgrade(upgrade_id)

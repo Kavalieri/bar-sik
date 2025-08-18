@@ -16,7 +16,11 @@ func set_game_data(data: GameData) -> void:
 
 ## Vender producto o ingrediente
 func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
+	print("🔥 SalesManager.sell_item() llamado:")
+	print("   - Tipo: %s, Item: %s, Cantidad: %d" % [item_type, item_name, quantity])
+	
 	if not game_data:
+		print("❌ ERROR: game_data es null")
 		return false
 
 	var available = 0
@@ -25,31 +29,42 @@ func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 	if item_type == "product":
 		available = game_data.products.get(item_name, 0)
 		price = GameUtils.get_product_price(item_name)
+		print("   - Producto: %s disponible, precio: $%.2f" % [available, price])
 	elif item_type == "ingredient":
 		available = game_data.resources.get(item_name, 0)
 		price = GameUtils.get_ingredient_price(item_name)
+		print("   - Ingrediente: %s disponible, precio: $%.2f" % [available, price])
 	else:
+		print("❌ ERROR: Tipo de item desconocido: %s" % item_type)
 		return false
 
 	# Verificar disponibilidad
 	var actual_quantity = min(quantity, available)
+	print("   - Cantidad solicitada: %d, disponible: %d, vendiendo: %d" % [quantity, available, actual_quantity])
+	
 	if actual_quantity <= 0:
+		print("❌ ERROR: No hay cantidad disponible para vender")
 		return false
 
 	var total_earned = actual_quantity * price
+	print("   - Total ganado: $%.2f" % total_earned)
 
 	# Actualizar inventario
 	if item_type == "product":
 		game_data.products[item_name] -= actual_quantity
 		game_data.statistics["products_sold"] += actual_quantity
+		print("   - ✅ Producto vendido. Nuevo inventario: %d" % game_data.products[item_name])
 	elif item_type == "ingredient":
 		game_data.resources[item_name] -= actual_quantity
+		print("   - ✅ Ingrediente vendido. Nuevo inventario: %d" % game_data.resources[item_name])
 
 	# Actualizar dinero y estadísticas
 	game_data.money += total_earned
 	game_data.statistics["total_money_earned"] += total_earned
+	print("   - ✅ Dinero actualizado: $%.2f" % game_data.money)
 
 	item_sold.emit(item_type, item_name, actual_quantity, total_earned)
+	print("   - ✅ Señal item_sold emitida")
 	return true
 
 ## Obtener precio de un ítem

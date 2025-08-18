@@ -88,21 +88,29 @@ func create_sell_interface_for_item(
 		if str(increment) == "MAX":
 			is_max_button = true
 			sell_quantity = quantity
-			button.text = "TODO"
+			button.text = "Vender Todo (%d)" % quantity
 		else:
 			sell_quantity = increment as int
-			button.text = str(increment)
+			button.text = "Vender %d" % increment
 
 		# Deshabilitar si no hay suficiente cantidad
 		if not is_max_button and (increment as int) > quantity:
 			button.disabled = true
 
+		# Hacer los botones más visibles
+		button.custom_minimum_size = Vector2(80, 30)
+		
 		button.pressed.connect(func(): _on_sell_button_pressed(item_name, item_type, sell_quantity))
 		item_container.add_child(button)
 
 
 func _on_sell_button_pressed(item_name: String, item_type: String, quantity: int) -> void:
+	print("🔥 BOTÓN DE VENTA PRESIONADO:")
+	print("   - Item: %s (%s)" % [item_name, item_type])
+	print("   - Cantidad: %d" % quantity)
+	print("   - Emitiendo señal item_sell_requested...")
 	item_sell_requested.emit(item_type, item_name, quantity)
+	print("   - ✅ Señal emitida")
 
 
 func update_sell_interfaces(game_data: Dictionary) -> void:
@@ -118,7 +126,7 @@ func update_sell_interfaces(game_data: Dictionary) -> void:
 	if not game_data["products"].is_empty():
 		print("🎯 CREANDO INTERFACES DE PRODUCTOS...")
 		for product_name in game_data["products"].keys():
-			var quantity = game_data["products"][product_name]
+			var quantity = int(game_data["products"][product_name])  # Forzar int
 			if quantity > 0:
 				var price = GameUtils.get_product_price(product_name)
 				create_sell_interface_for_item(product_name, "product", quantity, price)
@@ -131,7 +139,7 @@ func update_sell_interfaces(game_data: Dictionary) -> void:
 	print("🌾 CREANDO INTERFACES DE INGREDIENTES...")
 	var ingredients_created = 0
 	for ingredient_name in game_data["resources"].keys():
-		var quantity = game_data["resources"][ingredient_name]
+		var quantity = int(game_data["resources"][ingredient_name])  # Forzar int
 		if quantity > 0 and ingredient_name != "water":
 			var price = GameUtils.get_ingredient_price(ingredient_name)
 			create_sell_interface_for_item(ingredient_name, "ingredient", quantity, price)
