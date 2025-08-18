@@ -15,6 +15,8 @@ var station_interfaces: Array[Control] = []
 # Señales
 signal station_purchased(station_index: int)
 signal manual_production_requested(station_index: int, quantity: int)
+signal offer_toggled(station_index: int, enabled: bool)
+signal offer_price_requested(station_index: int)
 
 func _ready() -> void:
 	print("🍺 ProductionPanel inicializando...")

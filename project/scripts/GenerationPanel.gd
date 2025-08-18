@@ -236,6 +236,9 @@ func _clear_generator_interfaces() -> void:
 
 
 func update_with_game_data(game_data: Dictionary, generator_defs: Array[Dictionary]) -> void:
+	"""Actualizar panel con datos del juego"""
+	# TODO: Implementar actualización con datos del juego
+	pass
 
 
 func _clear_resource_labels() -> void:
@@ -246,7 +249,7 @@ func _clear_resource_labels() -> void:
 
 
 func _clear_generator_buttons() -> void:
-	for child in generator_container.get_children():
+	for child in generators_container.get_children():
 		if child != null:
 			child.queue_free()
-	generator_buttons.clear()
+	generator_interfaces.clear()
