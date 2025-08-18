@@ -26,6 +26,7 @@ signal upgrade_purchased(upgrade_type: String, level: int)
 signal ui_update_requested(system: String)
 signal notification_show(message: String, type: String)
 signal save_data_requested
+signal data_loaded
 
 
 func _ready() -> void:

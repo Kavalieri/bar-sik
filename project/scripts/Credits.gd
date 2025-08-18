@@ -4,6 +4,7 @@ extends Control
 
 @onready var back_button: Button = $BackButton
 
+
 func _ready() -> void:
 	print("📜 Credits cargado")
 
@@ -14,9 +15,11 @@ func _ready() -> void:
 
 	print("✅ Credits configurado")
 
+
 func _on_back_pressed() -> void:
 	print("⬅️ Regresando al menú principal")
 	Router.goto_scene("main_menu")
+
 
 # Manejar navegación con ESC
 func _input(event: InputEvent) -> void:

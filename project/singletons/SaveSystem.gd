@@ -23,9 +23,7 @@ func _connect_to_events() -> void:
 ## Guardar datos del juego
 func save_game_data(data: Dictionary) -> bool:
 	var save_data = {
-		"version": "0.2.0",
-		"timestamp": Time.get_unix_time_from_system(),
-		"game_data": data
+		"version": "0.2.0", "timestamp": Time.get_unix_time_from_system(), "game_data": data
 	}
 
 	# Crear backup del archivo anterior
@@ -42,9 +40,9 @@ func save_game_data(data: Dictionary) -> bool:
 		current_save_data = save_data
 		print("💾 Juego guardado exitosamente")
 		return true
-	else:
-		print("❌ Error al guardar archivo")
-		return false
+
+	print("❌ Error al guardar archivo")
+	return false
 
 
 ## Cargar datos del juego
@@ -82,36 +80,23 @@ func load_game_data() -> Dictionary:
 	if has_node("/root/GameEvents"):
 		GameEvents.data_loaded.emit()
 
-	return save_data.get("game_data", {})
+	return save_data.get("game_data", _get_default_game_data())
 
 
-## Obtener datos por defecto para nuevo juego
-func get_default_save_data() -> Dictionary:
+## Obtener solo los datos de juego por defecto (sin metadatos)
+func _get_default_game_data() -> Dictionary:
 	return {
 		"money": 50.0,
-		"resources": {
-			"barley": 0,
-			"hops": 0,
-			"water": 10,
-			"yeast": 0
-		},
-		"products": {
-			"basic_beer": 0,
-			"premium_beer": 0,
-			"cocktail": 0
-		},
-		"generators": {
-			"barley_farm": 0,
-			"hops_farm": 0,
-			"brewery": 0,
-			"bar_station": 0
-		},
-		"upgrades": {},
-		"statistics": {
+		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},
+		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
+		"generators": {"barley_farm": 0, "hops_farm": 0},
+		"stations": {"brewery": 1, "bar_station": 0},  # Comienza con 1 cervecería desbloqueada
+		"statistics":
+		{
 			"total_money_earned": 0.0,
 			"products_sold": 0,
 			"customers_served": 0,
-			"play_time": 0.0
+			"resources_generated": 0
 		}
 	}
 
@@ -159,7 +144,7 @@ func _try_load_backup() -> Dictionary:
 		return get_default_save_data()
 
 	print("🔄 Backup cargado exitosamente")
-	return backup_data.get("game_data", {})
+	return backup_data.get("game_data", _get_default_game_data())
 
 
 ## Validar estructura del archivo de guardado
@@ -187,3 +172,40 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("💾 Guardando al cerrar aplicación...")
 		# El GameManager debería manejar el guardado real
+
+
+## GESTIÓN DE SLOTS Y RESET
+## Resetear a valores por defecto
+func reset_to_defaults() -> void:
+	print("🗑️ Reseteando datos a valores por defecto...")
+	var default_data = get_default_save_data()
+	save_game_data(default_data["game_data"])
+	print("✅ Datos reseteados exitosamente")
+
+
+## Obtener datos por defecto para nuevo juego
+func get_default_save_data() -> Dictionary:
+	return {
+		"version": "0.2.0",
+		"timestamp": Time.get_unix_time_from_system(),
+		"game_data":
+		{
+			"money": 50.0,
+			"resources": {"water": 10, "barley": 5, "hops": 3, "basic_beer": 0, "premium_beer": 0},
+			"generators": {"barley_farm": 0, "hops_farm": 0},
+			"stations": {"brewery": 1, "bar_station": 0}
+		}
+	}
+
+
+## Crear nuevo slot de guardado (funcionalidad básica)
+func create_new_slot(slot_name: String = "") -> void:
+	print("💾 Creando nuevo slot: ", slot_name if slot_name != "" else "Sin nombre")
+	reset_to_defaults()
+
+
+## Cambiar slot activo (funcionalidad básica)
+func switch_to_slot(slot_id: int) -> void:
+	print("🔄 Cambiando a slot: ", slot_id)
+	# Por ahora solo carga los datos actuales
+	load_game_data()

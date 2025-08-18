@@ -7,39 +7,52 @@ extends Control
 @onready var main_menu_button: Button = $CenterContainer/VBoxContainer/MainMenuButton
 @onready var pause_label: Label = $CenterContainer/VBoxContainer/PauseLabel
 
+
 func _ready() -> void:
-    print("⏸️ PauseMenu cargado")
+	print("⏸️ PauseMenu cargado")
 
-    # Los textos ya están en la escena .tscn
+	# Los textos ya están en la escena .tscn
 
-    # Conectar botones
-    _connect_buttons()
+	# Conectar botones
+	_connect_buttons()
 
-    # Foco inicial
-    if resume_button:
-        resume_button.grab_focus()
+	# Foco inicial
+	if resume_button:
+		resume_button.grab_focus()
+
 
 func _connect_buttons() -> void:
-    if resume_button:
-        resume_button.pressed.connect(_on_resume_pressed)
-    if settings_button:
-        settings_button.pressed.connect(_on_settings_pressed)
-    if main_menu_button:
-        main_menu_button.pressed.connect(_on_main_menu_pressed)
+	if resume_button:
+		resume_button.pressed.connect(_on_resume_pressed)
+	if settings_button:
+		settings_button.pressed.connect(_on_settings_pressed)
+	if main_menu_button:
+		main_menu_button.pressed.connect(_on_main_menu_pressed)
+
 
 func _on_resume_pressed() -> void:
-    print("▶️ Reanudando juego")
-    Router.goto_scene("game")
+	print("▶️ Reanudando juego")
+	# Despausar el juego
+	get_tree().paused = false
+	# Remover este menú de pausa
+	queue_free()
+
 
 func _on_settings_pressed() -> void:
-    print("⚙️ Abriendo configuración desde pausa")
-    Router.goto_scene("settings")
+	print("⚙️ Abriendo configuración desde pausa")
+	# Despausar antes de cambiar escena
+	get_tree().paused = false
+	Router.goto_scene("settings")
+
 
 func _on_main_menu_pressed() -> void:
-    print("🏠 Volviendo al menú principal")
-    Router.goto_scene("main_menu")
+	print("🏠 Volviendo al menú principal")
+	# Despausar antes de cambiar escena
+	get_tree().paused = false
+	Router.goto_scene("main_menu")
+
 
 # Manejar botón atrás/ESC para reanudar
 func _input(event: InputEvent) -> void:
-    if event.is_action_pressed("ui_cancel"):
-        _on_resume_pressed()
+	if event.is_action_pressed("ui_cancel"):
+		_on_resume_pressed()

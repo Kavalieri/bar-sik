@@ -15,12 +15,14 @@ const SCENES = {
 	"credits": "res://scenes/Credits.tscn"
 }
 
+
 func _ready() -> void:
 	print("🧭 Router inicializado")
 
 	# Obtener la escena actual
 	var root = get_tree().root
 	current_scene = root.get_child(root.get_child_count() - 1)
+
 
 ## Navegar a una nueva escena
 func goto_scene(scene_key: String) -> void:
@@ -30,6 +32,7 @@ func goto_scene(scene_key: String) -> void:
 
 	var scene_path = SCENES[scene_key]
 	goto_scene_path(scene_path)
+
 
 ## Navegar usando ruta directa
 func goto_scene_path(scene_path: String) -> void:
@@ -42,6 +45,7 @@ func goto_scene_path(scene_path: String) -> void:
 
 	# Esta función se ejecuta en un hilo diferente para evitar bloqueos
 	call_deferred("_deferred_goto_scene", scene_path)
+
 
 ## Función interna para cambio diferido de escena
 func _deferred_goto_scene(scene_path: String) -> void:
@@ -66,6 +70,7 @@ func _deferred_goto_scene(scene_path: String) -> void:
 
 	print("✅ Escena cargada exitosamente")
 
+
 ## Recargar la escena actual
 func reload_current_scene() -> void:
 	if current_scene and current_scene.scene_file_path:
@@ -73,11 +78,13 @@ func reload_current_scene() -> void:
 	else:
 		push_error("❌ No se puede recargar: escena actual no válida")
 
+
 ## Verificar si una escena existe
 func scene_exists(scene_key: String) -> bool:
 	if not SCENES.has(scene_key):
 		return false
 	return FileAccess.file_exists(SCENES[scene_key])
+
 
 ## Obtener el nombre de la escena actual
 func get_current_scene_name() -> String:
@@ -85,7 +92,33 @@ func get_current_scene_name() -> String:
 		return current_scene.name
 	return ""
 
+
 ## Salir del juego (con confirmación en debug)
 func quit_game() -> void:
 	print("🚪 Saliendo del juego...")
 	get_tree().quit()
+
+
+## GESTIÓN DE GUARDADO
+## Resetear datos de guardado
+func reset_save_data() -> void:
+	print("🗑️ Reseteando datos de guardado...")
+	if SaveSystem:
+		SaveSystem.reset_to_defaults()
+		# Recargar escena actual para aplicar cambios
+		reload_current_scene()
+
+
+## Crear nuevo slot de guardado
+func create_new_save_slot(slot_name: String = "") -> void:
+	print("💾 Creando nuevo slot de guardado...")
+	if SaveSystem:
+		SaveSystem.create_new_slot(slot_name)
+
+
+## Cambiar slot activo
+func switch_save_slot(slot_id: int) -> void:
+	print("🔄 Cambiando a slot de guardado: ", slot_id)
+	if SaveSystem:
+		SaveSystem.switch_to_slot(slot_id)
+		reload_current_scene()

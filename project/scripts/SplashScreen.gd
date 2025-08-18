@@ -8,6 +8,7 @@ extends Control
 const SPLASH_DURATION = 3.0  # Duración mínima en segundos
 var start_time: float
 
+
 func _ready() -> void:
 	print("🎬 SplashScreen iniciado")
 	start_time = Time.get_ticks_msec() / 1000.0
@@ -24,6 +25,7 @@ func _ready() -> void:
 	# Iniciar simulación de carga
 	_start_loading()
 
+
 func _start_loading() -> void:
 	# Crear timer para simular progreso de carga
 	var timer = Timer.new()
@@ -32,6 +34,7 @@ func _start_loading() -> void:
 	timer.wait_time = 0.1  # Actualizar cada 100ms
 	timer.start()
 
+
 func _update_loading() -> void:
 	if progress_bar:
 		progress_bar.value += 2.0  # Incrementar 2% cada update
@@ -39,6 +42,7 @@ func _update_loading() -> void:
 		# Si llegamos al 100%, terminar carga
 		if progress_bar.value >= 100:
 			_finish_loading()
+
 
 func _finish_loading() -> void:
 	print("✅ Carga completada - Transicionando al menú principal")
@@ -54,6 +58,7 @@ func _finish_loading() -> void:
 
 	# Cambiar al menú principal
 	Router.goto_scene("main_menu")
+
 
 # Función para debug - permitir saltar splash con clic
 func _input(event: InputEvent) -> void:

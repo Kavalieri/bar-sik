@@ -18,8 +18,14 @@ bar-sik/
 ├── .github/                    # GitHub Actions y documentación
 │   ├── workflows/             # CI/CD para builds automáticos
 │   └── instructions-copilot.md   # Instrucciones para el desarrollador IA
-├── docs/                      # Documentación técnica
-│   └── base.md               # Blueprint del proyecto
+├── docs/                      # Documentación técnica completa
+│   ├── README.md             # Índice de documentación organizada
+│   ├── development/         # Documentación de desarrollo
+│   ├── process/             # Procesos y soluciones técnicas
+│   ├── changelog/           # Historial de cambios y logros
+│   ├── base.md              # Blueprint del proyecto
+│   ├── GDD-Bar-Sik.md       # Game Design Document
+│   └── project-config.md    # Configuración del proyecto
 ├── tools/                    # Scripts de construcción y herramientas
 ├── project/                  # Proyecto Godot principal
 │   ├── singletons/          # Autoloads (AppConfig, Router, etc.)
@@ -101,7 +107,17 @@ PATH incluye: platform-tools, cmdline-tools/latest/bin, build-tools/34.0.0
 4. **Probar el proyecto**:
    - Presionar F5 y seleccionar una escena principal
 
-## 🔧 Desarrollo
+## � Documentación
+
+La documentación completa está organizada en el directorio `docs/`:
+
+- **[📖 Índice de Documentación](docs/README.md)** - Navegación completa por toda la documentación
+- **[🎮 Game Design Document](docs/GDD-Bar-Sik.md)** - Diseño completo del juego
+- **[🛠️ Estado del Desarrollo](docs/development/PROJECT_STATUS.md)** - Progreso actual del proyecto
+- **[⚙️ Procesos de Solución](docs/process/)** - Soluciones técnicas y debugging
+- **[📅 Historial de Cambios](docs/changelog/)** - Logros y milestones
+
+## �🔧 Desarrollo
 
 ### Convenciones de código:
 - **GDScript**: snake_case para variables/funciones, PascalCase para clases
