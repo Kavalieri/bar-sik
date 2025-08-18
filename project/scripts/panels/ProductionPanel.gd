@@ -1,4 +1,4 @@
-extends ScrollContainer
+extends "res://scripts/ui/BasePanel.gd"
 ## ProductionPanel - Panel de producción con arquitectura limpia
 ## Maneja estaciones de producción y crafteo de productos
 

@@ -230,8 +230,6 @@ func _clear_generator_interfaces() -> void:
 		if interface:
 			interface.queue_free()
 	generator_interfaces.clear()
-func _on_generator_purchase(generator_index: int, quantity: int) -> void:
-	generator_purchased.emit(generator_index, quantity)
 
 
 func _calculate_bulk_cost(generator: Dictionary, game_data: Dictionary, quantity: int) -> float:

@@ -70,7 +70,7 @@ func _create_upgrades_section() -> void:
 	"""Crear sección de upgrades"""
 	_clear_container(upgrades_container)
 	var header = UIStyleManager.create_section_header(
-		"🛒 MEJORAS DE AUTOVENTA",
+		"🛒 MEJORAS DE AUTOVENTA", 
 		"Mejora la velocidad y eficiencia de ventas automáticas"
 	)
 	upgrades_container.add_child(header)

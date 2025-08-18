@@ -1,4 +1,4 @@
-extends BasePanel
+extends "res://scripts/ui/BasePanel.gd"
 class_name GenerationPanel
 ## GenerationPanel - Panel de generación de recursos con arquitectura limpia
 

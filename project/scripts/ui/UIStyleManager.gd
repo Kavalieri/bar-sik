@@ -157,22 +157,38 @@ static func create_styled_label(text: String, style: String = "body") -> Label:
 	return label
 
 ## Crear un header de sección profesional
-static func create_section_header(text: String) -> Label:
+static func create_section_header(text: String, subtitle: String = "") -> Control:
+	# Si no hay subtítulo, devolver solo el header
+	if subtitle == "":
+		var header = Label.new()
+		header.text = text
+		header.add_theme_font_size_override("font_size", font_sizes.subtitle)
+		header.add_theme_color_override("font_color", colors.primary)
+		header.custom_minimum_size = Vector2(0, 32)
+		header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		return header
+	
+	# Si hay subtítulo, crear un contenedor con ambos elementos
+	var container = VBoxContainer.new()
+	
+	# Header principal
 	var header = Label.new()
 	header.text = text
 	header.add_theme_font_size_override("font_size", font_sizes.subtitle)
 	header.add_theme_color_override("font_color", colors.primary)
 	header.custom_minimum_size = Vector2(0, 32)
 	header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-
-	# Agregar separador visual debajo del header
-	var separator = HSeparator.new()
-	separator.custom_minimum_size = Vector2(0, 2)
-	var separator_style = StyleBoxFlat.new()
-	separator_style.bg_color = colors.primary
-	separator_style.content_margin_bottom = spacing.sm
-
-	return header
+	container.add_child(header)
+	
+	# Subtítulo
+	var subtitle_label = Label.new()
+	subtitle_label.text = subtitle
+	subtitle_label.add_theme_font_size_override("font_size", font_sizes.caption)
+	subtitle_label.add_theme_color_override("font_color", colors.text_secondary)
+	subtitle_label.modulate = Color.GRAY
+	container.add_child(subtitle_label)
+	
+	return container
 
 ## Función privada para crear estilos de botón
 static func _create_button_style(color: Color) -> StyleBoxFlat:
