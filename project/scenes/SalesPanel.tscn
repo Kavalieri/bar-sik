@@ -33,6 +33,11 @@ layout_mode = 2
 text = "💸 VENTA MANUAL
 Vende todos los productos disponibles"
 
+[node name="SellIngredientsButton" type="Button" parent="MainContainer/SalesSection"]
+layout_mode = 2
+text = "🌾 VENDER INGREDIENTES
+Vende ingredientes por dinero rápido (precio bajo)"
+
 [node name="Separator1" type="HSeparator" parent="MainContainer"]
 layout_mode = 2
 

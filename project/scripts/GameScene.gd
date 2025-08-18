@@ -18,6 +18,7 @@ var sales_panel: Control
 var resource_timer: Timer
 var production_timers: Dictionary = {}
 var customer_timer: Timer
+var save_timer: Timer
 
 # Sistema de generación de ingredientes
 var resource_generators: Array[Dictionary] = [
@@ -110,6 +111,7 @@ func _setup_modular_system() -> void:
 	production_panel.station_purchased.connect(_on_station_purchased)
 
 	sales_panel.manual_sell_requested.connect(_on_manual_sell)
+	sales_panel.sell_ingredients_requested.connect(_on_sell_ingredients)
 
 
 func _load_game_data() -> void:
@@ -187,6 +189,13 @@ func _setup_timers() -> void:
 	customer_timer.timeout.connect(_process_automatic_customers)
 	add_child(customer_timer)
 
+	# Timer de auto-guardado (cada 30 segundos)
+	save_timer = Timer.new()
+	save_timer.wait_time = 30.0
+	save_timer.autostart = true
+	save_timer.timeout.connect(_save_game)
+	add_child(save_timer)
+
 
 func _update_all_displays() -> void:
 	# Actualizar display de dinero en el TabNavigator
@@ -201,6 +210,7 @@ func _update_all_displays() -> void:
 
 	sales_panel.update_statistics(game_data)
 	sales_panel.update_manual_sell_button(game_data)
+	sales_panel.update_sell_ingredients_button(game_data)
 
 
 ## SISTEMA 1: GENERACIÓN DE RECURSOS
@@ -359,6 +369,35 @@ func _on_manual_sell() -> void:
 	_update_all_displays()
 
 
+func _on_sell_ingredients() -> void:
+	var ingredients_sold = 0
+	var total_earned = 0.0
+
+	# Vender todos los ingredientes disponibles (excepto agua que es básica)
+	for ingredient_type in game_data["resources"].keys():
+		var available = game_data["resources"][ingredient_type]
+		if available > 0 and ingredient_type != "water":  # No vender agua por ser muy básica
+			var price = _get_ingredient_price(ingredient_type)
+			var earned = available * price
+
+			game_data["money"] += earned
+			game_data["statistics"]["total_money_earned"] += earned
+			game_data["resources"][ingredient_type] = 0
+
+			total_earned += earned
+			ingredients_sold += available
+
+			print("🌾 Vendido: %dx %s por $%.2f" % [available, ingredient_type, earned])
+
+	if ingredients_sold > 0:
+		print("💰 Total venta ingredientes: $%.2f (%d ingredientes)" % [total_earned, ingredients_sold])
+
+		if GameEvents:
+			GameEvents.money_earned.emit(total_earned, "venta_ingredientes")
+
+	_update_all_displays()
+
+
 func _process_automatic_customers() -> void:
 	# Clientes automáticos compran productos aleatoriamente
 	if randf() < 0.3:  # 30% de posibilidad de cliente
@@ -417,6 +456,21 @@ func _get_product_price(product_type: String) -> float:
 			return 1.0
 
 
+func _get_ingredient_price(ingredient_type: String) -> float:
+	# Precios muy bajos para ingredientes (aproximadamente 10-20% del valor de productos)
+	match ingredient_type:
+		"barley":
+			return 0.5
+		"hops":
+			return 0.8
+		"water":
+			return 0.1
+		"yeast":
+			return 1.0
+		_:
+			return 0.2
+
+
 ## EVENTOS DEL SISTEMA
 func _on_tab_changed(tab_name: String) -> void:
 	print("🔄 Cambiado a pestaña: %s" % tab_name)
@@ -454,14 +508,6 @@ func _notification(what: int) -> void:
 		_save_game()
 
 
-func _timer() -> void:
-	# Timer de auto-guardado
-	var save_timer = Timer.new()
-	save_timer.wait_time = 30.0
-	save_timer.autostart = true
-	save_timer.timeout.connect(_save_game)
-
-
 ## GESTIÓN DE GUARDADO
 func _on_reset_data_requested() -> void:
 	print("🗑️ Reseteando datos del juego...")
@@ -473,4 +519,3 @@ func _on_new_slot_requested(slot_name: String) -> void:
 	print("💾 Creando nuevo slot: ", slot_name)
 	if Router:
 		Router.create_new_save_slot(slot_name)
-	add_child(save_timer)

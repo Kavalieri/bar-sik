@@ -3,6 +3,7 @@ extends ScrollContainer
 ## Maneja las ventas de productos y muestra estadísticas del juego
 
 @onready var manual_sell_button: Button = $MainContainer/SalesSection/ManualSellButton
+@onready var sell_ingredients_button: Button = $MainContainer/SalesSection/SellIngredientsButton
 @onready var stats_container: VBoxContainer = $MainContainer/StatisticsSection/StatsContainer
 
 # Variables de UI
@@ -10,6 +11,7 @@ var stats_labels: Array[Label] = []
 
 # Señales para comunicación con GameScene
 signal manual_sell_requested
+signal sell_ingredients_requested
 
 
 func _ready() -> void:
@@ -20,6 +22,9 @@ func _ready() -> void:
 func _setup_ui() -> void:
 	# Conectar botón de venta manual
 	manual_sell_button.pressed.connect(_on_manual_sell_pressed)
+	
+	# Conectar botón de venta de ingredientes
+	sell_ingredients_button.pressed.connect(_on_sell_ingredients_pressed)
 
 	# Crear labels para estadísticas
 	_setup_statistics()
@@ -107,3 +112,45 @@ func _get_product_price(product_type: String) -> float:
 
 func _on_manual_sell_pressed() -> void:
 	manual_sell_requested.emit()
+
+
+func _on_sell_ingredients_pressed() -> void:
+	sell_ingredients_requested.emit()
+
+
+func update_sell_ingredients_button(game_data: Dictionary) -> void:
+	var has_ingredients = false
+	var total_value = 0.0
+	var ingredient_count = 0
+
+	for ingredient_type in game_data["resources"].keys():
+		var amount = game_data["resources"][ingredient_type]
+		if amount > 0 and ingredient_type != "water":  # No contar agua
+			has_ingredients = true
+			var price = _get_ingredient_price(ingredient_type)
+			total_value += amount * price
+			ingredient_count += amount
+
+	sell_ingredients_button.disabled = not has_ingredients
+
+	if has_ingredients:
+		sell_ingredients_button.text = (
+			"🌾 VENDER INGREDIENTES\n%d ingredientes por $%.2f" % [ingredient_count, total_value]
+		)
+	else:
+		sell_ingredients_button.text = "🌾 VENDER INGREDIENTES\n(No hay ingredientes para vender)"
+
+
+func _get_ingredient_price(ingredient_type: String) -> float:
+	# Precios muy bajos para ingredientes (aproximadamente 10-20% del valor de productos)
+	match ingredient_type:
+		"barley":
+			return 0.5
+		"hops":
+			return 0.8
+		"water":
+			return 0.1
+		"yeast":
+			return 1.0
+		_:
+			return 0.2

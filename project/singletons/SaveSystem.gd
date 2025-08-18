@@ -40,9 +40,9 @@ func save_game_data(data: Dictionary) -> bool:
 		current_save_data = save_data
 		print("💾 Juego guardado exitosamente")
 		return true
-	else:
-		print("❌ Error al guardar archivo")
-		return false
+
+	print("❌ Error al guardar archivo")
+	return false
 
 
 ## Cargar datos del juego
@@ -80,11 +80,11 @@ func load_game_data() -> Dictionary:
 	if has_node("/root/GameEvents"):
 		GameEvents.data_loaded.emit()
 
-	return save_data.get("game_data", get_default_save_data())
+	return save_data.get("game_data", _get_default_game_data())
 
 
-## Obtener datos por defecto para nuevo juego
-func get_default_save_data() -> Dictionary:
+## Obtener solo los datos de juego por defecto (sin metadatos)
+func _get_default_game_data() -> Dictionary:
 	return {
 		"money": 50.0,
 		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},
@@ -144,7 +144,7 @@ func _try_load_backup() -> Dictionary:
 		return get_default_save_data()
 
 	print("🔄 Backup cargado exitosamente")
-	return backup_data.get("game_data", get_default_save_data())
+	return backup_data.get("game_data", _get_default_game_data())
 
 
 ## Validar estructura del archivo de guardado
