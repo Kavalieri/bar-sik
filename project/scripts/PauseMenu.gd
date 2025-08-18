@@ -32,7 +32,10 @@ func _connect_buttons() -> void:
 
 func _on_resume_pressed() -> void:
 	print("▶️ Reanudando juego")
-	Router.goto_scene("game")
+	# Despausar el juego
+	get_tree().paused = false
+	# Remover este menú de pausa
+	queue_free()
 
 
 func _on_settings_pressed() -> void:

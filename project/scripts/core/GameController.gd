@@ -3,6 +3,9 @@ class_name GameController
 ## GameController - Controlador principal del juego (versión ligera)
 ## Coordina managers y maneja la UI principal
 
+# Escenas precargadas
+const PAUSE_MENU_SCENE = preload("res://scenes/PauseMenu.tscn")
+
 @onready var tab_navigator: Control = $TabNavigator
 
 # Managers del juego
@@ -175,7 +178,7 @@ func _on_generator_purchased(generator_id: String, quantity: int) -> void:
 	_update_all_displays()
 
 func _on_resource_generated(_resource_type: String, _amount: int) -> void:
-	# Los parámetros se reciben pero no se usan directamente ya que 
+	# Los parámetros se reciben pero no se usan directamente ya que
 	# la información está disponible en game_data actualizado
 	# Solo actualizar recursos, no toda la UI
 	if generation_panel.has_method("update_resource_displays"):
@@ -239,8 +242,32 @@ func _on_tab_changed(tab_name: String) -> void:
 	print("📱 Cambiado a pestaña: %s" % tab_name)
 
 func _on_pause_pressed() -> void:
-	print("⏸️ Juego pausado")
-	get_tree().paused = not get_tree().paused
+	print("⏸️ Botón pausa presionado")
+	
+	if get_tree().paused:
+		# Si ya está pausado, reanudar
+		print("▶️ Reanudando juego")
+		get_tree().paused = false
+		# Remover menú de pausa si existe
+		var pause_menu = get_node_or_null("PauseMenuOverlay")
+		if pause_menu:
+			pause_menu.queue_free()
+	else:
+		# Pausar y mostrar menú
+		print("⏸️ Juego pausado")
+		get_tree().paused = true
+		_show_pause_menu()
+
+func _show_pause_menu() -> void:
+	# Cargar y mostrar el menú de pausa
+	var pause_menu_instance = PAUSE_MENU_SCENE.instantiate()
+	pause_menu_instance.name = "PauseMenuOverlay"
+	pause_menu_instance.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	
+	# Añadir como overlay (encima de todo)
+	add_child(pause_menu_instance)
+	
+	print("⏸️ Menú de pausa mostrado")
 
 func _on_reset_data_requested() -> void:
 	print("🗑️ Resetear datos solicitado")
