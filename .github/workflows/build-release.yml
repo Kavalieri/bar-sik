@@ -1,0 +1,147 @@
+name: Build and Release Bar-Sik
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags (v1.0.0, v1.1.0, etc.)
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  PROJECT_PATH: project
+  BUILD_NAME: Bar-Sik
+  GODOT_VERSION: 4.4.1
+
+jobs:
+  build:
+    name: Build Game
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [windows, android]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Godot
+      uses: chickensoft-games/setup-godot@v1
+      with:
+        version: ${{ env.GODOT_VERSION }}
+
+    - name: Verify Godot installation
+      run: godot --version
+
+    - name: Import project assets
+      run: |
+        cd ${{ env.PROJECT_PATH }}
+        godot --headless --editor --quit
+
+    - name: Create build directory
+      run: |
+        mkdir -p build/windows
+        mkdir -p build/android
+
+    - name: Build Windows
+      if: matrix.platform == 'windows'
+      run: |
+        cd ${{ env.PROJECT_PATH }}
+        mkdir -p ../build/windows
+        godot --headless --export-release "Windows Desktop" ../build/windows/${{ env.BUILD_NAME }}.exe
+
+    - name: Package Windows build
+      if: matrix.platform == 'windows'
+      run: |
+        cd build/windows
+        zip -r ${{ env.BUILD_NAME }}-Windows-${{ github.ref_name }}.zip ${{ env.BUILD_NAME }}.exe
+
+    - name: Set up Java for Android
+      if: matrix.platform == 'android'
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Set up Android SDK
+      if: matrix.platform == 'android'
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 34
+        build-tools: 34.0.0
+        ndk-version: 25.1.8937393
+
+    - name: Build Android
+      if: matrix.platform == 'android'
+      env:
+        ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
+        ANDROID_NDK_HOME: ${{ env.ANDROID_SDK_ROOT }}/ndk/25.1.8937393
+      run: |
+        cd ${{ env.PROJECT_PATH }}
+        mkdir -p ../build/android
+        godot --headless --export-release "Android" ../build/android/${{ env.BUILD_NAME }}.aab
+
+    - name: Upload Windows artifact
+      if: matrix.platform == 'windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-build
+        path: build/windows/${{ env.BUILD_NAME }}-Windows-${{ github.ref_name }}.zip
+
+    - name: Upload Android artifact
+      if: matrix.platform == 'android'
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-build
+        path: build/android/${{ env.BUILD_NAME }}.aab
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+    - name: Download Windows artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-build
+        path: ./artifacts/
+
+    - name: Download Android artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: android-build
+        path: ./artifacts/
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: Bar-Sik ${{ github.ref_name }}
+        body: |
+          ## 🍺 Bar-Sik ${{ github.ref_name }}
+
+          ### 📥 Downloads
+
+          **Windows** 🪟
+          - Download the ZIP file
+          - Extract and run `Bar-Sik.exe`
+
+          **Android** 📱
+          - Install the AAB file using adb or upload to Google Play Console
+          - Requires Android 6.0+ (API 23)
+
+          ### ✨ Changes in this version
+          - [Add release notes here]
+
+          ### 🐛 Known Issues
+          - [Add any known issues]
+
+          ---
+
+          **Built with Godot ${{ env.GODOT_VERSION }}**
+        files: |
+          ./artifacts/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

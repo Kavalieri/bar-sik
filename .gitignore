@@ -1,0 +1,78 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+.import/
+export.cfg
+export_presets.cfg
+
+# Build artifacts
+build/
+builds/
+*.exe
+*.aab
+*.apk
+*.dmg
+*.pck
+*.ipa
+
+# Logs and crash reports
+logs/
+*.log
+crashes/
+
+# Platform specific
+.DS_Store
+Thumbs.db
+
+# Visual Studio Code
+.vscode/
+
+# Python cache and analysis tools
+__pycache__/
+*.py[cod]
+*$py.class
+analyze_code.py
+
+# Backup files
+*_backup.*
+*_bak.*
+project_backup.godot
+project_minimal.godot
+
+# User-specific game data and saves
+user://
+*.dat
+*.save
+
+# IDE and editor
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+*.tmp
+*.temp
+
+# Assets source (not for build)
+project/assets_src/
+
+# Secrets and private keys
+*.keystore
+*.jks
+keystore.properties
+google-play-api-key.json
+
+# Node.js (if using web export)
+node_modules/
+package-lock.json
+
+# Python (if using tools)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/

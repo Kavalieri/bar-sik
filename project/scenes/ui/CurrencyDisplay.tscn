@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://cw5jy13xrlrb3"]
+
+[ext_resource type="Script" path="res://scripts/ui/CurrencyDisplay.gd" id="1_currency_display"]
+
+[node name="CurrencyDisplay" type="Control"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_currency_display")
+
+[node name="Background" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 4.0
+offset_right = -8.0
+offset_bottom = -4.0
+
+[node name="CurrencyIcon" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "💵"
+vertical_alignment = 1
+
+[node name="CurrencyAmount" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CurrencyLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Cash"
+vertical_alignment = 1
