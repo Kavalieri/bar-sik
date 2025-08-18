@@ -23,9 +23,7 @@ func _connect_to_events() -> void:
 ## Guardar datos del juego
 func save_game_data(data: Dictionary) -> bool:
 	var save_data = {
-		"version": "0.2.0",
-		"timestamp": Time.get_unix_time_from_system(),
-		"game_data": data
+		"version": "0.2.0", "timestamp": Time.get_unix_time_from_system(), "game_data": data
 	}
 
 	# Crear backup del archivo anterior
@@ -82,36 +80,23 @@ func load_game_data() -> Dictionary:
 	if has_node("/root/GameEvents"):
 		GameEvents.data_loaded.emit()
 
-	return save_data.get("game_data", {})
+	return save_data.get("game_data", get_default_save_data())
 
 
 ## Obtener datos por defecto para nuevo juego
 func get_default_save_data() -> Dictionary:
 	return {
 		"money": 50.0,
-		"resources": {
-			"barley": 0,
-			"hops": 0,
-			"water": 10,
-			"yeast": 0
-		},
-		"products": {
-			"basic_beer": 0,
-			"premium_beer": 0,
-			"cocktail": 0
-		},
-		"generators": {
-			"barley_farm": 0,
-			"hops_farm": 0,
-			"brewery": 0,
-			"bar_station": 0
-		},
-		"upgrades": {},
-		"statistics": {
+		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},
+		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
+		"generators": {"barley_farm": 0, "hops_farm": 0},
+		"stations": {"brewery": 0, "bar_station": 0},
+		"statistics":
+		{
 			"total_money_earned": 0.0,
 			"products_sold": 0,
 			"customers_served": 0,
-			"play_time": 0.0
+			"resources_generated": 0
 		}
 	}
 
@@ -159,7 +144,7 @@ func _try_load_backup() -> Dictionary:
 		return get_default_save_data()
 
 	print("🔄 Backup cargado exitosamente")
-	return backup_data.get("game_data", {})
+	return backup_data.get("game_data", get_default_save_data())
 
 
 ## Validar estructura del archivo de guardado

@@ -95,9 +95,38 @@ func _ready() -> void:
 
 func _load_game_data() -> void:
 	if SaveSystem:
-		game_data = SaveSystem.load_game_data()
+		var loaded_data = SaveSystem.load_game_data()
+		if loaded_data.is_empty():
+			print("⚠️ Datos cargados vacíos, usando por defecto")
+			game_data = _get_default_game_data()
+		else:
+			# Asegurar que todas las claves necesarias existen
+			var default_data = _get_default_game_data()
+			game_data = _merge_with_defaults(loaded_data, default_data)
 	else:
 		game_data = _get_default_game_data()
+
+	# Debug: verificar estructura
+	print("🔍 Debug - game_data keys: ", game_data.keys())
+	print("🔍 Debug - stations exists: ", game_data.has("stations"))
+	if game_data.has("stations"):
+		print("🔍 Debug - stations content: ", game_data["stations"])
+
+
+func _merge_with_defaults(loaded: Dictionary, defaults: Dictionary) -> Dictionary:
+	var result = defaults.duplicate(true)
+	for key in loaded.keys():
+		if (
+			result.has(key)
+			and typeof(result[key]) == TYPE_DICTIONARY
+			and typeof(loaded[key]) == TYPE_DICTIONARY
+		):
+			# Mergear diccionarios anidados
+			for nested_key in loaded[key].keys():
+				result[key][nested_key] = loaded[key][nested_key]
+		else:
+			result[key] = loaded[key]
+	return result
 
 
 func _get_default_game_data() -> Dictionary:
