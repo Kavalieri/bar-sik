@@ -28,15 +28,19 @@ layout_mode = 2
 layout_mode = 2
 text = "📊 VENTAS DISPONIBLES"
 
-[node name="ManualSellButton" type="Button" parent="MainContainer/SalesSection"]
+[node name="ProductsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
 layout_mode = 2
-text = "💸 VENTA MANUAL
-Vende todos los productos disponibles"
 
-[node name="SellIngredientsButton" type="Button" parent="MainContainer/SalesSection"]
+[node name="ProductsLabel" type="Label" parent="MainContainer/SalesSection/ProductsContainer"]
 layout_mode = 2
-text = "🌾 VENDER INGREDIENTES
-Vende ingredientes por dinero rápido (precio bajo)"
+text = "🍺 PRODUCTOS:"
+
+[node name="IngredientsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
+layout_mode = 2
+
+[node name="IngredientsLabel" type="Label" parent="MainContainer/SalesSection/IngredientsContainer"]
+layout_mode = 2
+text = "🌾 INGREDIENTES:"
 
 [node name="Separator1" type="HSeparator" parent="MainContainer"]
 layout_mode = 2

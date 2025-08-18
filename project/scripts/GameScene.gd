@@ -23,6 +23,15 @@ var save_timer: Timer
 # Sistema de generación de ingredientes
 var resource_generators: Array[Dictionary] = [
 	{
+		"id": "water_collector",
+		"name": "💧 Recolector de Agua",
+		"owned": 0,
+		"base_cost": 5.0,
+		"produces": "water",
+		"production_rate": 2.0,
+		"description": "Recolecta agua cada 2 segundos"
+	},
+	{
 		"id": "barley_farm",
 		"name": "🌾 Granja de Cebada",
 		"owned": 0,
@@ -110,8 +119,7 @@ func _setup_modular_system() -> void:
 	production_panel.setup_stations(production_stations)
 	production_panel.station_purchased.connect(_on_station_purchased)
 
-	sales_panel.manual_sell_requested.connect(_on_manual_sell)
-	sales_panel.sell_ingredients_requested.connect(_on_sell_ingredients)
+	sales_panel.item_sell_requested.connect(_on_item_sell_requested)
 
 
 func _load_game_data() -> void:
@@ -153,9 +161,9 @@ func _merge_with_defaults(loaded: Dictionary, defaults: Dictionary) -> Dictionar
 func _get_default_game_data() -> Dictionary:
 	return {
 		"money": 50.0,
-		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},  # Recurso gratis inicial
+		"resources": {"barley": 0, "hops": 0, "water": 0, "yeast": 0},  # Ya no damos agua gratis
 		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
-		"generators": {"barley_farm": 0, "hops_farm": 0},
+		"generators": {"water_collector": 0, "barley_farm": 0, "hops_farm": 0},
 		"stations": {"brewery": 1, "bar_station": 0},  # Comienza con 1 cervecería desbloqueada
 		"statistics":
 		{
@@ -209,8 +217,7 @@ func _update_all_displays() -> void:
 	production_panel.update_station_buttons(production_stations, game_data)
 
 	sales_panel.update_statistics(game_data)
-	sales_panel.update_manual_sell_button(game_data)
-	sales_panel.update_sell_ingredients_button(game_data)
+	sales_panel.update_sell_interfaces(game_data)
 
 
 ## SISTEMA 1: GENERACIÓN DE RECURSOS
@@ -338,63 +345,44 @@ func _consume_ingredients(station: Dictionary) -> void:
 
 
 ## SISTEMA 3: VENTA DE PRODUCTOS
-func _on_manual_sell() -> void:
-	var products_sold = 0
-	var total_earned = 0.0
-
-	# Vender todos los productos disponibles
-	for product_type in game_data["products"].keys():
-		var available = game_data["products"][product_type]
-		if available > 0:
-			var price = _get_product_price(product_type)
-			var earned = available * price
-
-			game_data["money"] += earned
-			game_data["statistics"]["total_money_earned"] += earned
-			game_data["statistics"]["products_sold"] += available
-			game_data["products"][product_type] = 0
-
-			total_earned += earned
-			products_sold += available
-
-			print("💰 Vendido: %dx %s por $%.2f" % [available, product_type, earned])
-
-	if products_sold > 0:
-		game_data["statistics"]["customers_served"] += 1
-		print("💸 Total venta manual: $%.2f (%d productos)" % [total_earned, products_sold])
-
-		if GameEvents:
-			GameEvents.money_earned.emit(total_earned, "venta_manual")
-
-	_update_all_displays()
-
-
-func _on_sell_ingredients() -> void:
-	var ingredients_sold = 0
-	var total_earned = 0.0
-
-	# Vender todos los ingredientes disponibles (excepto agua que es básica)
-	for ingredient_type in game_data["resources"].keys():
-		var available = game_data["resources"][ingredient_type]
-		if available > 0 and ingredient_type != "water":  # No vender agua por ser muy básica
-			var price = _get_ingredient_price(ingredient_type)
-			var earned = available * price
-
-			game_data["money"] += earned
-			game_data["statistics"]["total_money_earned"] += earned
-			game_data["resources"][ingredient_type] = 0
-
-			total_earned += earned
-			ingredients_sold += available
-
-			print("🌾 Vendido: %dx %s por $%.2f" % [available, ingredient_type, earned])
-
-	if ingredients_sold > 0:
-		print("💰 Total venta ingredientes: $%.2f (%d ingredientes)" % [total_earned, ingredients_sold])
-
-		if GameEvents:
-			GameEvents.money_earned.emit(total_earned, "venta_ingredientes")
-
+func _on_item_sell_requested(item_type: String, item_name: String, quantity: int) -> void:
+	var available = 0
+	var price = 0.0
+	
+	if item_type == "product":
+		available = game_data["products"].get(item_name, 0)
+		price = _get_product_price(item_name)
+	elif item_type == "ingredient":
+		available = game_data["resources"].get(item_name, 0)
+		price = _get_ingredient_price(item_name)
+	
+	# Verificar que hay suficiente cantidad
+	var actual_quantity = min(quantity, available)
+	if actual_quantity <= 0:
+		print("⚠️ No hay suficiente %s para vender" % item_name)
+		return
+	
+	var total_earned = actual_quantity * price
+	
+	# Actualizar inventario y estadísticas
+	if item_type == "product":
+		game_data["products"][item_name] -= actual_quantity
+		game_data["statistics"]["products_sold"] += actual_quantity
+	elif item_type == "ingredient":
+		game_data["resources"][item_name] -= actual_quantity
+	
+	game_data["money"] += total_earned
+	game_data["statistics"]["total_money_earned"] += total_earned
+	
+	# Log de venta
+	var emoji = "💰" if item_type == "product" else "🌾"
+	print("%s Vendido: %dx %s por $%.2f" % [emoji, actual_quantity, item_name, total_earned])
+	
+	# Emitir evento
+	if GameEvents:
+		var event_type = "venta_" + item_type + "s"
+		GameEvents.money_earned.emit(total_earned, event_type)
+	
 	_update_all_displays()
 
 

@@ -1,17 +1,19 @@
 extends ScrollContainer
-## SalesPanel - Panel de ventas y estadísticas
-## Maneja las ventas de productos y muestra estadísticas del juego
+## SalesPanel - Panel de ventas y estadísticas granulares
+## Permite vender productos e ingredientes por cantidades específicas
 
-@onready var manual_sell_button: Button = $MainContainer/SalesSection/ManualSellButton
-@onready var sell_ingredients_button: Button = $MainContainer/SalesSection/SellIngredientsButton
+@onready var products_container: VBoxContainer = $MainContainer/SalesSection/ProductsContainer
+@onready var ingredients_container: VBoxContainer = $MainContainer/SalesSection/IngredientsContainer
 @onready var stats_container: VBoxContainer = $MainContainer/StatisticsSection/StatsContainer
 
 # Variables de UI
 var stats_labels: Array[Label] = []
+var product_sell_buttons: Dictionary = {}
+var ingredient_sell_buttons: Dictionary = {}
 
 # Señales para comunicación con GameScene
-signal manual_sell_requested
-signal sell_ingredients_requested
+signal item_sell_requested(item_type: String, item_name: String, quantity: int)
+# item_type será "product" o "ingredient"
 
 
 func _ready() -> void:
@@ -20,12 +22,6 @@ func _ready() -> void:
 
 
 func _setup_ui() -> void:
-	# Conectar botón de venta manual
-	manual_sell_button.pressed.connect(_on_manual_sell_pressed)
-	
-	# Conectar botón de venta de ingredientes
-	sell_ingredients_button.pressed.connect(_on_sell_ingredients_pressed)
-
 	# Crear labels para estadísticas
 	_setup_statistics()
 
@@ -47,6 +43,88 @@ func _setup_statistics() -> void:
 		stats_labels.append(label)
 
 
+func create_sell_interface_for_item(item_name: String, item_type: String, quantity: int, price: float) -> void:
+	if quantity <= 0:
+		return
+	
+	var container = ingredients_container if item_type == "ingredient" else products_container
+	
+	# Crear contenedor horizontal para cada ítem
+	var item_container = HBoxContainer.new()
+	container.add_child(item_container)
+	
+	# Label con información del ítem
+	var info_label = Label.new()
+	var emoji = _get_item_emoji(item_name)
+	info_label.text = "%s %s: %d ($%.2f c/u)" % [emoji, item_name.capitalize(), quantity, price]
+	info_label.custom_minimum_size = Vector2(200, 0)
+	item_container.add_child(info_label)
+	
+	# Botones de venta por incrementos
+	var increments = [1, 5, 10, "MAX"]
+	for increment in increments:
+		var button = Button.new()
+		var sell_quantity = increment if increment != "MAX" else quantity
+		
+		if increment == "MAX":
+			button.text = "TODO"
+		else:
+			button.text = str(increment)
+		
+		# Deshabilitar si no hay suficiente cantidad
+		if increment != "MAX" and increment > quantity:
+			button.disabled = true
+		
+		button.pressed.connect(func(): _on_sell_button_pressed(item_name, item_type, sell_quantity))
+		item_container.add_child(button)
+
+
+func _get_item_emoji(item_name: String) -> String:
+	match item_name:
+		"barley": return "🌾"
+		"hops": return "🌿" 
+		"water": return "💧"
+		"yeast": return "🦠"
+		"basic_beer": return "🍺"
+		"premium_beer": return "🍻"
+		"cocktail": return "🍹"
+		_: return "📦"
+
+
+func _on_sell_button_pressed(item_name: String, item_type: String, quantity: int) -> void:
+	item_sell_requested.emit(item_type, item_name, quantity)
+
+
+func update_sell_interfaces(game_data: Dictionary) -> void:
+	# Limpiar interfaces existentes
+	_clear_sell_interfaces()
+	
+	# Crear interfaces para productos
+	for product_name in game_data["products"].keys():
+		var quantity = game_data["products"][product_name]
+		if quantity > 0:
+			var price = _get_product_price(product_name)
+			create_sell_interface_for_item(product_name, "product", quantity, price)
+	
+	# Crear interfaces para ingredientes (excepto agua)
+	for ingredient_name in game_data["resources"].keys():
+		var quantity = game_data["resources"][ingredient_name]
+		if quantity > 0 and ingredient_name != "water":
+			var price = _get_ingredient_price(ingredient_name)
+			create_sell_interface_for_item(ingredient_name, "ingredient", quantity, price)
+
+
+func _clear_sell_interfaces() -> void:
+	# Limpiar contenedores (excepto labels)
+	for child in products_container.get_children():
+		if child.name != "ProductsLabel":
+			child.queue_free()
+	
+	for child in ingredients_container.get_children():
+		if child.name != "IngredientsLabel":
+			child.queue_free()
+
+
 func update_statistics(game_data: Dictionary) -> void:
 	if stats_container.get_child_count() >= 5:
 		var stats_labels = stats_container.get_children()
@@ -61,33 +139,6 @@ func update_statistics(game_data: Dictionary) -> void:
 		stats_labels[4].text = (
 			"👥 Clientes atendidos: %d" % game_data["statistics"]["customers_served"]
 		)
-
-
-func update_manual_sell_button(game_data: Dictionary) -> void:
-	var has_products = false
-	for amount in game_data["products"].values():
-		if amount > 0:
-			has_products = true
-			break
-
-	manual_sell_button.disabled = not has_products
-
-	if has_products:
-		var total_value = 0.0
-		var product_count = 0
-
-		for product_type in game_data["products"].keys():
-			var amount = game_data["products"][product_type]
-			if amount > 0:
-				var price = _get_product_price(product_type)
-				total_value += amount * price
-				product_count += amount
-
-		manual_sell_button.text = (
-			"💸 VENTA MANUAL\n%d productos por $%.2f" % [product_count, total_value]
-		)
-	else:
-		manual_sell_button.text = "💸 VENTA MANUAL\n(No hay productos para vender)"
 
 
 func _count_total_products_made(game_data: Dictionary) -> int:
@@ -108,37 +159,6 @@ func _get_product_price(product_type: String) -> float:
 			return 20.0
 		_:
 			return 1.0
-
-
-func _on_manual_sell_pressed() -> void:
-	manual_sell_requested.emit()
-
-
-func _on_sell_ingredients_pressed() -> void:
-	sell_ingredients_requested.emit()
-
-
-func update_sell_ingredients_button(game_data: Dictionary) -> void:
-	var has_ingredients = false
-	var total_value = 0.0
-	var ingredient_count = 0
-
-	for ingredient_type in game_data["resources"].keys():
-		var amount = game_data["resources"][ingredient_type]
-		if amount > 0 and ingredient_type != "water":  # No contar agua
-			has_ingredients = true
-			var price = _get_ingredient_price(ingredient_type)
-			total_value += amount * price
-			ingredient_count += amount
-
-	sell_ingredients_button.disabled = not has_ingredients
-
-	if has_ingredients:
-		sell_ingredients_button.text = (
-			"🌾 VENDER INGREDIENTES\n%d ingredientes por $%.2f" % [ingredient_count, total_value]
-		)
-	else:
-		sell_ingredients_button.text = "🌾 VENDER INGREDIENTES\n(No hay ingredientes para vender)"
 
 
 func _get_ingredient_price(ingredient_type: String) -> float:
