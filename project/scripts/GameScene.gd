@@ -13,12 +13,14 @@ var game_data: Dictionary = {}
 var generation_panel: Control
 var production_panel: Control
 var sales_panel: Control
+var customers_panel: Control
 
 # Variables de sistema
 var resource_timer: Timer
 var production_timers: Dictionary = {}
 var customer_timer: Timer
 var save_timer: Timer
+var customer_timer_progress: float = 0.0  # Para mostrar progreso del próximo cliente
 
 # Sistema de generación de ingredientes
 var resource_generators: Array[Dictionary] = [
@@ -26,7 +28,7 @@ var resource_generators: Array[Dictionary] = [
 		"id": "water_collector",
 		"name": "💧 Recolector de Agua",
 		"owned": 0,
-		"base_cost": 5.0,
+		"base_cost": 10.0,
 		"produces": "water",
 		"production_rate": 2.0,
 		"description": "Recolecta agua cada 2 segundos"
@@ -35,7 +37,7 @@ var resource_generators: Array[Dictionary] = [
 		"id": "barley_farm",
 		"name": "🌾 Granja de Cebada",
 		"owned": 0,
-		"base_cost": 10.0,
+		"base_cost": 100.0,
 		"produces": "barley",
 		"production_rate": 1.0,
 		"description": "Genera cebada cada 3 segundos"
@@ -44,7 +46,7 @@ var resource_generators: Array[Dictionary] = [
 		"id": "hops_farm",
 		"name": "🌿 Granja de Lúpulo",
 		"owned": 0,
-		"base_cost": 25.0,
+		"base_cost": 1000.0,
 		"produces": "hops",
 		"production_rate": 1.0,
 		"description": "Genera lúpulo cada 5 segundos"
@@ -57,21 +59,23 @@ var production_stations: Array[Dictionary] = [
 		"id": "brewery",
 		"name": "🍺 Cervecería",
 		"owned": 0,
-		"base_cost": 100.0,
+		"base_cost": 500.0,
 		"recipe": {"barley": 2, "hops": 1, "water": 3},
 		"produces": "basic_beer",
 		"production_time": 10.0,
-		"description": "Convierte ingredientes en cerveza básica"
+		"unlocked": false,
+		"description": "Convierte ingredientes en cerveza básica\n🌾x2 + 🌿x1 + 💧x3 → 🍺"
 	},
 	{
 		"id": "bar_station",
 		"name": "🍹 Estación de Bar",
 		"owned": 0,
-		"base_cost": 250.0,
+		"base_cost": 2500.0,
 		"recipe": {"basic_beer": 2, "water": 1},
 		"produces": "premium_beer",
 		"production_time": 15.0,
-		"description": "Mejora cerveza básica a premium"
+		"unlocked": false,
+		"description": "Mejora cerveza básica a premium\n🍺x2 + 💧x1 → 🍹"
 	}
 ]
 
@@ -94,6 +98,13 @@ func _ready() -> void:
 	print("✅ GameScene configurado con sistema modular")
 
 
+func _process(_delta: float) -> void:
+	# Actualizar progreso del timer de clientes
+	if customer_timer and game_data["upgrades"]["auto_sell_enabled"]:
+		customer_timer_progress = 1.0 - (customer_timer.time_left / customer_timer.wait_time)
+		customer_timer_progress = clamp(customer_timer_progress, 0.0, 1.0)
+
+
 func _setup_modular_system() -> void:
 	# Obtener referencias a los paneles
 	generation_panel = (
@@ -103,6 +114,7 @@ func _setup_modular_system() -> void:
 		tab_navigator.get_node("MainContainer/ContentContainer/ProductionPanel").get_child(0)
 	)
 	sales_panel = tab_navigator.get_node("MainContainer/ContentContainer/SalesPanel").get_child(0)
+	customers_panel = tab_navigator.get_node("MainContainer/ContentContainer/CustomersPanel").get_child(0)
 
 	# Conectar señales del TabNavigator
 	tab_navigator.tab_changed.connect(_on_tab_changed)
@@ -117,11 +129,13 @@ func _setup_modular_system() -> void:
 
 	production_panel.setup_products(game_data)
 	production_panel.setup_stations(production_stations)
-	production_panel.setup_production_interfaces(production_stations)
 	production_panel.station_purchased.connect(_on_station_purchased)
 	production_panel.manual_production_requested.connect(_on_manual_production_requested)
 
 	sales_panel.item_sell_requested.connect(_on_item_sell_requested)
+
+	customers_panel.setup_autosell_upgrades(game_data)
+	customers_panel.autosell_upgrade_purchased.connect(_on_autosell_upgrade_purchased)
 
 
 func _load_game_data() -> void:
@@ -163,12 +177,25 @@ func _merge_with_defaults(loaded: Dictionary, defaults: Dictionary) -> Dictionar
 func _get_default_game_data() -> Dictionary:
 	return {
 		"money": 50.0,
-		"resources": {"barley": 0, "hops": 0, "water": 0, "yeast": 0},  # Ya no damos agua gratis
+		"resources": {"barley": 0, "hops": 0, "water": 0, "yeast": 0},
 		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
 		"generators": {"water_collector": 0, "barley_farm": 0, "hops_farm": 0},
-		"stations": {"brewery": 1, "bar_station": 0},  # Comienza con 1 cervecería desbloqueada
-		"statistics":
-		{
+		"stations": {"brewery": 1, "bar_station": 0},
+		"upgrades": {
+			"auto_sell_enabled": false,
+			"auto_sell_speed": 1.0,
+			"auto_sell_efficiency": 1.0,
+			"manager_level": 0,  # Nivel de manager de ventas
+			"faster_customers": false,  # Clientes llegan más rápido
+			"premium_customers": false,  # Clientes pagan más
+			"bulk_buyers": false  # Clientes compran en lote
+		},
+		"milestones": {
+			# Hitos de edificios desbloqueados
+			"generators": {},
+			"stations": {}
+		},
+		"statistics": {
 			"total_money_earned": 0.0,
 			"products_sold": 0,
 			"customers_served": 0,
@@ -218,11 +245,18 @@ func _update_all_displays() -> void:
 	generation_panel.update_generator_displays(resource_generators, game_data)
 
 	production_panel.update_product_displays(game_data)
-	production_panel.update_station_buttons(production_stations, game_data)
-	production_panel.update_production_interfaces(production_stations, game_data)
+	production_panel.update_station_interfaces(production_stations, game_data)
 
 	sales_panel.update_statistics(game_data)
 	sales_panel.update_sell_interfaces(game_data)
+
+	customers_panel.update_customer_display(game_data, customer_timer_progress)
+
+
+func _update_resources_only() -> void:
+	# Actualizar solo las cantidades de recursos, no los costos
+	generation_panel.update_resource_displays(game_data)
+	production_panel.update_product_displays(game_data)
 
 
 ## SISTEMA 1: GENERACIÓN DE RECURSOS
@@ -241,7 +275,9 @@ func _generate_resources() -> void:
 			if GameEvents:
 				GameEvents.resource_generated.emit(resource_type, amount)
 
-	_update_all_displays()
+	# Verificar desbloqueos automáticos después de generar recursos
+	_check_and_unlock_stations()
+	_update_resources_only()
 
 
 func _on_generator_purchased(generator_index: int, quantity: int) -> void:
@@ -254,7 +290,7 @@ func _on_generator_purchased(generator_index: int, quantity: int) -> void:
 		game_data["generators"][generator.id] = current_owned + quantity
 
 		print(
-			"✅ Comprado: %dx %s (Total: %d) por $%.0f" % 
+			"✅ Comprado: %dx %s (Total: %d) por $%.0f" %
 			[quantity, generator.name, game_data["generators"][generator.id], total_cost]
 		)
 
@@ -270,12 +306,12 @@ func _get_bulk_generator_cost(generator_index: int, quantity: int) -> float:
 	var generator = resource_generators[generator_index]
 	var owned = game_data["generators"].get(generator.id, 0)
 	var total_cost = 0.0
-	
+
 	# Calcular costo acumulativo para compras múltiples
 	for i in range(quantity):
 		var cost = generator.base_cost * pow(1.15, owned + i)
 		total_cost += cost
-	
+
 	return total_cost
 
 
@@ -299,13 +335,13 @@ func _on_station_purchased(station_index: int) -> void:
 func _on_manual_production_requested(station_index: int, quantity: int) -> void:
 	var station = production_stations[station_index]
 	var owned = game_data["stations"].get(station.id, 0)
-	
+
 	if owned <= 0:
 		print("⚠️ No tienes %s para producir" % station.name)
 		return
-	
+
 	var successful_productions = 0
-	
+
 	# Intentar producir la cantidad solicitada
 	for i in range(quantity):
 		# Verificar ingredientes para una unidad
@@ -316,28 +352,53 @@ func _on_manual_production_requested(station_index: int, quantity: int) -> void:
 			if available < needed:
 				can_produce = false
 				break
-		
+
 		if can_produce:
 			# Consumir ingredientes
 			for ingredient in station.recipe.keys():
 				var needed = station.recipe[ingredient]
 				game_data["resources"][ingredient] -= needed
-			
+
 			# Producir producto
 			game_data["products"][station.produces] = game_data["products"].get(station.produces, 0) + 1
 			successful_productions += 1
 		else:
 			break  # No más ingredientes disponibles
-	
+
 	if successful_productions > 0:
 		print("🍺 Producido: +%d %s" % [successful_productions, station.produces])
-		
+
 		if GameEvents:
 			GameEvents.product_crafted.emit(station.produces, successful_productions, station.recipe)
-		
+
 		_update_all_displays()
 	else:
 		print("⚠️ Ingredientes insuficientes para producir %s" % station.produces)
+
+
+func _check_and_unlock_stations() -> void:
+	# Verificar desbloqueos automáticos basados en recursos
+	for station in production_stations:
+		if not station.get("unlocked", true):
+			# Cervecería se desbloquea cuando tienes al menos 5 de cada ingrediente
+			if station.id == "brewery":
+				var has_barley = game_data["resources"].get("barley", 0) >= 5
+				var has_hops = game_data["resources"].get("hops", 0) >= 5
+				var has_water = game_data["resources"].get("water", 0) >= 10
+
+				if has_barley and has_hops and has_water:
+					station.unlocked = true
+					print("🔓 ¡Cervecería desbloqueada! Ya puedes producir cerveza.")
+					_update_all_displays()
+
+			# Bar Station se desbloquea cuando tienes 10+ cervezas básicas
+			elif station.id == "bar_station":
+				var has_basic_beer = game_data["products"].get("basic_beer", 0) >= 10
+
+				if has_basic_beer:
+					station.unlocked = true
+					print("🔓 ¡Estación de Bar desbloqueada! Ahora puedes hacer cerveza premium.")
+					_update_all_displays()
 
 
 func _start_production_timer(station_id: String) -> void:
@@ -413,66 +474,169 @@ func _consume_ingredients(station: Dictionary) -> void:
 func _on_item_sell_requested(item_type: String, item_name: String, quantity: int) -> void:
 	var available = 0
 	var price = 0.0
-	
+
 	if item_type == "product":
 		available = game_data["products"].get(item_name, 0)
 		price = _get_product_price(item_name)
 	elif item_type == "ingredient":
 		available = game_data["resources"].get(item_name, 0)
 		price = _get_ingredient_price(item_name)
-	
+
 	# Verificar que hay suficiente cantidad
 	var actual_quantity = min(quantity, available)
 	if actual_quantity <= 0:
 		print("⚠️ No hay suficiente %s para vender" % item_name)
 		return
-	
+
 	var total_earned = actual_quantity * price
-	
+
 	# Actualizar inventario y estadísticas
 	if item_type == "product":
 		game_data["products"][item_name] -= actual_quantity
 		game_data["statistics"]["products_sold"] += actual_quantity
 	elif item_type == "ingredient":
 		game_data["resources"][item_name] -= actual_quantity
-	
+
 	game_data["money"] += total_earned
 	game_data["statistics"]["total_money_earned"] += total_earned
-	
+
 	# Log de venta
 	var emoji = "💰" if item_type == "product" else "🌾"
 	print("%s Vendido: %dx %s por $%.2f" % [emoji, actual_quantity, item_name, total_earned])
-	
+
 	# Emitir evento
 	if GameEvents:
 		var event_type = "venta_" + item_type + "s"
 		GameEvents.money_earned.emit(total_earned, event_type)
-	
+
 	_update_all_displays()
 
 
+func _on_upgrade_purchased(upgrade_id: String) -> void:
+	var cost = 0.0
+	var upgrade_name = ""
+
+	match upgrade_id:
+		"enable_autosell":
+			cost = 1000.0
+			upgrade_name = "Manager de Ventas"
+		"speed_upgrade_1":
+			cost = 2500.0
+			upgrade_name = "Velocidad de Venta +1"
+		"efficiency_upgrade_1":
+			cost = 5000.0
+			upgrade_name = "Eficiencia de Venta +1"
+
+	if game_data["money"] >= cost:
+		game_data["money"] -= cost
+
+		match upgrade_id:
+			"enable_autosell":
+				game_data["upgrades"]["auto_sell_enabled"] = true
+				game_data["upgrades"]["manager_level"] = 1
+				print("🤖 ¡Manager de Ventas contratado! Ventas automáticas habilitadas")
+			"speed_upgrade_1":
+				game_data["upgrades"]["auto_sell_speed"] *= 1.2  # 20% más rápido
+				game_data["upgrades"]["speed_upgrade_1"] = true
+				customer_timer.wait_time = max(1.0, customer_timer.wait_time * 0.8)  # Reducir tiempo
+				print("⚡ ¡Velocidad de venta mejorada! Clientes llegan 20% más rápido")
+			"efficiency_upgrade_1":
+				game_data["upgrades"]["auto_sell_efficiency"] *= 1.25  # 25% más eficiente
+				game_data["upgrades"]["efficiency_upgrade_1"] = true
+				print("💰 ¡Eficiencia mejorada! Los productos se venden por 25% más")
+
+		print("✅ Upgrade comprado: %s por $%.0f" % [upgrade_name, cost])
+		_update_all_displays()
+	else:
+		print("❌ Dinero insuficiente para %s (Costo: $%.0f)" % [upgrade_name, cost])
+
+
+func _on_autosell_upgrade_purchased(upgrade_id: String) -> void:
+	var cost = 0.0
+	var upgrade_name = ""
+
+	match upgrade_id:
+		"nuevo_cliente":
+			cost = 100.0
+			upgrade_name = "Nuevo Cliente"
+		"faster_customers":
+			cost = 500.0
+			upgrade_name = "Clientes Más Rápidos"
+		"premium_customers":
+			cost = 1000.0
+			upgrade_name = "Clientes Premium"
+		"bulk_buyers":
+			cost = 2500.0
+			upgrade_name = "Compradores en Lote"
+
+	if game_data["money"] >= cost:
+		game_data["money"] -= cost
+
+		match upgrade_id:
+			"nuevo_cliente":
+				game_data["upgrades"]["auto_sell_enabled"] = true
+				customer_timer.wait_time = 10.0  # Clientes cada 10 segundos
+				print("👤 ¡Primer cliente añadido! Las ventas automáticas comenzarán pronto")
+			"faster_customers":
+				game_data["upgrades"]["faster_customers"] = true
+				customer_timer.wait_time = max(3.0, customer_timer.wait_time * 0.6)  # 40% más rápido
+				print("⚡ ¡Clientes más rápidos! Llegan 40% más frecuentemente")
+			"premium_customers":
+				game_data["upgrades"]["premium_customers"] = true
+				print("💎 ¡Clientes Premium! Pagan 50% más por los productos")
+			"bulk_buyers":
+				game_data["upgrades"]["bulk_buyers"] = true
+				print("📦 ¡Compradores en Lote! Pueden comprar múltiples productos")
+
+		print("✅ Upgrade de Clientes comprado: %s por $%.0f" % [upgrade_name, cost])
+		_update_all_displays()
+	else:
+		print("❌ Dinero insuficiente para %s (Costo: $%.0f)" % [upgrade_name, cost])
+
+
 func _process_automatic_customers() -> void:
-	# Clientes automáticos compran productos aleatoriamente
-	if randf() < 0.3:  # 30% de posibilidad de cliente
-		var product_types = []
-		for product_type in game_data["products"].keys():
-			if game_data["products"][product_type] > 0:
-				product_types.append(product_type)
+	# Solo funciona si la autoventa está habilitada
+	if not game_data["upgrades"]["auto_sell_enabled"]:
+		return
 
-		if product_types.size() > 0:
-			var chosen_product = product_types[randi() % product_types.size()]
-			var price = _get_product_price(chosen_product)
+	# Verificar si hay productos disponibles
+	var product_types = []
+	for product_type in game_data["products"].keys():
+		if game_data["products"][product_type] > 0:
+			product_types.append(product_type)
 
-			game_data["money"] += price
-			game_data["statistics"]["total_money_earned"] += price
-			game_data["statistics"]["products_sold"] += 1
-			game_data["statistics"]["customers_served"] += 1
-			game_data["products"][chosen_product] -= 1
+	if product_types.size() > 0:
+		var chosen_product = product_types[randi() % product_types.size()]
+		var base_price = _get_product_price(chosen_product)
+		var final_price = base_price
 
-			print("🤖 Cliente automático compró: %s por $%.2f" % [chosen_product, price])
+		# Aplicar bonus de clientes premium
+		if game_data["upgrades"].get("premium_customers", false):
+			final_price *= 1.5  # 50% más
 
-			if GameEvents:
-				GameEvents.money_earned.emit(price, "cliente_automatico")
+		# Determinar cantidad (bulk buyers pueden comprar más)
+		var quantity = 1
+		if game_data["upgrades"].get("bulk_buyers", false):
+			quantity = randi_range(1, min(3, game_data["products"][chosen_product]))
+
+		# Procesar la venta
+		var total_earned = final_price * quantity
+		game_data["money"] += total_earned
+		game_data["statistics"]["total_money_earned"] += total_earned
+		game_data["statistics"]["products_sold"] += quantity
+		game_data["statistics"]["customers_served"] += 1
+		game_data["products"][chosen_product] -= quantity
+
+		var customer_type = "🤖 Cliente"
+		if game_data["upgrades"].get("premium_customers", false):
+			customer_type = "💎 Cliente Premium"
+		if quantity > 1:
+			customer_type += " (Lote)"
+
+		print("%s compró: %dx%s por $%.2f" % [customer_type, quantity, chosen_product, total_earned])
+
+		if GameEvents:
+			GameEvents.money_earned.emit(total_earned, "cliente_automatico")
 
 			_update_all_displays()
 

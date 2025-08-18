@@ -1,14 +1,13 @@
 extends ScrollContainer
-## ProductionPanel - Panel de producción manual y crafteo
-## Maneja los productos fabricados, estaciones y producción manual por clicks
+## ProductionPanel - Panel de estaciones de producción y crafteo
+## Maneja las estaciones que se pueden comprar y usar para producir
 
 @onready var product_container: VBoxContainer = $MainContainer/ProductsSection/ProductContainer
-@onready var production_container: VBoxContainer = $MainContainer/ProductionSection/ProductionContainer
 @onready var station_container: VBoxContainer = $MainContainer/StationsSection/StationContainer
 
 # Variables de UI
 var product_labels: Dictionary = {}
-var station_buttons: Array[Button] = []
+var station_interfaces: Array[Control] = []
 
 # Señales para comunicación con GameScene
 signal station_purchased(station_index: int)
@@ -31,47 +30,56 @@ func setup_products(game_data: Dictionary) -> void:
 
 
 func setup_stations(production_stations: Array[Dictionary]) -> void:
-	# Limpiar botones existentes
-	_clear_station_buttons()
+	# Limpiar interfaces existentes
+	_clear_station_interfaces()
 
-	# Crear botones para estaciones
+	# Crear interfaces combinadas para cada estación (compra + producción)
 	for i in range(production_stations.size()):
-		var button = Button.new()
-		button.pressed.connect(_on_station_purchased.bind(i))
-		station_container.add_child(button)
-		station_buttons.append(button)
+		_create_station_interface(production_stations[i], i)
 
 
-func setup_production_interfaces(production_stations: Array[Dictionary]) -> void:
-	# Limpiar contenido existente  
-	_clear_production_interfaces()
-	
-	# Crear interfaces de producción para cada estación
-	for i in range(production_stations.size()):
-		var station = production_stations[i]
-		var station_container_v = VBoxContainer.new()
-		production_container.add_child(station_container_v)
-		
-		# Label con información de la estación
-		var info_label = Label.new()
-		info_label.text = "%s\nReceta: %s" % [station.name, _format_recipe(station.recipe)]
-		station_container_v.add_child(info_label)
-		
-		# Contenedor horizontal para botones de producción
-		var button_container = HBoxContainer.new()
-		station_container_v.add_child(button_container)
-		
-		# Botones de producción por incrementos
-		var increments = [1, 5, 10, 50]
-		for increment in increments:
-			var button = Button.new()
-			button.text = str(increment)
-			button.pressed.connect(_on_manual_production.bind(i, increment))
-			button_container.add_child(button)
-		
-		# Separador
-		var separator = HSeparator.new()
-		station_container_v.add_child(separator)
+func _create_station_interface(station: Dictionary, station_index: int) -> void:
+	# Contenedor principal para esta estación
+	var station_group = VBoxContainer.new()
+	station_group.add_theme_constant_override("separation", 5)
+
+	# Título de la estación
+	var title_label = Label.new()
+	title_label.text = station.name
+	title_label.add_theme_font_size_override("font_size", 16)
+	station_group.add_child(title_label)
+
+	# Botón de compra de estación
+	var purchase_button = Button.new()
+	purchase_button.pressed.connect(_on_station_purchased.bind(station_index))
+	station_group.add_child(purchase_button)
+
+	# Separador
+	var separator1 = HSeparator.new()
+	station_group.add_child(separator1)
+
+	# Interfaz de producción (botones de cantidad)
+	var production_label = Label.new()
+	production_label.text = "🔨 Producción Manual:"
+	station_group.add_child(production_label)
+
+	var production_buttons = HBoxContainer.new()
+	var quantities = [1, 5, 10, 50]
+	for quantity in quantities:
+		var prod_button = Button.new()
+		prod_button.text = "x%d" % quantity
+		prod_button.pressed.connect(_on_manual_production_requested.bind(station_index, quantity))
+		production_buttons.add_child(prod_button)
+
+	station_group.add_child(production_buttons)
+
+	# Separador final
+	var separator2 = HSeparator.new()
+	station_group.add_child(separator2)
+
+	# Agregar al contenedor principal
+	station_container.add_child(station_group)
+	station_interfaces.append(station_group)
 
 
 func _format_recipe(recipe: Dictionary) -> String:
@@ -93,34 +101,6 @@ func update_product_displays(game_data: Dictionary) -> void:
 		)
 
 
-func update_production_interfaces(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
-	# Actualizar cada interfaz de producción
-	var production_interfaces = production_container.get_children()
-	
-	for i in range(min(production_interfaces.size(), production_stations.size())):
-		var station = production_stations[i]
-		var interface_container = production_interfaces[i]
-		var owned = game_data["stations"].get(station.id, 0)
-		
-		# Actualizar info label (primer hijo)
-		var info_label = interface_container.get_child(0) as Label
-		info_label.text = "%s (Propiedad: %d)\nReceta: %s → %s" % [
-			station.name, owned, _format_recipe(station.recipe), station.produces
-		]
-		
-		# Actualizar botones de producción (segundo hijo es el HBoxContainer)
-		var button_container = interface_container.get_child(1) as HBoxContainer
-		var buttons = button_container.get_children()
-		
-		for j in range(buttons.size()):
-			var button = buttons[j] as Button
-			var increment = int(button.text)
-			var can_produce = owned > 0 and _can_afford_production(station, game_data, increment)
-			
-			button.text = "%d\n%s" % [increment, station.produces.replace("_", " ")]
-			button.disabled = not can_produce
-
-
 func _can_afford_production(station: Dictionary, game_data: Dictionary, quantity: int) -> bool:
 	# Verificar si hay suficientes ingredientes para la receta
 	for ingredient in station.recipe.keys():
@@ -131,38 +111,90 @@ func _can_afford_production(station: Dictionary, game_data: Dictionary, quantity
 	return true
 
 
-func _on_manual_production(station_index: int, quantity: int) -> void:
-	manual_production_requested.emit(station_index, quantity)
+func update_station_interfaces(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
+	for i in range(min(station_interfaces.size(), production_stations.size())):
+		var station = production_stations[i]
+		var station_group = station_interfaces[i]
+		var owned = game_data["stations"].get(station.id, 0)
+		var cost = _calculate_station_cost(station, game_data)
+		var can_afford = game_data["money"] >= cost
+		var is_unlocked = station.get("unlocked", true)  # Default true para compatibilidad
 
+		# Actualizar botón de compra (segundo hijo después del título)
+		var purchase_button = station_group.get_child(1) as Button
 
-func _clear_production_interfaces() -> void:
-	for child in production_container.get_children():
-		child.queue_free()
+		if not is_unlocked:
+			# Estación bloqueada - mostrar requisitos de desbloqueo
+			purchase_button.text = "🔒 BLOQUEADO\n%s\nRequisitos: Experimenta con ingredientes..." % station.name
+			purchase_button.disabled = true
+			purchase_button.visible = true
 
+			# Ocultar interfaz de producción
+			var production_label = station_group.get_child(3)
+			var production_buttons = station_group.get_child(4)
+			production_label.visible = false
+			production_buttons.visible = false
 
-func update_station_buttons(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
-	for i in range(station_buttons.size()):
-		if i < production_stations.size():
-			var station = production_stations[i]
-			var button = station_buttons[i]
-			var cost = _calculate_station_cost(station, game_data)
-			var owned = game_data["stations"].get(station.id, 0)
-			var can_afford = game_data["money"] >= cost
-
+		elif owned == 0:
+			# No tiene la estación pero está desbloqueada, mostrar botón de compra
 			var recipe_text = ""
 			for ingredient in station.recipe.keys():
 				recipe_text += "%dx %s " % [station.recipe[ingredient], ingredient]
 
-			button.text = (
-				"%s\nCosto: $%.0f\nPropiedad: %d\nReceta: %s\n%s"
-				% [station.name, cost, owned, recipe_text, station.description]
-			)
-			button.disabled = not can_afford
+			purchase_button.text = "🏗️ Construir %s\nCosto: $%s\nReceta: %s\n%s" % [
+				station.name,
+				_format_large_number(cost),
+				recipe_text,
+				station.description
+			]
+			purchase_button.disabled = not can_afford
+			purchase_button.visible = true
+
+			# Ocultar interfaz de producción
+			var production_label = station_group.get_child(3)
+			var production_buttons = station_group.get_child(4)
+			production_label.visible = false
+			production_buttons.visible = false
+		else:
+			# Ya tiene la estación, ocultar compra y mostrar producción
+			purchase_button.visible = false
+
+			# Mostrar interfaz de producción
+			var production_label = station_group.get_child(3)
+			var production_buttons = station_group.get_child(4)
+			production_label.visible = true
+			production_buttons.visible = true
+
+			# Actualizar botones de producción
+			production_label.text = "🔨 Producción Manual (Tienes: %d):" % owned
+
+			var buttons = production_buttons.get_children()
+			for j in range(buttons.size()):
+				var button = buttons[j] as Button
+				var quantity = int(button.text.substr(1))  # Quitar la 'x'
+				var can_produce = _can_produce(station, game_data, quantity)
+				button.disabled = not can_produce
+
+				if can_produce:
+					button.text = "x%d ✅" % quantity
+				else:
+					button.text = "x%d ❌" % quantity
+
+
+func _can_produce(station: Dictionary, game_data: Dictionary, quantity: int) -> bool:
+	# Verificar si tiene suficientes ingredientes para producir
+	for ingredient in station.recipe.keys():
+		var required = station.recipe[ingredient] * quantity
+		var available = game_data["resources"].get(ingredient, 0)
+		if available < required:
+			return false
+	return true
 
 
 func _calculate_station_cost(station: Dictionary, game_data: Dictionary) -> float:
 	var owned = game_data["stations"].get(station.id, 0)
-	return station.base_cost * pow(1.2, owned)
+	# Factor de escalado reducido de 1.2 a 1.15 para evitar overflow
+	return station.base_cost * pow(1.15, owned)
 
 
 func _get_product_icon(product_name: String) -> String:
@@ -195,11 +227,30 @@ func _clear_product_labels() -> void:
 	product_labels.clear()
 
 
-func _clear_station_buttons() -> void:
+func _clear_station_interfaces() -> void:
 	for child in station_container.get_children():
 		child.queue_free()
-	station_buttons.clear()
+	station_interfaces.clear()
 
 
 func _on_station_purchased(station_index: int) -> void:
 	station_purchased.emit(station_index)
+
+
+func _on_manual_production_requested(station_index: int, quantity: int) -> void:
+	manual_production_requested.emit(station_index, quantity)
+
+
+func _format_large_number(number: float) -> String:
+	if number < 1000:
+		return "%.0f" % number
+	elif number < 1000000:
+		return "%.1fK" % (number / 1000.0)
+	elif number < 1000000000:
+		return "%.1fM" % (number / 1000000.0)
+	elif number < 1000000000000:
+		return "%.1fB" % (number / 1000000000.0)
+	elif number < 1000000000000000:
+		return "%.1fT" % (number / 1000000000000.0)
+	else:
+		return "%.2e" % number

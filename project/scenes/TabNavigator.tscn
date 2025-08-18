@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b4f6xm8k9j2n1"]
+[gd_scene load_steps=6 format=3 uid="uid://b4f6xm8k9j2n1"]
 
 [ext_resource type="Script" path="res://scripts/TabNavigator.gd" id="1_tab_nav"]
 [ext_resource type="PackedScene" path="res://scenes/GenerationPanel.tscn" id="2_gen_panel"]
 [ext_resource type="PackedScene" path="res://scenes/ProductionPanel.tscn" id="3_prod_panel"]
 [ext_resource type="PackedScene" path="res://scenes/SalesPanel.tscn" id="4_sales_panel"]
+[ext_resource type="PackedScene" path="res://scenes/CustomersPanel.tscn" id="5_customers_panel"]
 
 [node name="TabNavigator" type="Control"]
 layout_mode = 3
@@ -79,6 +80,18 @@ visible = false
 [node name="SalesPanelInstance" parent="MainContainer/ContentContainer/SalesPanel" instance=ExtResource("4_sales_panel")]
 layout_mode = 1
 
+[node name="CustomersPanel" type="Control" parent="MainContainer/ContentContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+
+[node name="CustomersPanelInstance" parent="MainContainer/ContentContainer/CustomersPanel" instance=ExtResource("5_customers_panel")]
+layout_mode = 1
+
 [node name="BottomNavigation" type="HBoxContainer" parent="MainContainer"]
 layout_mode = 2
 size_flags_vertical = 0
@@ -102,3 +115,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "💰 VENTAS"
+
+[node name="CustomersTab" type="Button" parent="MainContainer/BottomNavigation"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "👥 CLIENTES"

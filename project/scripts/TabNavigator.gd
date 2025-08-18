@@ -10,11 +10,13 @@ extends Control
 @onready var generation_tab: Button = $MainContainer/BottomNavigation/GenerationTab
 @onready var production_tab: Button = $MainContainer/BottomNavigation/ProductionTab
 @onready var sales_tab: Button = $MainContainer/BottomNavigation/SalesTab
+@onready var customers_tab: Button = $MainContainer/BottomNavigation/CustomersTab
 
 # Paneles de contenido
 @onready var generation_panel: Control = $MainContainer/ContentContainer/GenerationPanel
 @onready var production_panel: Control = $MainContainer/ContentContainer/ProductionPanel
 @onready var sales_panel: Control = $MainContainer/ContentContainer/SalesPanel
+@onready var customers_panel: Control = $MainContainer/ContentContainer/CustomersPanel
 
 # Variables para el sistema
 var current_tab: String = "generation"
@@ -52,6 +54,7 @@ func _connect_signals() -> void:
 	generation_tab.pressed.connect(_on_generation_tab_pressed)
 	production_tab.pressed.connect(_on_production_tab_pressed)
 	sales_tab.pressed.connect(_on_sales_tab_pressed)
+	customers_tab.pressed.connect(_on_customers_tab_pressed)
 
 
 func _show_tab(tab_name: String) -> void:
@@ -59,11 +62,13 @@ func _show_tab(tab_name: String) -> void:
 	generation_panel.visible = false
 	production_panel.visible = false
 	sales_panel.visible = false
+	customers_panel.visible = false
 
 	# Deseleccionar todos los botones
 	generation_tab.button_pressed = false
 	production_tab.button_pressed = false
 	sales_tab.button_pressed = false
+	customers_tab.button_pressed = false
 
 	# Mostrar panel seleccionado y activar botón
 	match tab_name:
@@ -76,6 +81,9 @@ func _show_tab(tab_name: String) -> void:
 		"sales":
 			sales_panel.visible = true
 			sales_tab.button_pressed = true
+		"customers":
+			customers_panel.visible = true
+			customers_tab.button_pressed = true
 
 	current_tab = tab_name
 	tab_changed.emit(tab_name)
@@ -84,7 +92,7 @@ func _show_tab(tab_name: String) -> void:
 
 func update_money_display(amount: float) -> void:
 	if money_label:
-		money_label.text = "💰 $%.2f" % amount
+		money_label.text = "💰 $%s" % _format_large_number(amount)
 
 
 func get_current_panel() -> Control:
@@ -109,6 +117,10 @@ func _on_production_tab_pressed() -> void:
 
 func _on_sales_tab_pressed() -> void:
 	_show_tab("sales")
+
+
+func _on_customers_tab_pressed() -> void:
+	_show_tab("customers")
 
 
 func _on_pause_pressed() -> void:
@@ -171,3 +183,18 @@ func _save_current_data() -> void:
 	print("📁 Guardando datos manualmente...")
 	if GameEvents:
 		GameEvents.save_data_requested.emit()
+
+
+func _format_large_number(number: float) -> String:
+	if number < 1000:
+		return "%.2f" % number
+	elif number < 1000000:
+		return "%.1fK" % (number / 1000.0)
+	elif number < 1000000000:
+		return "%.1fM" % (number / 1000000.0)
+	elif number < 1000000000000:
+		return "%.1fB" % (number / 1000000000.0)
+	elif number < 1000000000000000:
+		return "%.1fT" % (number / 1000000000000.0)
+	else:
+		return "%.2e" % number

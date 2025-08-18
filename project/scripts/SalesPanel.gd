@@ -1,5 +1,5 @@
 extends ScrollContainer
-## SalesPanel - Panel de ventas y estadísticas granulares
+## SalesPanel - Panel de ventas manuales y estadísticas
 ## Permite vender productos e ingredientes por cantidades específicas
 
 @onready var products_container: VBoxContainer = $MainContainer/SalesSection/ProductsContainer
@@ -46,35 +46,35 @@ func _setup_statistics() -> void:
 func create_sell_interface_for_item(item_name: String, item_type: String, quantity: int, price: float) -> void:
 	if quantity <= 0:
 		return
-	
+
 	var container = ingredients_container if item_type == "ingredient" else products_container
-	
+
 	# Crear contenedor horizontal para cada ítem
 	var item_container = HBoxContainer.new()
 	container.add_child(item_container)
-	
+
 	# Label con información del ítem
 	var info_label = Label.new()
 	var emoji = _get_item_emoji(item_name)
 	info_label.text = "%s %s: %d ($%.2f c/u)" % [emoji, item_name.capitalize(), quantity, price]
 	info_label.custom_minimum_size = Vector2(200, 0)
 	item_container.add_child(info_label)
-	
+
 	# Botones de venta por incrementos
 	var increments = [1, 5, 10, "MAX"]
 	for increment in increments:
 		var button = Button.new()
 		var sell_quantity = increment if increment != "MAX" else quantity
-		
+
 		if increment == "MAX":
 			button.text = "TODO"
 		else:
 			button.text = str(increment)
-		
+
 		# Deshabilitar si no hay suficiente cantidad
 		if increment != "MAX" and increment > quantity:
 			button.disabled = true
-		
+
 		button.pressed.connect(func(): _on_sell_button_pressed(item_name, item_type, sell_quantity))
 		item_container.add_child(button)
 
@@ -82,7 +82,7 @@ func create_sell_interface_for_item(item_name: String, item_type: String, quanti
 func _get_item_emoji(item_name: String) -> String:
 	match item_name:
 		"barley": return "🌾"
-		"hops": return "🌿" 
+		"hops": return "🌿"
 		"water": return "💧"
 		"yeast": return "🦠"
 		"basic_beer": return "🍺"
@@ -98,14 +98,14 @@ func _on_sell_button_pressed(item_name: String, item_type: String, quantity: int
 func update_sell_interfaces(game_data: Dictionary) -> void:
 	# Limpiar interfaces existentes
 	_clear_sell_interfaces()
-	
+
 	# Crear interfaces para productos
 	for product_name in game_data["products"].keys():
 		var quantity = game_data["products"][product_name]
 		if quantity > 0:
 			var price = _get_product_price(product_name)
 			create_sell_interface_for_item(product_name, "product", quantity, price)
-	
+
 	# Crear interfaces para ingredientes (excepto agua)
 	for ingredient_name in game_data["resources"].keys():
 		var quantity = game_data["resources"][ingredient_name]
@@ -119,34 +119,10 @@ func _clear_sell_interfaces() -> void:
 	for child in products_container.get_children():
 		if child.name != "ProductsLabel":
 			child.queue_free()
-	
+
 	for child in ingredients_container.get_children():
 		if child.name != "IngredientsLabel":
 			child.queue_free()
-
-
-func update_statistics(game_data: Dictionary) -> void:
-	if stats_container.get_child_count() >= 5:
-		var stats_labels = stats_container.get_children()
-		stats_labels[0].text = (
-			"💰 Dinero total ganado: $%.0f" % game_data["statistics"]["total_money_earned"]
-		)
-		stats_labels[1].text = (
-			"🌾 Recursos generados: %d" % game_data["statistics"]["resources_generated"]
-		)
-		stats_labels[2].text = "🍺 Productos fabricados: %d" % _count_total_products_made(game_data)
-		stats_labels[3].text = "💸 Productos vendidos: %d" % game_data["statistics"]["products_sold"]
-		stats_labels[4].text = (
-			"👥 Clientes atendidos: %d" % game_data["statistics"]["customers_served"]
-		)
-
-
-func _count_total_products_made(game_data: Dictionary) -> int:
-	var total = 0
-	for amount in game_data["products"].values():
-		total += amount
-	total += game_data["statistics"]["products_sold"]
-	return total
 
 
 func _get_product_price(product_type: String) -> float:
@@ -174,3 +150,13 @@ func _get_ingredient_price(ingredient_type: String) -> float:
 			return 1.0
 		_:
 			return 0.2
+
+
+func update_statistics(game_data: Dictionary) -> void:
+	var stats = game_data["statistics"]
+	if stats_labels.size() >= 5:
+		stats_labels[0].text = "💰 Dinero total ganado: $%.2f" % stats.get("total_money_earned", 0)
+		stats_labels[1].text = "🌾 Recursos generados: %d" % stats.get("resources_generated", 0)
+		stats_labels[2].text = "🍺 Productos fabricados: %d" % stats.get("products_crafted", 0)
+		stats_labels[3].text = "💸 Productos vendidos: %d" % stats.get("products_sold", 0)
+		stats_labels[4].text = "👥 Clientes atendidos: %d" % stats.get("customers_served", 0)
