@@ -80,36 +80,27 @@ func purchase_generator(generator_id: String, quantity: int) -> bool:
 	if not generator_def:
 		return false
 
-	var owned = game_data.generators.get(generator_id, 0)
-	var total_cost = GameUtils.calculate_exponential_cost(
-		generator_def.base_cost,
-		owned,
-		quantity,
-		generator_def.scale_factor
-	)
+	# Precio fijo por unidad (como las ventas de ingredientes)
+	var total_cost = generator_def.base_cost * quantity
 
 	if game_data.money < total_cost:
 		return false
 
+	var owned = game_data.generators.get(generator_id, 0)
 	game_data.money -= total_cost
 	game_data.generators[generator_id] = owned + quantity
 
 	generator_purchased.emit(generator_id, quantity)
 	return true
 
-## Obtener costo de compra de generador
+## Obtener costo de compra de generador (precio fijo)
 func get_generator_cost(generator_id: String, quantity: int = 1) -> float:
 	var generator_def = _find_generator_by_id(generator_id)
 	if not generator_def:
 		return 0.0
 
-	var owned = game_data.generators.get(generator_id, 0) if game_data else 0
-	return GameUtils.calculate_exponential_cost(
-		generator_def.base_cost,
-		owned,
-		quantity,
-		generator_def.scale_factor
-	)
+	# Precio fijo por unidad (como las ventas)
+	return generator_def.base_cost * quantity
 
 ## Obtener definición de generador por ID
 func _find_generator_by_id(generator_id: String) -> Dictionary:

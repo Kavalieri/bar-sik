@@ -243,7 +243,7 @@ func _on_tab_changed(tab_name: String) -> void:
 
 func _on_pause_pressed() -> void:
 	print("⏸️ Botón pausa presionado")
-	
+
 	if get_tree().paused:
 		# Si ya está pausado, reanudar
 		print("▶️ Reanudando juego")
@@ -263,10 +263,10 @@ func _show_pause_menu() -> void:
 	var pause_menu_instance = PAUSE_MENU_SCENE.instantiate()
 	pause_menu_instance.name = "PauseMenuOverlay"
 	pause_menu_instance.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
-	
+
 	# Añadir como overlay (encima de todo)
 	add_child(pause_menu_instance)
-	
+
 	print("⏸️ Menú de pausa mostrado")
 
 func _on_reset_data_requested() -> void:
@@ -284,7 +284,7 @@ func _on_reset_data_requested() -> void:
 ## Guardado automático
 func _save_game() -> void:
 	if SaveSystem:
-		SaveSystem.save_data(game_data.to_dict())
+		SaveSystem.save_game_data(game_data.to_dict())
 		print("💾 Juego guardado automáticamente")
 
 ## Guardar al cerrar
