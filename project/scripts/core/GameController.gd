@@ -36,9 +36,9 @@ func _setup_game_data() -> void:
 	game_data = GameData.new()
 
 	# Cargar datos guardados si existen
-	if SaveSystem and SaveSystem.has_save_data():
-		var loaded_data = SaveSystem.load_data()
-		if loaded_data:
+	if SaveSystem:
+		var loaded_data = SaveSystem.load_game_data()
+		if loaded_data and loaded_data.size() > 0:
 			game_data.from_dict(loaded_data)
 			print("💾 Datos cargados del sistema de guardado")
 
@@ -174,7 +174,9 @@ func _on_generator_purchased(generator_id: String, quantity: int) -> void:
 	print("✅ Generador comprado: %dx %s" % [quantity, generator_id])
 	_update_all_displays()
 
-func _on_resource_generated(resource_type: String, amount: int) -> void:
+func _on_resource_generated(_resource_type: String, _amount: int) -> void:
+	# Los parámetros se reciben pero no se usan directamente ya que 
+	# la información está disponible en game_data actualizado
 	# Solo actualizar recursos, no toda la UI
 	if generation_panel.has_method("update_resource_displays"):
 		generation_panel.update_resource_displays(game_data.to_dict())

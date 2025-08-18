@@ -23,6 +23,7 @@ Router="*res://singletons/Router.gd"
 GameEvents="*res://singletons/GameEvents.gd"
 SaveSystem="*res://singletons/SaveSystem.gd"
 GameManager="*res://singletons/GameManager.gd"
+GameUtils="*res://scripts/core/GameUtils.gd"
 
 [display]
 
