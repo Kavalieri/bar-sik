@@ -101,18 +101,9 @@ func update_generator_displays(
 			button.disabled = not can_afford
 
 
-func _calculate_bulk_cost(generator: Dictionary, game_data: Dictionary, quantity: int) -> float:
-	var owned = game_data["generators"].get(generator.id, 0)
-	var total_cost = 0.0
-
-	# Calcular costo acumulativo para compras múltiples
-	# Factor de escalado más conservador para evitar overflow
-	for i in range(quantity):
-		var scaling_factor = 1.10  # Reducido de 1.15 a 1.10
-		var cost = generator.base_cost * pow(scaling_factor, owned + i)
-		total_cost += cost
-
-	return total_cost
+func _calculate_bulk_cost(generator: Dictionary, _game_data: Dictionary, quantity: int) -> float:
+	# Precio fijo simple (consistente con GeneratorManager)
+	return generator.base_cost * quantity
 
 
 func _get_resource_icon(resource_name: String) -> String:

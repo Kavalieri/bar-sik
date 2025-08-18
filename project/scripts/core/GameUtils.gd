@@ -2,20 +2,27 @@ extends Node
 ## GameUtils - Utilidades centralizadas del juego
 ## Eliminar duplicación y centralizar funciones comunes
 
-## Formateo de números grandes
+## Formateo de números grandes (robusto)
 func format_large_number(number: float) -> String:
-	if number < 1000:
-		return "%.0f" % number
-	elif number < 1000000:
-		return "%.1fK" % (number / 1000.0)
-	elif number < 1000000000:
-		return "%.1fM" % (number / 1000000.0)
-	elif number < 1000000000000:
-		return "%.1fB" % (number / 1000000000.0)
-	elif number < 1000000000000000:
-		return "%.1fT" % (number / 1000000000000.0)
+	# Validar entrada
+	if not is_finite(number) or is_nan(number):
+		return "0"
+	
+	# Asegurar que sea positivo
+	var abs_number = abs(number)
+	
+	if abs_number < 1000:
+		return str(int(abs_number))
+	elif abs_number < 1000000:
+		return "%.1fK" % (abs_number / 1000.0)
+	elif abs_number < 1000000000:
+		return "%.1fM" % (abs_number / 1000000.0)
+	elif abs_number < 1000000000000:
+		return "%.1fB" % (abs_number / 1000000000.0)
+	elif abs_number < 1000000000000000:
+		return "%.1fT" % (abs_number / 1000000000000.0)
 	else:
-		return "%.2e" % number
+		return "%.1fQ" % (abs_number / 1000000000000000.0)
 
 ## Precios de productos
 func get_product_price(product_type: String) -> float:
