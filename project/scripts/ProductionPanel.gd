@@ -93,8 +93,8 @@ func update_product_displays(game_data: Dictionary) -> void:
 	for product_name in product_labels.keys():
 		var label = product_labels[product_name]
 		var amount = game_data["products"].get(product_name, 0)
-		var icon = _get_product_icon(product_name)
-		var price = _get_product_price(product_name)
+		var icon = GameUtils.get_product_icon(product_name)
+		var price = GameUtils.get_product_price(product_name)
 		label.text = (
 			"%s %s: %d ($%.1f c/u)"
 			% [icon, product_name.replace("_", " ").capitalize(), amount, price]
@@ -143,7 +143,7 @@ func update_station_interfaces(production_stations: Array[Dictionary], game_data
 
 			purchase_button.text = "🏗️ Construir %s\nCosto: $%s\nReceta: %s\n%s" % [
 				station.name,
-				_format_large_number(cost),
+				GameUtils.format_large_number(cost),
 				recipe_text,
 				station.description
 			]
@@ -197,30 +197,6 @@ func _calculate_station_cost(station: Dictionary, game_data: Dictionary) -> floa
 	return station.base_cost * pow(1.15, owned)
 
 
-func _get_product_icon(product_name: String) -> String:
-	match product_name:
-		"basic_beer":
-			return "🍺"
-		"premium_beer":
-			return "🍻"
-		"cocktail":
-			return "🍹"
-		_:
-			return "🥤"
-
-
-func _get_product_price(product_type: String) -> float:
-	match product_type:
-		"basic_beer":
-			return 5.0
-		"premium_beer":
-			return 12.0
-		"cocktail":
-			return 20.0
-		_:
-			return 1.0
-
-
 func _clear_product_labels() -> void:
 	for child in product_container.get_children():
 		child.queue_free()
@@ -239,18 +215,3 @@ func _on_station_purchased(station_index: int) -> void:
 
 func _on_manual_production_requested(station_index: int, quantity: int) -> void:
 	manual_production_requested.emit(station_index, quantity)
-
-
-func _format_large_number(number: float) -> String:
-	if number < 1000:
-		return "%.0f" % number
-	elif number < 1000000:
-		return "%.1fK" % (number / 1000.0)
-	elif number < 1000000000:
-		return "%.1fM" % (number / 1000000.0)
-	elif number < 1000000000000:
-		return "%.1fB" % (number / 1000000000.0)
-	elif number < 1000000000000000:
-		return "%.1fT" % (number / 1000000000000.0)
-	else:
-		return "%.2e" % number

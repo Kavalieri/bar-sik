@@ -55,7 +55,7 @@ func create_sell_interface_for_item(item_name: String, item_type: String, quanti
 
 	# Label con información del ítem
 	var info_label = Label.new()
-	var emoji = _get_item_emoji(item_name)
+	var emoji = GameUtils.get_item_emoji(item_name)
 	info_label.text = "%s %s: %d ($%.2f c/u)" % [emoji, item_name.capitalize(), quantity, price]
 	info_label.custom_minimum_size = Vector2(200, 0)
 	item_container.add_child(info_label)
@@ -79,18 +79,6 @@ func create_sell_interface_for_item(item_name: String, item_type: String, quanti
 		item_container.add_child(button)
 
 
-func _get_item_emoji(item_name: String) -> String:
-	match item_name:
-		"barley": return "🌾"
-		"hops": return "🌿"
-		"water": return "💧"
-		"yeast": return "🦠"
-		"basic_beer": return "🍺"
-		"premium_beer": return "🍻"
-		"cocktail": return "🍹"
-		_: return "📦"
-
-
 func _on_sell_button_pressed(item_name: String, item_type: String, quantity: int) -> void:
 	item_sell_requested.emit(item_type, item_name, quantity)
 
@@ -103,14 +91,14 @@ func update_sell_interfaces(game_data: Dictionary) -> void:
 	for product_name in game_data["products"].keys():
 		var quantity = game_data["products"][product_name]
 		if quantity > 0:
-			var price = _get_product_price(product_name)
+			var price = GameUtils.get_product_price(product_name)
 			create_sell_interface_for_item(product_name, "product", quantity, price)
 
 	# Crear interfaces para ingredientes (excepto agua)
 	for ingredient_name in game_data["resources"].keys():
 		var quantity = game_data["resources"][ingredient_name]
 		if quantity > 0 and ingredient_name != "water":
-			var price = _get_ingredient_price(ingredient_name)
+			var price = GameUtils.get_ingredient_price(ingredient_name)
 			create_sell_interface_for_item(ingredient_name, "ingredient", quantity, price)
 
 
@@ -123,33 +111,6 @@ func _clear_sell_interfaces() -> void:
 	for child in ingredients_container.get_children():
 		if child.name != "IngredientsLabel":
 			child.queue_free()
-
-
-func _get_product_price(product_type: String) -> float:
-	match product_type:
-		"basic_beer":
-			return 5.0
-		"premium_beer":
-			return 12.0
-		"cocktail":
-			return 20.0
-		_:
-			return 1.0
-
-
-func _get_ingredient_price(ingredient_type: String) -> float:
-	# Precios muy bajos para ingredientes (aproximadamente 10-20% del valor de productos)
-	match ingredient_type:
-		"barley":
-			return 0.5
-		"hops":
-			return 0.8
-		"water":
-			return 0.1
-		"yeast":
-			return 1.0
-		_:
-			return 0.2
 
 
 func update_statistics(game_data: Dictionary) -> void:

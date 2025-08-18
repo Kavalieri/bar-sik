@@ -97,7 +97,7 @@ func update_generator_displays(
 			var total_cost = _calculate_bulk_cost(generator, game_data, increment)
 			var can_afford = game_data["money"] >= total_cost
 
-			button.text = "%d\n$%s" % [increment, _format_large_number(total_cost)]
+			button.text = "%d\n$%s" % [increment, GameUtils.format_large_number(total_cost)]
 			button.disabled = not can_afford
 
 
@@ -143,18 +143,3 @@ func _clear_generator_buttons() -> void:
 
 func _on_generator_purchased(generator_index: int, quantity: int) -> void:
 	generator_purchased.emit(generator_index, quantity)
-
-
-func _format_large_number(number: float) -> String:
-	if number < 1000:
-		return "%.0f" % number
-	elif number < 1000000:  # Mil
-		return "%.1fK" % (number / 1000.0)
-	elif number < 1000000000:  # Millón
-		return "%.1fM" % (number / 1000000.0)
-	elif number < 1000000000000:  # Billón
-		return "%.1fB" % (number / 1000000000.0)
-	elif number < 1000000000000000:  # Trillón
-		return "%.1fT" % (number / 1000000000000.0)
-	else:  # Números extremadamente grandes
-		return "%.2e" % number  # Notación científica

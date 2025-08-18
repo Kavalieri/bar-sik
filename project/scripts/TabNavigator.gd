@@ -92,7 +92,7 @@ func _show_tab(tab_name: String) -> void:
 
 func update_money_display(amount: float) -> void:
 	if money_label:
-		money_label.text = "💰 $%s" % _format_large_number(amount)
+		money_label.text = "💰 $%s" % GameUtils.format_large_number(amount)
 
 
 func get_current_panel() -> Control:
@@ -183,18 +183,3 @@ func _save_current_data() -> void:
 	print("📁 Guardando datos manualmente...")
 	if GameEvents:
 		GameEvents.save_data_requested.emit()
-
-
-func _format_large_number(number: float) -> String:
-	if number < 1000:
-		return "%.2f" % number
-	elif number < 1000000:
-		return "%.1fK" % (number / 1000.0)
-	elif number < 1000000000:
-		return "%.1fM" % (number / 1000000.0)
-	elif number < 1000000000000:
-		return "%.1fB" % (number / 1000000000.0)
-	elif number < 1000000000000000:
-		return "%.1fT" % (number / 1000000000000.0)
-	else:
-		return "%.2e" % number
