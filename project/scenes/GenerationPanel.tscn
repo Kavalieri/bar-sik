@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://ck2m9v7x8n4p5"]
+
+[ext_resource type="Script" path="res://scripts/GenerationPanel.gd" id="1_gen_panel"]
+
+[node name="GenerationPanel" type="ScrollContainer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gen_panel")
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Title" type="Label" parent="MainContainer"]
+layout_mode = 2
+text = "🏭 GENERACIÓN DE RECURSOS"
+horizontal_alignment = 1
+
+[node name="ResourcesSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="ResourceTitle" type="Label" parent="MainContainer/ResourcesSection"]
+layout_mode = 2
+text = "📦 INGREDIENTES DISPONIBLES"
+
+[node name="ResourceContainer" type="VBoxContainer" parent="MainContainer/ResourcesSection"]
+layout_mode = 2
+
+[node name="Separator1" type="HSeparator" parent="MainContainer"]
+layout_mode = 2
+
+[node name="GeneratorsSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="GeneratorTitle" type="Label" parent="MainContainer/GeneratorsSection"]
+layout_mode = 2
+text = "🌾 GENERADORES (Comprar para producir ingredientes)"
+
+[node name="GeneratorContainer" type="VBoxContainer" parent="MainContainer/GeneratorsSection"]
+layout_mode = 2

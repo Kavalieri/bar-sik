@@ -1,15 +1,16 @@
 extends Control
 ## GameScene - Escena principal del idle game BAR-SIK
 ## Sistema económico de 3 fases: Generación → Producción → Venta
-## Ahora usa sistema modular con TabNavigator y paneles separados
 
-# Referencias al sistema de navegación
-@onready var tab_navigator: Control = $TabNavigator
-
-# Referencias a los paneles individuales
-var generation_panel: Control
-var production_panel: Control
-var sales_panel: Control
+# Referencias a los nodos de UI principales
+@onready var pause_button: Button = $MainContainer/TopPanel/PauseButton
+@onready var currency_container: HBoxContainer = $MainContainer/TopPanel/CurrencyContainer
+@onready
+var resource_container: VBoxContainer = $MainContainer/ResourcesPanel/ResourceSection/ScrollContainer/ResourceContainer
+@onready
+var beverage_container: VBoxContainer = $MainContainer/ResourcesPanel/BeveragePanel/ScrollContainer/BeverageContainer
+@onready
+var stats_container: VBoxContainer = $MainContainer/StatsPanel/ScrollContainer/StatsContainer
 
 # Datos principales del juego
 var game_data: Dictionary = {}
@@ -52,15 +53,22 @@ var production_stations: Array[Dictionary] = [
 		"id": "bar_station",
 		"name": "🍹 Estación de Bar",
 		"owned": 0,
-		"base_cost": 250.0,
-		"recipe": {"basic_beer": 2, "water": 1},
+		"base_cost": 200.0,
+		"recipe": {"basic_beer": 1, "hops": 2},
 		"produces": "premium_beer",
 		"production_time": 15.0,
 		"description": "Mejora cerveza básica a premium"
 	}
 ]
 
-# Variables de sistema
+# UI Labels y botones
+var money_label: Label
+var resource_labels: Dictionary = {}
+var product_labels: Dictionary = {}
+var generator_buttons: Array[Button] = []
+var station_buttons: Array[Button] = []
+
+# Timers y sistemas
 var resource_timer: Timer
 var production_timers: Dictionary = {}
 var customer_timer: Timer
@@ -69,45 +77,20 @@ var customer_timer: Timer
 func _ready() -> void:
 	print("🍺 GameScene cargado - Sistema económico 3 fases")
 
-	# Cargar datos del juego
+	# Configurar botón de pausa
+	if pause_button:
+		pause_button.text = "⏸️ Pausa"
+		pause_button.pressed.connect(_on_pause_pressed)
+
+	# Inicializar sistemas
 	_load_game_data()
-
-	# Setup del sistema modular
-	_setup_modular_system()
-
-	# Setup de timers
+	_setup_ui()
 	_setup_timers()
-
-	# Inicialización inicial
+	_setup_auto_save()
+	_connect_events()
 	_update_all_displays()
 
-	print("✅ GameScene configurado con sistema modular")
-
-
-func _setup_modular_system() -> void:
-	# Obtener referencias a los paneles
-	generation_panel = (
-		tab_navigator.get_node("MainContainer/ContentContainer/GenerationPanel").get_child(0)
-	)
-	production_panel = (
-		tab_navigator.get_node("MainContainer/ContentContainer/ProductionPanel").get_child(0)
-	)
-	sales_panel = tab_navigator.get_node("MainContainer/ContentContainer/SalesPanel").get_child(0)
-
-	# Conectar señales del TabNavigator
-	tab_navigator.tab_changed.connect(_on_tab_changed)
-	tab_navigator.pause_pressed.connect(_on_pause_pressed)
-
-	# Setup de cada panel
-	generation_panel.setup_resources(game_data)
-	generation_panel.setup_generators(resource_generators)
-	generation_panel.generator_purchased.connect(_on_generator_purchased)
-
-	production_panel.setup_products(game_data)
-	production_panel.setup_stations(production_stations)
-	production_panel.station_purchased.connect(_on_station_purchased)
-
-	sales_panel.manual_sell_requested.connect(_on_manual_sell)
+	print("🎮 Sistema económico BAR-SIK inicializado")
 
 
 func _load_game_data() -> void:
@@ -163,22 +146,105 @@ func _get_default_game_data() -> Dictionary:
 	}
 
 
+func _setup_ui() -> void:
+	# Display de dinero
+	money_label = Label.new()
+	money_label.add_theme_font_size_override("font_size", 20)
+	currency_container.add_child(money_label)
+
+	# Displays de recursos
+	var resource_title = Label.new()
+	resource_title.text = "📦 INGREDIENTES"
+	resource_title.add_theme_font_size_override("font_size", 16)
+	resource_container.add_child(resource_title)
+
+	for resource_name in game_data["resources"].keys():
+		var label = Label.new()
+		resource_labels[resource_name] = label
+		resource_container.add_child(label)
+
+	# Separador
+	var separator1 = HSeparator.new()
+	resource_container.add_child(separator1)
+
+	# Botones de generadores
+	var generators_title = Label.new()
+	generators_title.text = "🏭 GENERADORES"
+	generators_title.add_theme_font_size_override("font_size", 16)
+	resource_container.add_child(generators_title)
+
+	for i in range(resource_generators.size()):
+		var button = Button.new()
+		button.pressed.connect(_on_generator_purchased.bind(i))
+		resource_container.add_child(button)
+		generator_buttons.append(button)
+
+	# Displays de productos y estaciones
+	var products_title = Label.new()
+	products_title.text = "🍺 PRODUCTOS"
+	products_title.add_theme_font_size_override("font_size", 16)
+	beverage_container.add_child(products_title)
+
+	for product_name in game_data["products"].keys():
+		var label = Label.new()
+		product_labels[product_name] = label
+		beverage_container.add_child(label)
+
+	# Separador
+	var separator2 = HSeparator.new()
+	beverage_container.add_child(separator2)
+
+	# Botones de estaciones de producción
+	var stations_title = Label.new()
+	stations_title.text = "⚙️ ESTACIONES"
+	stations_title.add_theme_font_size_override("font_size", 16)
+	beverage_container.add_child(stations_title)
+
+	for i in range(production_stations.size()):
+		var button = Button.new()
+		button.pressed.connect(_on_station_purchased.bind(i))
+		beverage_container.add_child(button)
+		station_buttons.append(button)
+
+	# Botón de venta manual
+	var separator3 = HSeparator.new()
+	beverage_container.add_child(separator3)
+
+	var sell_button = Button.new()
+	sell_button.text = "💰 VENDER PRODUCTOS\n(Click manual)"
+	sell_button.add_theme_font_size_override("font_size", 16)
+	sell_button.pressed.connect(_on_manual_sell)
+	beverage_container.add_child(sell_button)
+
+	# Panel de estadísticas
+	_setup_stats_panel()
+
+
+func _setup_stats_panel() -> void:
+	var stats = [
+		"💰 Dinero total: $0",
+		"🌾 Recursos generados: 0",
+		"🍺 Productos fabricados: 0",
+		"💸 Productos vendidos: 0",
+		"👥 Clientes atendidos: 0"
+	]
+
+	for stat_text in stats:
+		var stat_label = Label.new()
+		stat_label.text = stat_text
+		stat_label.add_theme_font_size_override("font_size", 14)
+		stats_container.add_child(stat_label)
+
+
 func _setup_timers() -> void:
-	# Timer para generación de recursos (cada 3 segundos)
+	# Timer para generar recursos
 	resource_timer = Timer.new()
 	resource_timer.wait_time = 3.0
-	resource_timer.autostart = True
+	resource_timer.autostart = true
 	resource_timer.timeout.connect(_generate_resources)
 	add_child(resource_timer)
 
-	# Iniciar timers de producción para estaciones que ya están compradas
-	for station_id in production_stations:
-		var station = station_id
-		var owned_count = game_data["stations"].get(station.id, 0)
-		if owned_count > 0:
-			_start_production_timer(station.id)
-
-	# Timer para clientes automáticos (cada 8 segundos)
+	# Timer para clientes automáticos
 	customer_timer = Timer.new()
 	customer_timer.wait_time = 8.0
 	customer_timer.autostart = true
@@ -186,19 +252,22 @@ func _setup_timers() -> void:
 	add_child(customer_timer)
 
 
-func _update_all_displays() -> void:
-	# Actualizar display de dinero en el TabNavigator
-	tab_navigator.update_money_display(game_data["money"])
+func _connect_events() -> void:
+	if GameEvents:
+		GameEvents.resource_generated.connect(_on_resource_generated)
+		GameEvents.product_crafted.connect(_on_product_crafted)
+		GameEvents.money_earned.connect(_on_money_earned)
 
-	# Actualizar cada panel según esté visible
-	generation_panel.update_resource_displays(game_data)
-	generation_panel.update_generator_buttons(resource_generators, game_data)
 
-	production_panel.update_product_displays(game_data)
-	production_panel.update_station_buttons(production_stations, game_data)
+func _on_pause_pressed() -> void:
+	print("⏸️ Juego pausado")
+	_save_game()
+	Router.goto_scene("pause")
 
-	sales_panel.update_statistics(game_data)
-	sales_panel.update_manual_sell_button(game_data)
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_on_pause_pressed()
 
 
 ## SISTEMA 1: GENERACIÓN DE RECURSOS
@@ -217,6 +286,8 @@ func _generate_resources() -> void:
 			if GameEvents:
 				GameEvents.resource_generated.emit(resource_type, amount)
 
+			print("🌾 Generado: +%d %s" % [amount, resource_type])
+
 	_update_all_displays()
 
 
@@ -226,7 +297,7 @@ func _on_generator_purchased(generator_index: int) -> void:
 
 	if game_data["money"] >= cost:
 		game_data["money"] -= cost
-		game_data["generators"][generator.id] = (game_data["generators"].get(generator.id, 0) + 1)
+		game_data["generators"][generator.id] = game_data["generators"].get(generator.id, 0) + 1
 
 		print(
 			"✅ Comprado: %s (Total: %d)" % [generator.name, game_data["generators"][generator.id]]
@@ -240,7 +311,7 @@ func _on_generator_purchased(generator_index: int) -> void:
 		print("❌ Dinero insuficiente para %s" % generator.name)
 
 
-## SISTEMA 2: PRODUCCIÓN DE BEBIDAS
+## SISTEMA 2: PRODUCCIÓN DE PRODUCTOS
 func _on_station_purchased(station_index: int) -> void:
 	var station = production_stations[station_index]
 	var cost = _get_station_cost(station_index)
@@ -261,15 +332,13 @@ func _start_production_timer(station_id: String) -> void:
 	if not station:
 		return
 
-	if production_timers.has(station_id):
-		production_timers[station_id].queue_free()
-
-	var timer = Timer.new()
-	timer.wait_time = station.production_time
-	timer.autostart = true
-	timer.timeout.connect(_produce_item.bind(station_id))
-	add_child(timer)
-	production_timers[station_id] = timer
+	if not production_timers.has(station_id):
+		var timer = Timer.new()
+		timer.wait_time = station.production_time
+		timer.autostart = true
+		timer.timeout.connect(_produce_item.bind(station_id))
+		add_child(timer)
+		production_timers[station_id] = timer
 
 
 func _produce_item(station_id: String) -> void:
@@ -352,7 +421,9 @@ func _on_manual_sell() -> void:
 		print("💸 Total venta manual: $%.2f (%d productos)" % [total_earned, products_sold])
 
 		if GameEvents:
-			GameEvents.money_earned.emit(total_earned, "venta_manual")
+			GameEvents.sale_completed.emit("manual", products_sold, total_earned)
+	else:
+		print("❌ No hay productos para vender")
 
 	_update_all_displays()
 
@@ -378,12 +449,12 @@ func _process_automatic_customers() -> void:
 			print("🤖 Cliente automático compró: %s por $%.2f" % [chosen_product, price])
 
 			if GameEvents:
-				GameEvents.money_earned.emit(price, "cliente_automatico")
+				GameEvents.sale_completed.emit(chosen_product, 1, price)
 
 			_update_all_displays()
 
 
-## FUNCIONES AUXILIARES
+## FUNCIONES HELPER
 func _find_station_by_id(station_id: String) -> Dictionary:
 	for station in production_stations:
 		if station.id == station_id:
@@ -408,24 +479,132 @@ func _get_product_price(product_type: String) -> float:
 		"basic_beer":
 			return 5.0
 		"premium_beer":
-			return 12.0
+			return 15.0
 		"cocktail":
-			return 20.0
+			return 25.0
 		_:
 			return 1.0
 
 
-## EVENTOS DEL SISTEMA
-func _on_tab_changed(tab_name: String) -> void:
-	print("🔄 Cambiado a pestaña: %s" % tab_name)
-	# Actualizar displays cuando se cambie de pestaña
-	_update_all_displays()
+## FUNCIONES DE UI Y ACTUALIZACIÓN
+func _update_all_displays() -> void:
+	_update_money_display()
+	_update_resource_displays()
+	_update_product_displays()
+	_update_generator_buttons()
+	_update_station_buttons()
+	_update_stats_panel()
 
 
-func _on_pause_pressed() -> void:
-	print("⏸️ Pausa presionada")
-	if Router:
-		Router.go_to_scene("res://scenes/MainMenu.tscn")
+func _update_money_display() -> void:
+	if money_label:
+		money_label.text = "💰 $%.2f" % game_data["money"]
+
+
+func _update_resource_displays() -> void:
+	for resource_name in resource_labels.keys():
+		var label = resource_labels[resource_name]
+		var amount = game_data["resources"].get(resource_name, 0)
+		var icon = _get_resource_icon(resource_name)
+		label.text = "%s %s: %d" % [icon, resource_name.capitalize(), amount]
+
+
+func _update_product_displays() -> void:
+	for product_name in product_labels.keys():
+		var label = product_labels[product_name]
+		var amount = game_data["products"].get(product_name, 0)
+		var icon = _get_product_icon(product_name)
+		var price = _get_product_price(product_name)
+		label.text = (
+			"%s %s: %d ($%.1f c/u)"
+			% [icon, product_name.replace("_", " ").capitalize(), amount, price]
+		)
+
+
+func _update_generator_buttons() -> void:
+	for i in range(generator_buttons.size()):
+		if i < resource_generators.size():
+			var generator = resource_generators[i]
+			var button = generator_buttons[i]
+			var cost = _get_generator_cost(i)
+			var owned = game_data["generators"].get(generator.id, 0)
+			var can_afford = game_data["money"] >= cost
+
+			button.text = (
+				"%s\nCosto: $%.0f\nPropiedad: %d\n%s"
+				% [generator.name, cost, owned, generator.description]
+			)
+			button.disabled = not can_afford
+
+
+func _update_station_buttons() -> void:
+	for i in range(station_buttons.size()):
+		if i < production_stations.size():
+			var station = production_stations[i]
+			var button = station_buttons[i]
+			var cost = _get_station_cost(i)
+			var owned = game_data["stations"].get(station.id, 0)
+			var can_afford = game_data["money"] >= cost
+
+			var recipe_text = ""
+			for ingredient in station.recipe.keys():
+				recipe_text += "%dx %s " % [station.recipe[ingredient], ingredient]
+
+			button.text = (
+				"%s\nCosto: $%.0f\nPropiedad: %d\nReceta: %s\n%s"
+				% [station.name, cost, owned, recipe_text, station.description]
+			)
+			button.disabled = not can_afford
+
+
+func _update_stats_panel() -> void:
+	if stats_container.get_child_count() >= 5:
+		var stats_labels = stats_container.get_children()
+		stats_labels[0].text = (
+			"💰 Dinero total: $%.0f" % game_data["statistics"]["total_money_earned"]
+		)
+		stats_labels[1].text = (
+			"🌾 Recursos generados: %d" % game_data["statistics"]["resources_generated"]
+		)
+		stats_labels[2].text = "🍺 Productos fabricados: %d" % _count_total_products_made()
+		stats_labels[3].text = "💸 Productos vendidos: %d" % game_data["statistics"]["products_sold"]
+		stats_labels[4].text = (
+			"👥 Clientes atendidos: %d" % game_data["statistics"]["customers_served"]
+		)
+
+
+func _get_resource_icon(resource_name: String) -> String:
+	match resource_name:
+		"barley":
+			return "🌾"
+		"hops":
+			return "🌿"
+		"water":
+			return "💧"
+		"yeast":
+			return "🦠"
+		_:
+			return "📦"
+
+
+func _get_product_icon(product_name: String) -> String:
+	match product_name:
+		"basic_beer":
+			return "🍺"
+		"premium_beer":
+			return "🍻"
+		"cocktail":
+			return "🍹"
+		_:
+			return "🥤"
+
+
+func _count_total_products_made() -> int:
+	var total = 0
+	for amount in game_data["products"].values():
+		total += amount
+	total += game_data["statistics"]["products_sold"]
+	return total
 
 
 ## EVENTOS Y GUARDADO
@@ -444,18 +623,19 @@ func _on_money_earned(amount: float, source: String) -> void:
 func _save_game() -> void:
 	if SaveSystem:
 		SaveSystem.save_game_data(game_data)
+	elif GameEvents:
+		GameEvents.save_data_requested.emit()
 
 
-# Auto-guardado cada 30 segundos
+## Guardado automático cada 30 segundos
+func _setup_auto_save() -> void:
+	var auto_save_timer = Timer.new()
+	auto_save_timer.wait_time = 30.0
+	auto_save_timer.autostart = true
+	auto_save_timer.timeout.connect(_save_game)
+	add_child(auto_save_timer)
+
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		_save_game()
-
-
-func _timer() -> void:
-	# Timer de auto-guardado
-	var save_timer = Timer.new()
-	save_timer.wait_time = 30.0
-	save_timer.autostart = true
-	save_timer.timeout.connect(_save_game)
-	add_child(save_timer)

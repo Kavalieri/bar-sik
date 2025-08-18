@@ -1,0 +1,96 @@
+[gd_scene load_steps=3 format=3 uid="uid://cq7j1naxk3pn2"]
+
+[ext_resource type="Script" path="res://scripts/GameScene.gd" id="1_m8x4p"]
+[ext_resource type="PackedScene" path="res://scenes/TabNavigator.tscn" id="2_tab_nav"]
+
+[node name="GameScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m8x4p")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.101961, 0.101961, 0.101961, 1)
+
+[node name="TabNavigator" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TabNavigatorInstance" parent="TabNavigator" instance=ExtResource("2_tab_nav")]
+layout_mode = 1
+
+[node name="ResourceTitle" type="Label" parent="MainContainer/ResourcesPanel/ResourceSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "📦 Ingredientes"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/ResourcesPanel/ResourceSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ResourceContainer" type="VBoxContainer" parent="MainContainer/ResourcesPanel/ResourceSection/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BeveragePanel" type="VBoxContainer" parent="MainContainer/ResourcesPanel"]
+layout_mode = 2
+custom_minimum_size = Vector2(500, 0)
+
+[node name="BeverageTitle" type="Label" parent="MainContainer/ResourcesPanel/BeveragePanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🍹 Bebidas"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/ResourcesPanel/BeveragePanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BeverageContainer" type="VBoxContainer" parent="MainContainer/ResourcesPanel/BeveragePanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StatsPanel" type="Panel" parent="MainContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(1080, 150)
+
+[node name="StatsTitle" type="Label" parent="MainContainer/StatsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_top = 10.0
+offset_right = 59.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 20
+text = "📊 Estadísticas"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/StatsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatsContainer" type="VBoxContainer" parent="MainContainer/StatsPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3

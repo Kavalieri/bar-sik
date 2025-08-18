@@ -1,0 +1,99 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4f6xm8k9j2n1"]
+
+[ext_resource type="Script" path="res://scripts/TabNavigator.gd" id="1_tab_nav"]
+[ext_resource type="PackedScene" path="res://scenes/GenerationPanel.tscn" id="2_gen_panel"]
+[ext_resource type="PackedScene" path="res://scenes/ProductionPanel.tscn" id="3_prod_panel"]
+[ext_resource type="PackedScene" path="res://scenes/SalesPanel.tscn" id="4_sales_panel"]
+
+[node name="TabNavigator" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tab_nav")
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopPanel" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="PauseButton" type="Button" parent="MainContainer/TopPanel"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "⏸️"
+
+[node name="CurrencyContainer" type="HBoxContainer" parent="MainContainer/TopPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TabButtons" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
+
+[node name="GenerationTab" type="Button" parent="MainContainer/TabButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+text = "🏭 GENERACIÓN"
+
+[node name="ProductionTab" type="Button" parent="MainContainer/TabButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "🍺 PRODUCCIÓN"
+
+[node name="SalesTab" type="Button" parent="MainContainer/TabButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "💰 VENTAS"
+
+[node name="ContentContainer" type="Control" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GenerationPanel" type="Control" parent="MainContainer/ContentContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GenerationPanelInstance" parent="MainContainer/ContentContainer/GenerationPanel" instance=ExtResource("2_gen_panel")]
+layout_mode = 1
+
+[node name="ProductionPanel" type="Control" parent="MainContainer/ContentContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+
+[node name="ProductionPanelInstance" parent="MainContainer/ContentContainer/ProductionPanel" instance=ExtResource("3_prod_panel")]
+layout_mode = 1
+
+[node name="SalesPanel" type="Control" parent="MainContainer/ContentContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+
+[node name="SalesPanelInstance" parent="MainContainer/ContentContainer/SalesPanel" instance=ExtResource("4_sales_panel")]
+layout_mode = 1

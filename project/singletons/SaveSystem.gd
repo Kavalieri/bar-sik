@@ -90,7 +90,7 @@ func get_default_save_data() -> Dictionary:
 		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},
 		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
 		"generators": {"barley_farm": 0, "hops_farm": 0},
-		"stations": {"brewery": 0, "bar_station": 0},
+		"stations": {"brewery": 1, "bar_station": 0},  # Comienza con 1 cervecería desbloqueada
 		"statistics":
 		{
 			"total_money_earned": 0.0,
