@@ -7,10 +7,10 @@ func format_large_number(number: float) -> String:
 	# Validar entrada
 	if not is_finite(number) or is_nan(number):
 		return "0"
-	
+
 	# Asegurar que sea positivo
 	var abs_number = abs(number)
-	
+
 	if abs_number < 1000:
 		return str(int(abs_number))
 	elif abs_number < 1000000:

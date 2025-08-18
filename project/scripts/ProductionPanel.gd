@@ -16,6 +16,9 @@ signal manual_production_requested(station_index: int, quantity: int)
 
 func _ready() -> void:
 	print("🍺 ProductionPanel inicializado")
+	print("🔍 Verificando nodos:")
+	print("   - product_container: ", product_container)
+	print("   - station_container: ", station_container)
 
 
 func setup_products(game_data: Dictionary) -> void:
@@ -33,8 +36,12 @@ func setup_stations(production_stations: Array[Dictionary]) -> void:
 	# Limpiar interfaces existentes
 	_clear_station_interfaces()
 
+	print("🔧 ProductionPanel - Configurando %d estaciones" % production_stations.size())
+	print("📦 Contenedor de estaciones: ", station_container)
+
 	# Crear interfaces combinadas para cada estación (compra + producción)
 	for i in range(production_stations.size()):
+		print("🏗️ Creando interfaz para estación %d: %s" % [i, production_stations[i].name])
 		_create_station_interface(production_stations[i], i)
 
 
@@ -112,6 +119,18 @@ func _can_afford_production(station: Dictionary, game_data: Dictionary, quantity
 
 
 func update_station_interfaces(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
+	print("🔄 ProductionPanel - Actualizando interfaces de estación")
+	print("📊 Estaciones recibidas: %d, interfaces existentes: %d" % [production_stations.size(), station_interfaces.size()])
+
+	# Si no hay interfaces, crearlas primero
+	if station_interfaces.size() == 0:
+		print("⚠️ No hay interfaces existentes, creando desde cero...")
+		setup_stations(production_stations)
+		return
+
+	# FORZAR ACTUALIZACIÓN VISIBLE DE RECETAS
+	print("🔧 FORZANDO ACTUALIZACIÓN DE RECETAS...")
+
 	for i in range(min(station_interfaces.size(), production_stations.size())):
 		var station = production_stations[i]
 		var station_group = station_interfaces[i]
@@ -119,6 +138,13 @@ func update_station_interfaces(production_stations: Array[Dictionary], game_data
 		var cost = _calculate_station_cost(station, game_data)
 		var can_afford = game_data["money"] >= cost
 		var is_unlocked = station.get("unlocked", true)  # Default true para compatibilidad
+
+		print("🏗️ Actualizando estación %d (%s): poseída=%d, desbloqueada=%s" % [i, station.name, owned, is_unlocked])
+
+		# Verificar que station_group tiene hijos antes de acceder
+		if station_group.get_child_count() < 5:
+			print("❌ ERROR: station_group no tiene suficientes hijos (%d)" % station_group.get_child_count())
+			continue
 
 		# Actualizar botón de compra (segundo hijo después del título)
 		var purchase_button = station_group.get_child(1) as Button
@@ -139,12 +165,14 @@ func update_station_interfaces(production_stations: Array[Dictionary], game_data
 			# No tiene la estación pero está desbloqueada, mostrar botón de compra
 			var recipe_text = ""
 			for ingredient in station.recipe.keys():
-				recipe_text += "%dx %s " % [station.recipe[ingredient], ingredient]
+				var ingredient_icon = GameUtils.get_resource_icon(ingredient)
+				var amount = station.recipe[ingredient]
+				recipe_text += "%s%dx " % [ingredient_icon, amount]
 
 			purchase_button.text = "🏗️ Construir %s\nCosto: $%s\nReceta: %s\n%s" % [
 				station.name,
 				GameUtils.format_large_number(cost),
-				recipe_text,
+				recipe_text.strip_edges(),
 				station.description
 			]
 			purchase_button.disabled = not can_afford

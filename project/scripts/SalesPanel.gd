@@ -2,6 +2,10 @@ extends ScrollContainer
 ## SalesPanel - Panel de ventas manuales y estadísticas
 ## Permite vender productos e ingredientes por cantidades específicas
 
+# Señales para comunicación con GameScene
+signal item_sell_requested(item_type: String, item_name: String, quantity: int)
+# item_type será "product" o "ingredient"
+
 @onready var products_container: VBoxContainer = $MainContainer/SalesSection/ProductsContainer
 @onready var ingredients_container: VBoxContainer = $MainContainer/SalesSection/IngredientsContainer
 @onready var stats_container: VBoxContainer = $MainContainer/StatisticsSection/StatsContainer
@@ -11,13 +15,13 @@ var stats_labels: Array[Label] = []
 var product_sell_buttons: Dictionary = {}
 var ingredient_sell_buttons: Dictionary = {}
 
-# Señales para comunicación con GameScene
-signal item_sell_requested(item_type: String, item_name: String, quantity: int)
-# item_type será "product" o "ingredient"
-
 
 func _ready() -> void:
 	print("💰 SalesPanel inicializado")
+	print("🔍 Verificando nodos:")
+	print("   - products_container: ", products_container)
+	print("   - ingredients_container: ", ingredients_container)
+	print("   - stats_container: ", stats_container)
 	_setup_ui()
 
 
@@ -43,11 +47,24 @@ func _setup_statistics() -> void:
 		stats_labels.append(label)
 
 
-func create_sell_interface_for_item(item_name: String, item_type: String, quantity: int, price: float) -> void:
+func create_sell_interface_for_item(
+	item_name: String,
+	item_type: String,
+	quantity: int,
+	price: float
+) -> void:
 	if quantity <= 0:
+		print("❌ No se crea interfaz para %s - cantidad: %d" % [item_name, quantity])
 		return
 
+	print("🔧 Creando interfaz para: %s (%s) - cantidad: %d" % [item_name, item_type, quantity])
+
 	var container = ingredients_container if item_type == "ingredient" else products_container
+	print("📦 Usando contenedor: ", container)
+
+	if not container:
+		print("❌ ERROR: Contenedor no encontrado para %s" % item_type)
+		return
 
 	# Crear contenedor horizontal para cada ítem
 	var item_container = HBoxContainer.new()
@@ -64,15 +81,20 @@ func create_sell_interface_for_item(item_name: String, item_type: String, quanti
 	var increments = [1, 5, 10, "MAX"]
 	for increment in increments:
 		var button = Button.new()
-		var sell_quantity = increment if increment != "MAX" else quantity
+		var sell_quantity: int
+		var is_max_button: bool = false
 
-		if increment == "MAX":
+		# Verificar si es el botón MAX usando str()
+		if str(increment) == "MAX":
+			is_max_button = true
+			sell_quantity = quantity
 			button.text = "TODO"
 		else:
+			sell_quantity = increment as int
 			button.text = str(increment)
 
 		# Deshabilitar si no hay suficiente cantidad
-		if increment != "MAX" and increment > quantity:
+		if not is_max_button and (increment as int) > quantity:
 			button.disabled = true
 
 		button.pressed.connect(func(): _on_sell_button_pressed(item_name, item_type, sell_quantity))
@@ -87,19 +109,39 @@ func update_sell_interfaces(game_data: Dictionary) -> void:
 	# Limpiar interfaces existentes
 	_clear_sell_interfaces()
 
-	# Crear interfaces para productos
-	for product_name in game_data["products"].keys():
-		var quantity = game_data["products"][product_name]
-		if quantity > 0:
-			var price = GameUtils.get_product_price(product_name)
-			create_sell_interface_for_item(product_name, "product", quantity, price)
+	print("🔍 SalesPanel - Actualizando interfaces de venta")
+	print("📦 Productos disponibles: ", game_data["products"])
+	print("🌾 Recursos disponibles: ", game_data["resources"])
+
+	# FORZAR CREACIÓN DE INTERFACES BÁSICAS PARA TESTING
+	# Crear al menos una interfaz de prueba para productos
+	if not game_data["products"].is_empty():
+		print("🎯 CREANDO INTERFACES DE PRODUCTOS...")
+		for product_name in game_data["products"].keys():
+			var quantity = game_data["products"][product_name]
+			if quantity > 0:
+				var price = GameUtils.get_product_price(product_name)
+				create_sell_interface_for_item(product_name, "product", quantity, price)
+	else:
+		# Crear interfaz de prueba forzada
+		print("⚠️ No hay productos, creando interfaz de prueba")
+		create_sell_interface_for_item("basic_beer", "product", 1, 5.0)
 
 	# Crear interfaces para ingredientes (excepto agua)
+	print("🌾 CREANDO INTERFACES DE INGREDIENTES...")
+	var ingredients_created = 0
 	for ingredient_name in game_data["resources"].keys():
 		var quantity = game_data["resources"][ingredient_name]
 		if quantity > 0 and ingredient_name != "water":
 			var price = GameUtils.get_ingredient_price(ingredient_name)
 			create_sell_interface_for_item(ingredient_name, "ingredient", quantity, price)
+			ingredients_created += 1
+			print("✅ Ingrediente creado: %s (cantidad: %d)" % [ingredient_name, quantity])
+
+	# Si no hay ingredientes, crear al menos uno de prueba
+	if ingredients_created == 0:
+		print("⚠️ No hay ingredientes, creando interfaz de prueba")
+		create_sell_interface_for_item("barley", "ingredient", 5, 0.5)
 
 
 func _clear_sell_interfaces() -> void:

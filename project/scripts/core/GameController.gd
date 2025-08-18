@@ -121,8 +121,15 @@ func _setup_panels() -> void:
 
 	# Setup ProductionPanel
 	if production_panel.has_method("setup_products"):
+		print("🔧 GameController - Configurando ProductionPanel")
+		print("📊 Datos del juego: ", game_data.to_dict())
+		var station_defs = production_manager.get_station_definitions()
+		print("🏭 Definiciones de estaciones: ", station_defs.size(), " estaciones")
+		for i in range(station_defs.size()):
+			print("   %d. %s (id: %s)" % [i, station_defs[i].name, station_defs[i].id])
+
 		production_panel.setup_products(game_data.to_dict())
-		production_panel.setup_stations(production_manager.get_station_definitions())
+		production_panel.setup_stations(station_defs)
 		production_panel.station_purchased.connect(_on_ui_station_purchase_requested)
 		production_panel.manual_production_requested.connect(_on_ui_manual_production_requested)
 
@@ -162,6 +169,8 @@ func _update_all_displays() -> void:
 		production_panel.update_station_interfaces(production_manager.get_station_definitions(), game_dict)
 
 	if sales_panel.has_method("update_statistics"):
+		print("🔄 GameController - Actualizando SalesPanel")
+		print("📊 Datos para ventas: recursos=%s, productos=%s" % [game_dict["resources"], game_dict["products"]])
 		sales_panel.update_statistics(game_dict)
 		sales_panel.update_sell_interfaces(game_dict)
 
