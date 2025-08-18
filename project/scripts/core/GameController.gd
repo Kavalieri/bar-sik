@@ -321,13 +321,13 @@ func _notification(what: int) -> void:
 func _on_ui_offer_toggled(station_index: int, enabled: bool) -> void:
 	print("🛒 GameController - Oferta toggled:")
 	print("   - Estación: %d, Habilitada: %s" % [station_index, enabled])
-	
+
 	# Obtener la definición de la estación para conocer su ID
 	var station_defs = production_manager.get_station_definitions()
 	if station_index < station_defs.size():
 		var station_id = station_defs[station_index].id
 		print("   - ID de estación: %s" % station_id)
-		
+
 		# Actualizar GameData
 		if game_data.offers.has(station_id):
 			game_data.offers[station_id]["enabled"] = enabled
@@ -338,20 +338,20 @@ func _on_ui_offer_toggled(station_index: int, enabled: bool) -> void:
 func _on_ui_offer_price_requested(station_index: int) -> void:
 	print("💰 GameController - Configuración de precio solicitada:")
 	print("   - Estación: %d" % station_index)
-	
+
 	# Obtener la definición de la estación
 	var station_defs = production_manager.get_station_definitions()
 	if station_index < station_defs.size():
 		var station_id = station_defs[station_index].id
 		var current_multiplier = game_data.offers.get(station_id, {}).get("price_multiplier", 1.0)
-		
+
 		print("   - ID de estación: %s" % station_id)
 		print("   - Multiplicador actual: %.2f" % current_multiplier)
-		
+
 		# TODO: Aquí se podría abrir un diálogo para configurar el precio
 		# Por ahora, alternar entre valores comunes
 		var new_multiplier = 1.2 if current_multiplier <= 1.0 else (0.8 if current_multiplier >= 1.5 else 1.0)
 		game_data.offers[station_id]["price_multiplier"] = new_multiplier
-		
+
 		print("   - ✅ Nuevo multiplicador: %.2f" % new_multiplier)
 		_update_all_displays()  # Actualizar UI para mostrar el cambio

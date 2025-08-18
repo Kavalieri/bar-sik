@@ -92,7 +92,7 @@ func _create_station_interface(station: Dictionary, station_index: int) -> void:
 	station_group.add_child(offer_label)
 
 	var offer_container = HBoxContainer.new()
-	
+
 	# Toggle de activar/desactivar oferta
 	var offer_toggle = CheckBox.new()
 	offer_toggle.text = "Disponible para clientes"
@@ -247,7 +247,7 @@ func update_station_interfaces(production_stations: Array[Dictionary], game_data
 
 			# Actualizar checkbox sin disparar señal
 			offer_toggle.set_pressed_no_signal(is_enabled)
-			
+
 			# Actualizar texto del botón de precio
 			if price_multiplier == 1.0:
 				price_button.text = "Precio Normal"
@@ -299,7 +299,7 @@ func _on_offer_toggled(station_index: int) -> void:
 	var offer_container = station_group.get_child(7)  # HBoxContainer de oferta
 	var offer_toggle = offer_container.get_child(0) as CheckBox  # CheckBox
 	var enabled = offer_toggle.button_pressed
-	
+
 	print("🛒 Oferta toggled para estación %d: %s" % [station_index, "ACTIVADA" if enabled else "DESACTIVADA"])
 	offer_toggled.emit(station_index, enabled)
 

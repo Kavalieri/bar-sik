@@ -99,7 +99,7 @@ func _process_automatic_customer() -> void:
 	# Encontrar productos disponibles CON OFERTA HABILITADA
 	var available_products = []
 	var station_definitions = production_manager.get_station_definitions() if production_manager else []
-	
+
 	for product_type in game_data.products.keys():
 		if game_data.products[product_type] > 0:
 			# Verificar si hay alguna estación que produzca este producto y tenga oferta habilitada
@@ -111,7 +111,7 @@ func _process_automatic_customer() -> void:
 					if offer_enabled:
 						has_offer = true
 						break
-			
+
 			if has_offer:
 				available_products.append(product_type)
 				print("🛒 Producto disponible para clientes: %s (con oferta)" % product_type)
@@ -123,7 +123,7 @@ func _process_automatic_customer() -> void:
 	# Elegir producto al azar de los que tienen oferta
 	var chosen_product = available_products[randi() % available_products.size()]
 	var base_price = GameUtils.get_product_price(chosen_product)
-	
+
 	# Aplicar multiplicador de precio de la oferta
 	var price_multiplier = 1.0
 	for station_def in station_definitions:
@@ -131,7 +131,7 @@ func _process_automatic_customer() -> void:
 			var station_id = station_def.id
 			price_multiplier = game_data.offers.get(station_id, {}).get("price_multiplier", 1.0)
 			break
-	
+
 	var final_price = base_price * price_multiplier
 
 	# Aplicar bonus de clientes premium
