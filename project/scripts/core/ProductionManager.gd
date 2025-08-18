@@ -95,12 +95,8 @@ func purchase_station(station_id: String) -> bool:
 		return false
 
 	var owned = game_data.stations.get(station_id, 0)
-	var cost = GameUtils.calculate_exponential_cost(
-		station_def.base_cost,
-		owned,
-		1,
-		station_def.scale_factor
-	)
+	# Precio fijo simple (consistente con GeneratorManager)
+	var cost = station_def.base_cost
 
 	if game_data.money < cost:
 		return false
@@ -150,12 +146,8 @@ func get_station_cost(station_id: String) -> float:
 		return 0.0
 
 	var owned = game_data.stations.get(station_id, 0) if game_data else 0
-	return GameUtils.calculate_exponential_cost(
-		station_def.base_cost,
-		owned,
-		1,
-		station_def.scale_factor
-	)
+	# Precio fijo simple (consistente con GeneratorManager)
+	return station_def.base_cost
 
 ## Verificar si se puede producir en una estación
 func can_produce(station_id: String, quantity: int = 1) -> bool:

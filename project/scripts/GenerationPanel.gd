@@ -52,6 +52,8 @@ func setup_generators(resource_generators: Array[Dictionary]) -> void:
 		for increment in increments:
 			var button = Button.new()
 			button.text = str(increment)
+			# Guardar incremento original in metadata para no perderlo
+			button.set_meta("increment", increment)
 			button.pressed.connect(_on_generator_purchased.bind(i, increment))
 			button_container.add_child(button)
 
@@ -93,7 +95,8 @@ func update_generator_displays(
 
 		for j in range(buttons.size()):
 			var button = buttons[j] as Button
-			var increment = int(button.text)
+			# Usar metadata en lugar de parsear el texto formateado
+			var increment = button.get_meta("increment", 1)  # default 1 si no existe
 			var total_cost = _calculate_bulk_cost(generator, game_data, increment)
 			var can_afford = game_data["money"] >= total_cost
 
