@@ -1,0 +1,43 @@
+{
+  "threshold": 15,
+  "minTokens": 30,
+  "minLines": 4,
+  "maxLines": 1000,
+  "maxSize": "500kb",
+  "include": ["**/*.gd"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/.godot/**",
+    "**/.import/**",
+    "**/addons/**",
+    "**/*.uid",
+    "**/*.import"
+  ],
+  "reporters": ["console", "html", "json"],
+  "output": "./jscpd-report",
+  "format": "python",
+  "blame": true,
+  "ignorePattern": [
+    "func _ready\\(\\):",
+    "extends (Control|Node|Node2D)",
+    "signal \\w+",
+    "print\\(",
+    "^\\s*##.*$",
+    "^\\s*#.*$",
+    "@onready var",
+    "layout_mode = \\d+",
+    "anchor_\\w+ = [0-9.]+",
+    "size_flags_\\w+ = \\d+"
+  ],
+  "ignoreCase": false,
+  "gitignore": true,
+  "silent": false,
+  "verbose": true,
+  "debug": false,
+  "noSymlinks": true,
+  "skipLocal": false,
+  "mode": "mild"
+}
