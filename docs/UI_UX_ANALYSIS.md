@@ -13,7 +13,7 @@
 - **Funcionalidad**: Básica, solo muestra logo y carga
 - **Prioridad**: ALTA - Primera impresión
 
-#### 2️⃣ **MainMenu.tscn** - ⭐⭐⭐ (Crítico)  
+#### 2️⃣ **MainMenu.tscn** - ⭐⭐⭐ (Crítico)
 - **Problemas**:
   - Layout fijo (`offset_left = -150.0`)
   - Botones sin hover/pressed states
@@ -56,7 +56,7 @@
 2. **MainMenu** → Botones adaptativos con estados hover/pressed
 3. **GameScene** → Header con información del jugador
 
-### 📋 **FASE 2 - VISUAL CONSISTENCY (Semana 2)**  
+### 📋 **FASE 2 - VISUAL CONSISTENCY (Semana 2)**
 1. **Paleta de colores consistente** - Tonos cervecería profesionales
 2. **Tipografía unificada** - Tamaños y familias consistentes
 3. **Estados de botones** - Hover, pressed, disabled
@@ -76,7 +76,7 @@
 ### 🎨 **Paleta de Colores - Cervecería Profesional:**
 ```
 Primary:   #8B4513 (Saddle Brown) - Madera de bar
-Secondary: #D2691E (Chocolate)    - Cobre/Latón  
+Secondary: #D2691E (Chocolate)    - Cobre/Latón
 Accent:    #FFD700 (Gold)        - Cerveza/Oro
 Dark:      #2F1B14 (Dark Brown)  - Sombras
 Light:     #F5DEB3 (Wheat)       - Backgrounds claros
@@ -87,7 +87,7 @@ Error:     #DC143C (Crimson)     - Errores
 ### 📝 **Tipografía:**
 ```
 Headers:   32-48px, Bold
-SubHeaders: 20-24px, Medium  
+SubHeaders: 20-24px, Medium
 Body:      14-16px, Regular
 UI Elements: 12-14px, Medium
 Mobile:    +2px todas las medidas
@@ -96,7 +96,7 @@ Mobile:    +2px todas las medidas
 ### 📱 **Responsive Breakpoints:**
 ```
 Mobile:    < 768px (Portrait)
-Tablet:    768-1024px  
+Tablet:    768-1024px
 Desktop:   > 1024px
 ```
 

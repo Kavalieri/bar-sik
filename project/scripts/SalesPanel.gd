@@ -1,6 +1,6 @@
 extends ScrollContainer
-## SalesPanel - Panel de ventas limpio y modular
-## Gestiona la venta de productos e ingredientes
+## SalesPanel - Panel de ventas MODULAR Y PROFESIONAL
+## Gestiona la venta de productos e ingredientes con UI coherente
 
 # Referencias a contenedores
 @onready var main_container: VBoxContainer = $MainContainer
@@ -18,68 +18,104 @@ var stats_labels: Array[Label] = []
 signal item_sell_requested(item_type: String, item_name: String, quantity: int)
 
 func _ready() -> void:
-	print("💰 SalesPanel inicializando...")
+	print("💰 SalesPanel inicializando con sistema modular...")
 	call_deferred("_initialize_panel")
 
 func _initialize_panel() -> void:
-	"""Inicialización completa del panel"""
+	"""Inicialización completa del panel con tema coherente"""
 	_create_sections()
+	_apply_consistent_theming()
 	is_initialized = true
-	print("✅ SalesPanel inicializado correctamente")
+	print("✅ SalesPanel inicializado con tema profesional")
+
+func _apply_consistent_theming() -> void:
+	"""Aplicar tema coherente a todo el panel"""
+	# Aplicar responsive design
+	UIComponentsFactory.make_responsive(self)
+
+	# Animación de entrada para el contenido
+	UIComponentsFactory.animate_fade_in(main_container, 0.5)
 
 func _create_sections() -> void:
-	"""Crear secciones del panel"""
+	"""Crear secciones del panel con componentes modulares"""
 	_create_products_section()
+	_add_section_separator()
 	_create_ingredients_section()
+	_add_section_separator()
 	_create_statistics_section()
 
 func _create_products_section() -> void:
-	"""Crear sección de productos"""
-	_clear_container(products_container)
-	var header = UIStyleManager.create_section_header(
+	"""Crear sección de productos con componentes profesionales"""
+	UIComponentsFactory.clear_container(products_container)
+
+	var header = UIComponentsFactory.create_section_header(
 		"💰 VENTAS DE PRODUCTOS",
 		"Vende productos fabricados por dinero"
 	)
 	products_container.add_child(header)
 
+	# Panel de contenido profesional
+	var content_panel = UIComponentsFactory.create_content_panel(120)
+	products_container.add_child(content_panel)
+
+	# Lista scrolleable para productos
+	var products_scroll = UIComponentsFactory.create_scrollable_list()
+	content_panel.add_child(products_scroll)
+
+func _add_section_separator() -> void:
+	"""Añadir separador visual profesional"""
+	var separator = UIComponentsFactory.create_section_separator()
+	main_container.add_child(separator)
+
 func _create_ingredients_section() -> void:
-	"""Crear sección de ingredientes"""
-	_clear_container(ingredients_container)
-	var header = UIStyleManager.create_section_header(
+	"""Crear sección de ingredientes con componentes profesionales"""
+	UIComponentsFactory.clear_container(ingredients_container)
+
+	var header = UIComponentsFactory.create_section_header(
 		"🌾 VENTAS DE INGREDIENTES",
 		"Vende ingredientes sobrantes"
 	)
 	ingredients_container.add_child(header)
 
+	# Panel de contenido profesional
+	var content_panel = UIComponentsFactory.create_content_panel(120)
+	ingredients_container.add_child(content_panel)
+
 func _create_statistics_section() -> void:
-	"""Crear sección de estadísticas"""
-	_clear_container(stats_container)
-	var header = UIStyleManager.create_section_header("📊 ESTADÍSTICAS DE VENTAS")
+	"""Crear sección de estadísticas con tarjetas profesionales"""
+	UIComponentsFactory.clear_container(stats_container)
+
+	var header = UIComponentsFactory.create_section_header(
+		"📊 ESTADÍSTICAS DE VENTAS",
+		"Resumen de rendimiento"
+	)
 	stats_container.add_child(header)
 
-	# Crear panel para estadísticas
-	var stats_panel = UIStyleManager.create_styled_panel()
-	stats_panel.set_custom_minimum_size(Vector2(0, 100))
-	stats_container.add_child(stats_panel)
+	# Crear tarjetas de estadísticas
+	var stats_grid = GridContainer.new()
+	stats_grid.columns = 2
+	stats_grid.add_theme_constant_override("h_separation", UITheme.Spacing.MEDIUM)
+	stats_grid.add_theme_constant_override("v_separation", UITheme.Spacing.MEDIUM)
+	stats_container.add_child(stats_grid)
 
-	var stats_vbox = VBoxContainer.new()
-	stats_vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	stats_panel.add_child(stats_vbox)
+	# Tarjetas individuales
+	var money_card = UIComponentsFactory.create_stats_card(
+		"Dinero Total", "$0", "💰"
+	)
+	var products_card = UIComponentsFactory.create_stats_card(
+		"Productos Vendidos", "0", "📦"
+	)
+	var ingredients_card = UIComponentsFactory.create_stats_card(
+		"Ingredientes Vendidos", "0", "🌾"
+	)
+	var customers_card = UIComponentsFactory.create_stats_card(
+		"Clientes Atendidos", "0", "👤"
+	)
 
-	# Crear labels de estadísticas
-	var stat_names = [
-		"💰 Dinero total ganado: $0.00",
-		"📦 Productos vendidos: 0",
-		"🌾 Ingredientes vendidos: 0",
-		"👤 Clientes atendidos: 0"
-	]
-
-	for stat_name in stat_names:
-		var label = Label.new()
-		label.text = stat_name
-		label.add_theme_font_size_override("font_size", 12)
-		stats_vbox.add_child(label)
-		stats_labels.append(label)
+	stats_grid.add_child(money_card)
+	stats_grid.add_child(products_card)
+	stats_grid.add_child(ingredients_card)
+	stats_grid.add_child(customers_card)
 
 func setup_sell_interfaces(game_data: Dictionary) -> void:
 	"""Configura las interfaces de venta"""
@@ -114,12 +150,11 @@ func _setup_ingredient_interfaces(ingredients: Dictionary) -> void:
 
 func _create_sell_interface(item_type: String, item_name: String, amount: int) -> Control:
 	"""Crea una interface de venta para un item"""
-	var card = UIStyleManager.create_styled_panel()
-	card.set_custom_minimum_size(Vector2(0, 80))
+	var card = UIComponentsFactory.create_content_panel(80)
 
 	var hbox = HBoxContainer.new()
 	hbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	hbox.add_theme_constant_override("separation", 8)
+	hbox.add_theme_constant_override("separation", UITheme.Spacing.SMALL)
 	card.add_child(hbox)
 
 	# Información del item
@@ -152,9 +187,10 @@ func _create_sell_interface(item_type: String, item_name: String, amount: int) -
 
 	var quantities = [1, 5, 10, "Todo"]
 	for qty in quantities:
-		var button = UIStyleManager.create_styled_button("")
+		var button = UIComponentsFactory.create_primary_button("")
 		button.set_custom_minimum_size(Vector2(60, 18))
-		button.add_theme_font_size_override("font_size", 10)
+		button.add_theme_font_size_override("font_size",
+			int(UITheme.Typography.BUTTON_SMALL * UITheme.get_font_scale()))
 		var sell_amount = amount if qty == "Todo" else min(qty as int, amount)
 		var total_price = unit_price * sell_amount
 

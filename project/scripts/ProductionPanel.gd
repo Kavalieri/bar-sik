@@ -1,6 +1,6 @@
 extends ScrollContainer
-## ProductionPanel - Panel de producción limpio y modular
-## Maneja estaciones de producción y crafteo de productos
+## ProductionPanel - Panel de producción MODULAR Y PROFESIONAL
+## Maneja estaciones de producción y crafteo de productos con UI coherente
 
 # Referencias a contenedores
 @onready var main_container: VBoxContainer = $MainContainer
@@ -19,34 +19,62 @@ signal offer_toggled(station_index: int, enabled: bool)
 signal offer_price_requested(station_index: int)
 
 func _ready() -> void:
-	print("🍺 ProductionPanel inicializando...")
+	print("🍺 ProductionPanel inicializando con sistema modular...")
 	call_deferred("_initialize_panel")
 
 func _initialize_panel() -> void:
-	"""Inicialización completa del panel"""
+	"""Inicialización completa del panel con tema coherente"""
 	_create_sections()
+	_apply_consistent_theming()
 	is_initialized = true
-	print("✅ ProductionPanel inicializado correctamente")
+	print("✅ ProductionPanel inicializado con tema profesional")
+
+func _apply_consistent_theming() -> void:
+	"""Aplicar tema coherente a todo el panel"""
+	# Aplicar responsive design
+	UIComponentsFactory.make_responsive(self)
+
+	# Animación de entrada para el contenido
+	UIComponentsFactory.animate_fade_in(main_container, 0.4)
 
 func _create_sections() -> void:
-	"""Crear secciones del panel"""
+	"""Crear secciones del panel con componentes modulares"""
 	_create_products_section()
+	_add_section_separator()
 	_create_stations_section()
 
+func _add_section_separator() -> void:
+	"""Añadir separador visual profesional"""
+	var separator = UIComponentsFactory.create_section_separator()
+	main_container.add_child(separator)
+
 func _create_products_section() -> void:
-	"""Crear sección de productos"""
-	_clear_container(products_container)
-	var header = UIStyleManager.create_section_header("🍺 PRODUCTOS FABRICADOS")
+	"""Crear sección de productos con componentes profesionales"""
+	UIComponentsFactory.clear_container(products_container)
+
+	var header = UIComponentsFactory.create_section_header(
+		"🍺 PRODUCTOS FABRICADOS",
+		"Inventario de productos terminados"
+	)
 	products_container.add_child(header)
 
+	# Panel de contenido profesional
+	var content_panel = UIComponentsFactory.create_content_panel(150)
+	products_container.add_child(content_panel)
+
 func _create_stations_section() -> void:
-	"""Crear sección de estaciones"""
-	_clear_container(stations_container)
-	var header = UIStyleManager.create_section_header(
+	"""Crear sección de estaciones con componentes profesionales"""
+	UIComponentsFactory.clear_container(stations_container)
+
+	var header = UIComponentsFactory.create_section_header(
 		"⚙️ ESTACIONES DE PRODUCCIÓN",
-		"Compra estaciones para fabricar productos"
+		"Compra y gestiona estaciones de fabricación"
 	)
 	stations_container.add_child(header)
+
+	# Lista scrolleable para estaciones
+	var stations_scroll = UIComponentsFactory.create_scrollable_list()
+	stations_container.add_child(stations_scroll)
 
 func setup_products(game_data: Dictionary) -> void:
 	"""Configura los productos del juego"""
@@ -58,8 +86,7 @@ func setup_products(game_data: Dictionary) -> void:
 
 	# Crear cards para productos
 	for product_name in game_data["products"].keys():
-		var product_card = UIStyleManager.create_styled_panel()
-		product_card.set_custom_minimum_size(Vector2(0, 50))
+		var product_card = UIComponentsFactory.create_content_panel(50)
 
 		var label = Label.new()
 		label.text = "%s: 0" % product_name.capitalize()
@@ -88,12 +115,11 @@ func setup_stations(production_stations: Array[Dictionary]) -> void:
 
 func _create_station_interface(station: Dictionary, index: int) -> Control:
 	"""Crea una interface limpia para una estación"""
-	var card = UIStyleManager.create_styled_panel()
-	card.set_custom_minimum_size(Vector2(0, 140))
+	var card = UIComponentsFactory.create_content_panel(140)
 
 	var vbox = VBoxContainer.new()
 	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	vbox.add_theme_constant_override("separation", 8)
+	vbox.add_theme_constant_override("separation", UITheme.Spacing.SMALL)
 	card.add_child(vbox)
 
 	# Título
@@ -111,7 +137,7 @@ func _create_station_interface(station: Dictionary, index: int) -> Control:
 	vbox.add_child(info_label)
 
 	# Botón de compra
-	var purchase_button = UIStyleManager.create_styled_button("Comprar Estación\n$0")
+	var purchase_button = UIComponentsFactory.create_primary_button("Comprar Estación\n$0")
 	purchase_button.set_custom_minimum_size(Vector2(0, 35))
 	purchase_button.pressed.connect(_on_station_purchase_requested.bind(index))
 	vbox.add_child(purchase_button)
@@ -130,9 +156,10 @@ func _create_station_interface(station: Dictionary, index: int) -> Control:
 	var quantities = [1, 5, 10, 25]
 
 	for quantity in quantities:
-		var button = UIStyleManager.create_styled_button("×%d" % quantity)
+		var button = UIComponentsFactory.create_primary_button("×%d" % quantity)
 		button.set_custom_minimum_size(Vector2(50, 25))
-		button.add_theme_font_size_override("font_size", 11)
+		button.add_theme_font_size_override("font_size",
+			int(UITheme.Typography.BUTTON_SMALL * UITheme.get_font_scale()))
 		button.pressed.connect(_on_manual_production_requested.bind(index, quantity))
 		button_container.add_child(button)
 

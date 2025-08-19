@@ -1,20 +1,21 @@
 extends RefCounted
 class_name UIStyleManager
-## UIStyleManager - Gestión centralizada de estilos para una UI profesional
+## UIStyleManager - Gestión centralizada de estilos (COMPATIBILIDAD)
+## ⚠️ DEPRECADO: Usar UITheme + UIComponentsFactory para nuevos desarrollos
 
-# Clase para colores con acceso como propiedades
+# Clase para colores (mantenida por compatibilidad)
 class Colors:
-	static var PRIMARY = Color(0.2, 0.6, 1.0)
-	static var SECONDARY = Color(0.7, 0.7, 0.7)
-	static var SUCCESS = Color(0.2, 0.8, 0.2)
-	static var WARNING = Color(1.0, 0.8, 0.0)
-	static var ERROR = Color(1.0, 0.3, 0.3)
-	static var BACKGROUND = Color(0.08, 0.08, 0.12)
-	static var SURFACE = Color(0.16, 0.16, 0.20)
-	static var SURFACE_VARIANT = Color(0.20, 0.20, 0.24)
-	static var OUTLINE = Color(0.3, 0.3, 0.3)
-	static var TEXT_PRIMARY = Color(0.95, 0.95, 0.95)
-	static var TEXT_SECONDARY = Color(0.7, 0.7, 0.7)
+	static var PRIMARY = UITheme.Colors.PRIMARY
+	static var SECONDARY = UITheme.Colors.SECONDARY
+	static var SUCCESS = UITheme.Colors.SUCCESS
+	static var WARNING = UITheme.Colors.WARNING
+	static var ERROR = UITheme.Colors.ERROR
+	static var BACKGROUND = UITheme.Colors.BG_MAIN
+	static var SURFACE = UITheme.Colors.BG_PANEL
+	static var SURFACE_VARIANT = UITheme.Colors.BG_CARD
+	static var OUTLINE = UITheme.Colors.SECONDARY
+	static var TEXT_PRIMARY = UITheme.Colors.LIGHT
+	static var TEXT_SECONDARY = Color(UITheme.Colors.LIGHT.r, UITheme.Colors.LIGHT.g, UITheme.Colors.LIGHT.b, 0.7)
 
 # Instancia de colores accesible
 static var COLORS = Colors
@@ -64,39 +65,19 @@ static var border_radius = {
 	"rounded": 16,
 }
 
-## Crear un panel estilizado
+## Crear header de sección (MÉTODO PRINCIPAL - ACTUALIZADO)
+static func create_section_header(title: String, subtitle: String = "") -> VBoxContainer:
+	# Delegar al nuevo sistema UIComponentsFactory
+	return UIComponentsFactory.create_section_header(title, subtitle)
+
+## Crear panel estilizado (ACTUALIZADO)
 static func create_styled_panel(style: String = "card") -> Panel:
-	var panel = Panel.new()
-	var style_box = StyleBoxFlat.new()
+	# Usar el nuevo sistema
+	return UIComponentsFactory.create_content_panel()
 
-	match style:
-		"card":
-			style_box.bg_color = colors.card
-			style_box.border_color = colors.border
-			style_box.corner_radius_top_left = border_radius.medium
-			style_box.corner_radius_top_right = border_radius.medium
-			style_box.corner_radius_bottom_left = border_radius.medium
-			style_box.corner_radius_bottom_right = border_radius.medium
-			style_box.border_width_left = 1
-			style_box.border_width_right = 1
-			style_box.border_width_top = 1
-			style_box.border_width_bottom = 1
-		"surface":
-			style_box.bg_color = colors.surface
-			style_box.corner_radius_top_left = border_radius.large
-			style_box.corner_radius_top_right = border_radius.large
-			style_box.corner_radius_bottom_left = border_radius.large
-			style_box.corner_radius_bottom_right = border_radius.large
-		_:
-			style_box.bg_color = colors.background
-
-	style_box.content_margin_left = spacing.md
-	style_box.content_margin_right = spacing.md
-	style_box.content_margin_top = spacing.sm
-	style_box.content_margin_bottom = spacing.sm
-
-	panel.add_theme_stylebox_override("panel", style_box)
-	return panel
+## Método de compatibilidad para botones
+static func create_primary_button(text: String) -> Button:
+	return UIComponentsFactory.create_primary_button(text)
 
 ## Crear un botón estilizado
 static func create_styled_button(text: String, style: String = "primary") -> Button:

@@ -1,6 +1,6 @@
 extends ScrollContainer
-## GenerationPanel - Panel de generación de recursos
-## Nueva implementación limpia y modular
+## GenerationPanel - Panel de generación MODULAR Y PROFESIONAL
+## Genera recursos e ingredientes con UI coherente y responsive
 
 # Referencias a contenedores
 @onready var main_container: VBoxContainer = $MainContainer
@@ -17,34 +17,62 @@ var generator_definitions: Array[Dictionary] = []
 signal generator_purchased(generator_index: int, quantity: int)
 
 func _ready() -> void:
-	print("📦 GenerationPanel inicializando...")
+	print("📦 GenerationPanel inicializando con sistema modular...")
 	call_deferred("_initialize_panel")
 
 func _initialize_panel() -> void:
-	"""Inicialización completa del panel"""
+	"""Inicialización completa del panel con tema coherente"""
 	_create_sections()
+	_apply_consistent_theming()
 	is_initialized = true
-	print("✅ GenerationPanel inicializado correctamente")
+	print("✅ GenerationPanel inicializado con tema profesional")
+
+func _apply_consistent_theming() -> void:
+	"""Aplicar tema coherente a todo el panel"""
+	# Aplicar responsive design
+	UIComponentsFactory.make_responsive(self)
+
+	# Animación de entrada para el contenido
+	UIComponentsFactory.animate_fade_in(main_container, 0.35)
 
 func _create_sections() -> void:
-	"""Crear secciones del panel"""
+	"""Crear secciones del panel con componentes modulares"""
 	_create_resources_section()
+	_add_section_separator()
 	_create_generators_section()
 
+func _add_section_separator() -> void:
+	"""Añadir separador visual profesional"""
+	var separator = UIComponentsFactory.create_section_separator()
+	main_container.add_child(separator)
+
 func _create_resources_section() -> void:
-	"""Crear sección de recursos"""
-	_clear_container(resources_container)
-	var header = UIStyleManager.create_section_header("📦 INGREDIENTES DISPONIBLES")
+	"""Crear sección de recursos con componentes profesionales"""
+	UIComponentsFactory.clear_container(resources_container)
+
+	var header = UIComponentsFactory.create_section_header(
+		"📦 INGREDIENTES DISPONIBLES",
+		"Inventario de materias primas"
+	)
 	resources_container.add_child(header)
 
+	# Panel de contenido profesional
+	var content_panel = UIComponentsFactory.create_content_panel(120)
+	resources_container.add_child(content_panel)
+
 func _create_generators_section() -> void:
-	"""Crear sección de generadores"""
-	_clear_container(generators_container)
-	var header = UIStyleManager.create_section_header(
-		"🌾 GENERADORES",
-		"Compra generadores para producir ingredientes automáticamente"
+	"""Crear sección de generadores con componentes profesionales"""
+	UIComponentsFactory.clear_container(generators_container)
+
+	var header = UIComponentsFactory.create_section_header(
+		"🌾 GENERADORES AUTOMÁTICOS",
+		"Producen ingredientes de forma continua"
 	)
 	generators_container.add_child(header)
+
+	# Lista scrolleable para generadores
+	var generators_scroll = UIComponentsFactory.create_scrollable_list()
+	generators_container.add_child(generators_scroll)
 
 
 func setup_resources(game_data: Dictionary) -> void:
@@ -57,14 +85,14 @@ func setup_resources(game_data: Dictionary) -> void:
 
 	# Crear labels para recursos
 	for resource_name in game_data["resources"].keys():
-		var resource_card = UIStyleManager.create_styled_panel()
-		resource_card.set_custom_minimum_size(Vector2(0, 50))
+		var resource_card = UIComponentsFactory.create_content_panel(50)
 
 		var label = Label.new()
 		label.text = "%s: 0.0" % resource_name.capitalize()
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_font_size_override("font_size", 14)
+		label.add_theme_font_size_override("font_size",
+			int(UITheme.Typography.BODY_MEDIUM * UITheme.get_font_scale()))
 
 		resource_card.add_child(label)
 		resources_container.add_child(resource_card)
@@ -88,12 +116,11 @@ func setup_generators(resource_generators: Array[Dictionary]) -> void:
 
 func _create_generator_interface(generator: Dictionary, index: int) -> Control:
 	"""Crea la interface de un generador"""
-	var card = UIStyleManager.create_styled_panel()
-	card.set_custom_minimum_size(Vector2(0, 120))
+	var card = UIComponentsFactory.create_content_panel(120)
 
 	var vbox = VBoxContainer.new()
 	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	vbox.add_theme_constant_override("separation", 8)
+	vbox.add_theme_constant_override("separation", UITheme.Spacing.SMALL)
 	card.add_child(vbox)
 
 	# Información del generador
@@ -113,9 +140,10 @@ func _create_generator_interface(generator: Dictionary, index: int) -> Control:
 	# Botones de compra
 	var increments = [1, 5, 10, 25]
 	for increment in increments:
-		var button = UIStyleManager.create_styled_button("×%d\n$0" % increment)
+		var button = UIComponentsFactory.create_primary_button("×%d\n$0" % increment)
 		button.set_custom_minimum_size(Vector2(65, 30))
-		button.add_theme_font_size_override("font_size", 11)
+		button.add_theme_font_size_override("font_size",
+			int(UITheme.Typography.BUTTON_SMALL * UITheme.get_font_scale()))
 		button.set_meta("generator_index", index)
 		button.set_meta("quantity", increment)
 		button.pressed.connect(_on_generator_purchase.bind(index, increment))
