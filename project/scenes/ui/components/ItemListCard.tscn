@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://item_list_card_component"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/ItemListCard.gd" id="1_item_list_card"]
+
+[node name="ItemListCard" type="Panel"]
+custom_minimum_size = Vector2(0, 80)
+script = ExtResource("1_item_list_card")
+
+[node name="CardContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="ItemInfo" type="VBoxContainer" parent="CardContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="CardContainer/ItemInfo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Nombre del Item"
+vertical_alignment = 1
+
+[node name="AmountLabel" type="Label" parent="CardContainer/ItemInfo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "📦 Cantidad: 0"
+vertical_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="CardContainer/ItemInfo"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 12
+text = "Descripción del item"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ActionButton" type="Button" parent="CardContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 60)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 16
+text = "⚙️ Acción"

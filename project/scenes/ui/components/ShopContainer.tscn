@@ -1,0 +1,89 @@
+[gd_scene load_steps=2 format=3 uid="uid://shop_container_component"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/ShopContainer.gd" id="1_shop_container"]
+
+[node name="ShopContainer" type="VBoxContainer"]
+script = ExtResource("1_shop_container")
+
+[node name="HeaderSection" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="HeaderSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🛒 Tienda"
+horizontal_alignment = 1
+
+[node name="QuantityControls" type="HBoxContainer" parent="HeaderSection"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="x1_Button" type="Button" parent="HeaderSection/QuantityControls"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 50)
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+button_pressed = true
+button_group = null
+text = "x1"
+
+[node name="x5_Button" type="Button" parent="HeaderSection/QuantityControls"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 50)
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "x5"
+
+[node name="x10_Button" type="Button" parent="HeaderSection/QuantityControls"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 50)
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "x10"
+
+[node name="x25_Button" type="Button" parent="HeaderSection/QuantityControls"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 50)
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "x25"
+
+[node name="x50_Button" type="Button" parent="HeaderSection/QuantityControls"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 50)
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "x50"
+
+[node name="ContentSection" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ContentSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemGrid" type="GridContainer" parent="ContentSection/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+
+[node name="StatusBar" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+
+[node name="TotalLabel" type="Label" parent="StatusBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Total: $0"
+vertical_alignment = 1
+
+[node name="AffordabilityLabel" type="Label" parent="StatusBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "✅ Puedes comprar"
+horizontal_alignment = 2
+vertical_alignment = 1

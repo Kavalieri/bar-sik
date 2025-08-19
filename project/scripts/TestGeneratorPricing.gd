@@ -1,9 +1,11 @@
 extends Node
 ## TestGeneratorPricing - Test manual para verificar precios escalados
 
+
 func _ready() -> void:
 	print("\n💰 === TEST DE PRECIOS ESCALADOS ===")
 	call_deferred("_test_pricing")
+
 
 func _test_pricing() -> void:
 	await get_tree().process_frame
@@ -24,6 +26,7 @@ func _test_pricing() -> void:
 
 	# Test para barley_farm
 	_test_generator_pricing(gen_manager, game_data, "barley_farm")
+
 
 func _test_generator_pricing(gen_manager, game_data, generator_id: String) -> void:
 	print("🏭 Testeando generador: %s" % generator_id)
@@ -59,6 +62,7 @@ func _test_generator_pricing(gen_manager, game_data, generator_id: String) -> vo
 	# Restaurar el estado original
 	game_data.generators[generator_id] = owned
 	print("🔄 Estado restaurado a %d generadores" % owned)
+
 
 # Función para testear compra real
 func test_real_purchase(generator_id: String, quantity: int = 1) -> void:

@@ -1,249 +1,314 @@
-extends ScrollContainer
-## CustomersPanel - Panel de clientes MODULAR Y PROFESIONAL
-## Maneja sistema de clientes, upgrades y automatización con UI coherente
+extends BasePanel
+## CustomersPanel - Panel de clientes usando componentes modulares
+## Implementa Scene Composition con ItemListCard para clientes y upgrades
 
-# Referencias a contenedores
-@onready var main_container: VBoxContainer = $MainContainer
-@onready var timer_container: VBoxContainer = $MainContainer/TimerSection/TimerContainer
-@onready var upgrades_container: VBoxContainer = $MainContainer/UpgradesSection/UpgradesContainer
-@onready var automation_container: VBoxContainer = (
-	$MainContainer/AutomationSection/AutomationContainer
-)
-
-# Estado del panel
-var is_initialized: bool = false
-var timer_label: Label
-var timer_progress: ProgressBar
-var upgrade_buttons: Array[Control] = []
-
-# Señales
+# Señales específicas del panel
 signal autosell_upgrade_purchased(upgrade_id: String)
 signal automation_upgrade_purchased(upgrade_id: String)
 
-func _ready() -> void:
-	print("👥 CustomersPanel inicializando con sistema modular...")
-	call_deferred("_initialize_panel")
+# Estado específico del panel
+var customer_manager_ref: Node = null
 
-func _initialize_panel() -> void:
-	"""Inicialización completa del panel con tema coherente"""
-	_create_sections()
-	_apply_consistent_theming()
-	is_initialized = true
-	print("✅ CustomersPanel inicializado con tema profesional")
+# Componentes modulares
+var timer_cards: Array[Node] = []
+var upgrades_shop: Node = null
+var automation_cards: Array[Node] = []
 
-func _apply_consistent_theming() -> void:
-	"""Aplicar tema coherente a todo el panel"""
-	# Aplicar responsive design
-	UIComponentsFactory.make_responsive(self)
+# Referencias a contenedores específicos
+@onready var timer_container: VBoxContainer = $MainContainer/TimerSection/TimerContainer
+@onready var upgrades_container: VBoxContainer = $MainContainer/UpgradesSection
+@onready
+var automation_container: VBoxContainer = $MainContainer/AutomationSection/AutomationContainer
 
-	# Animación de entrada para el contenido
-	UIComponentsFactory.animate_fade_in(main_container, 0.6)
 
-func _create_sections() -> void:
-	"""Crear secciones del panel con componentes modulares"""
-	_create_timer_section()
-	_add_section_separator()
-	_create_upgrades_section()
-	_add_section_separator()
-	_create_automation_section()
+## Establecer referencia al CustomerManager
+func set_customer_manager(manager: Node) -> void:
+	customer_manager_ref = manager
+	print("🔗 CustomersPanel conectado con CustomerManager")
 
-func _add_section_separator() -> void:
-	"""Añadir separador visual profesional"""
-	var separator = UIComponentsFactory.create_section_separator()
-	main_container.add_child(separator)
 
-func _create_timer_section() -> void:
-	"""Crear sección de temporizador con componentes profesionales"""
-	UIComponentsFactory.clear_container(timer_container)
+# =============================================================================
+# IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE BasePanel
+# =============================================================================
 
-	var header = UIComponentsFactory.create_section_header(
-		"⏰ PRÓXIMO CLIENTE",
-		"Tiempo hasta el próximo cliente"
-	)
-	timer_container.add_child(header)
 
-	# Panel de contenido profesional
-	var content_panel = UIComponentsFactory.create_content_panel(100)
-	timer_container.add_child(content_panel)
-	content_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	content_panel.add_theme_constant_override("separation", 8)
+func _initialize_panel_specific() -> void:
+	"""Inicialización específica del panel de clientes"""
+	_setup_modular_timers()
+	_setup_modular_upgrades()
+	_setup_modular_automation()
+	print("✅ CustomersPanel inicializado con componentes modulares")
 
-	# Label del timer
-	timer_label = Label.new()
-	timer_label.text = "⏱️ Esperando cliente..."
-	timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	timer_label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
-	content_panel.add_child(timer_label)
 
-	# Barra de progreso más grande
-	timer_progress = ProgressBar.new()
-	timer_progress.set_custom_minimum_size(Vector2(0, 30))  # Más alta para móvil
-	timer_progress.value = 0
-	timer_progress.max_value = 100
-	content_panel.add_child(timer_progress)
+func _connect_panel_signals() -> void:
+	"""Conectar señales específicas del panel"""
+	# Las señales se conectan en los componentes modulares
+	return
 
-func _create_upgrades_section() -> void:
-	"""Crear sección de upgrades"""
-	_clear_container(upgrades_container)
-	var header = UIComponentsFactory.create_section_header(
-		"🛒 MEJORAS DE AUTOVENTA",
-		"Mejora la velocidad y eficiencia de ventas automáticas"
-	)
-	upgrades_container.add_child(header)
 
-func _create_automation_section() -> void:
-	"""Crear sección de automatización"""
-	_clear_container(automation_container)
-	var header = UIComponentsFactory.create_section_header(
-		"⚙️ AUTOMATIZACIÓN AVANZADA",
-		"Sistemas automáticos para tu negocio"
-	)
-	automation_container.add_child(header)
+func _update_panel_data(game_data: Dictionary) -> void:
+	"""Actualizar datos específicos del panel"""
+	update_customer_displays(game_data)
+	update_timer_displays(game_data)
+	update_upgrade_displays(game_data)
+	update_automation_displays(game_data)
 
-func setup_autosell_upgrades(game_data: Dictionary) -> void:
-	"""Configura los upgrades de autoventa"""
-	if not is_initialized:
-		call_deferred("setup_autosell_upgrades", game_data)
-		return
 
-	_clear_upgrade_buttons()
+func _setup_modular_timers() -> void:
+	"""Configurar información de timers usando ItemListCard"""
+	# Limpiar contenedor existente
+	for child in timer_container.get_children():
+		child.queue_free()
+	timer_cards.clear()
 
-	# Crear upgrades básicos
-	var upgrades = [
+	# Definir información de timers
+	var timer_configs = [
+		{id = "autosell_timer", name = "Auto-Venta", icon = "⏰", action = "configure_timer"},
+		{id = "production_timer", name = "Producción", icon = "⚗️", action = "configure_timer"},
+		{id = "customer_timer", name = "Clientes", icon = "👥", action = "configure_timer"}
+	]
+
+	# Crear tarjeta para cada timer
+	for config in timer_configs:
+		var card = ComponentsPreloader.create_item_list_card()
+		var button_config = {text = "Config", icon = "⚙️", action = config.action}
+
+		card.setup_item(config, button_config)
+		card.action_requested.connect(_on_timer_action)
+		timer_container.add_child(card)
+		timer_cards.append(card)
+
+
+func _setup_modular_upgrades() -> void:
+	"""Configurar tienda de upgrades usando ShopContainer"""
+	# Limpiar contenedor existente
+	for child in upgrades_container.get_children():
+		child.queue_free()
+
+	# Crear ShopContainer para upgrades
+	upgrades_shop = ComponentsPreloader.create_shop_container()
+	upgrades_shop.setup("Mejoras Disponibles", "buy")
+
+	# Definir upgrades disponibles
+	var upgrade_configs = [
 		{
-			"id": "sell_speed_1",
-			"name": "🚀 Velocidad de Venta +",
-			"description": "Aumenta la velocidad de venta automática",
-			"cost": 100.0,
-			"unlocked": true
+			id = "autosell_basic",
+			name = "Auto-Venta Básica",
+			description = "Vende productos automáticamente",
+			base_price = 100.0,
+			icon = "🤖"
 		},
 		{
-			"id": "sell_efficiency_1",
-			"name": "💎 Eficiencia de Venta +",
-			"description": "Mejora los precios de venta automática",
-			"cost": 250.0,
-			"unlocked": true
+			id = "autosell_advanced",
+			name = "Auto-Venta Avanzada",
+			description = "Venta inteligente con mejor precio",
+			base_price = 250.0,
+			icon = "🧠"
 		},
 		{
-			"id": "customer_attraction_1",
-			"name": "📢 Atracción de Clientes +",
-			"description": "Atrae clientes más frecuentemente",
-			"cost": 500.0,
-			"unlocked": true
+			id = "customer_attraction",
+			name = "Atracción de Clientes",
+			description = "Atrae más clientes a tu cervecería",
+			base_price = 500.0,
+			icon = "🎯"
 		}
 	]
 
-	for upgrade in upgrades:
-		var interface = _create_upgrade_interface(upgrade)
-		upgrades_container.add_child(interface)
-		upgrade_buttons.append(interface)
+	# Agregar cada upgrade a la tienda
+	for config in upgrade_configs:
+		var card = upgrades_shop.add_item(config)
 
-func _create_upgrade_interface(upgrade: Dictionary) -> Control:
-	"""Crea la interface para un upgrade"""
-	var card = UIComponentsFactory.create_content_panel(100)
-	card.set_custom_minimum_size(Vector2(0, 100))
+		# Configurar calculadora de costo específica usando GameUtils
+		var cost_calculator = GameUtils.create_cost_calculator(
+			customer_manager_ref, config.id, "get_upgrade_cost"
+		)
 
-	var hbox = HBoxContainer.new()
-	hbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	hbox.add_theme_constant_override("separation", 12)
-	card.add_child(hbox)
+		card.set_cost_calculator(cost_calculator)
 
-	# Información del upgrade
-	var info_vbox = VBoxContainer.new()
-	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hbox.add_child(info_vbox)
+	# Conectar señales de compra
+	upgrades_shop.purchase_requested.connect(_on_upgrade_purchase)
 
-	var name_label = Label.new()
-	name_label.text = upgrade.get("name", "Upgrade")
-	name_label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
-	info_vbox.add_child(name_label)
+	# Agregar tienda al contenedor
+	upgrades_container.add_child(upgrades_shop)
 
-	var desc_label = Label.new()
-	desc_label.text = upgrade.get("description", "")
-	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
-	desc_label.modulate = Color.GRAY
-	info_vbox.add_child(desc_label)
 
-	var cost_label = Label.new()
-	cost_label.text = "💰 $%s" % GameUtils.format_large_number(upgrade.get("cost", 0))  # Icono + texto más corto
-	cost_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
-	cost_label.modulate = Color.GREEN
-	info_vbox.add_child(cost_label)
+func _setup_modular_automation() -> void:
+	"""Configurar tarjetas de automatización usando ItemListCard"""
+	# Limpiar contenedor existente
+	for child in automation_container.get_children():
+		child.queue_free()
+	automation_cards.clear()
 
-	# Botón de compra más grande para móvil
-	var button = UIComponentsFactory.create_primary_button("💳 Comprar")
-	button.set_custom_minimum_size(Vector2(120, 70))  # Más grande para móvil
-	var font_size = int(UITheme.Typography.BUTTON_MEDIUM * UITheme.get_font_scale())
-	button.add_theme_font_size_override("font_size", font_size)
-	button.pressed.connect(_on_upgrade_purchase_requested.bind(upgrade.get("id", "")))
-	hbox.add_child(button)
+	# Definir configuraciones de automatización
+	var automation_configs = [
+		{
+			id = "auto_production",
+			name = "Producción Automática",
+			icon = "⚙️",
+			action = "toggle_auto"
+		},
+		{id = "auto_sales", name = "Ventas Automáticas", icon = "💸", action = "toggle_auto"},
+		{id = "auto_purchase", name = "Compras Automáticas", icon = "🛒", action = "toggle_auto"}
+	]
 
-	return card
+	# Crear tarjeta para cada automatización
+	for config in automation_configs:
+		var card = ComponentsPreloader.create_item_list_card()
+		var button_config = {text = "Activar", icon = "▶️", action = config.action}
 
-func update_customer_display(game_data: Dictionary, timer_progress_value: float) -> void:
-	"""Actualiza la visualización del cliente"""
+		card.setup_item(config, button_config)
+		card.action_requested.connect(_on_automation_action)
+		automation_container.add_child(card)
+		automation_cards.append(card)
+
+
+func update_customer_displays(game_data: Dictionary) -> void:
+	"""Actualiza las visualizaciones de clientes usando componentes modulares"""
 	if not is_initialized:
 		return
 
-	# Actualizar timer
-	if timer_label:
-		var time_left = (1.0 - timer_progress_value) * 30  # Asumiendo 30 segundos por cliente
-		timer_label.text = "Próximo cliente en %.1f segundos" % time_left
+	var customers = game_data.get("customers", [])
+	var satisfaction = game_data.get("customer_satisfaction", 0.0)
 
-	if timer_progress:
-		timer_progress.value = timer_progress_value * 100
+	# Actualizar información de clientes si hay tarjetas configuradas
+	print("🔄 Actualizando datos de clientes: %d activos, satisfacción: %.1f%%" % [
+		customers.size(), satisfaction * 100
+	])
+
+
+func update_timer_displays(game_data: Dictionary) -> void:
+	"""Actualiza las visualizaciones de timers usando componentes modulares"""
+	if not is_initialized:
+		return
+
+	var timers = game_data.get("timers", {})
+
+	# Actualizar cada tarjeta de timer
+	for i in range(timer_cards.size()):
+		var card = timer_cards[i]
+		if not card:
+			continue
+
+		var timer_configs = ["autosell_timer", "production_timer", "customer_timer"]
+		if i < timer_configs.size():
+			var timer_id = timer_configs[i]
+			var timer_data = timers.get(timer_id, {})
+			var remaining = timer_data.get("remaining", 0.0)
+
+			card.update_data(
+				{
+					id = timer_id,
+					remaining = "%.1fs" % remaining,
+					status = "Activo" if remaining > 0 else "Listo"
+				}
+			)
+
 
 func update_upgrade_displays(game_data: Dictionary) -> void:
-	"""Actualiza las visualizaciones de upgrades"""
-	if not is_initialized:
+	"""Actualiza las interfaces de upgrades usando ShopContainer"""
+	if not is_initialized or not upgrades_shop:
 		return
 
 	var money = game_data.get("money", 0.0)
-	var upgrades_owned = game_data.get("upgrades", {})
 
-	for i in range(upgrade_buttons.size()):
-		var interface = upgrade_buttons[i]
-		var hbox = interface.get_child(0) as HBoxContainer
-		if not hbox or hbox.get_child_count() < 2:
-			continue
+	# Actualizar dinero disponible en la tienda
+	upgrades_shop.update_player_money(money)
 
-		var button = hbox.get_child(1) as Button
-		if not button:
-			continue
 
-		# Obtener ID del upgrade (asumiendo que está en el metadata)
-		var upgrade_id = button.get_meta("upgrade_id", "")
-		var is_owned = upgrades_owned.has(upgrade_id)
-
-		if is_owned:
-			button.text = "✅ Comprado"
-			button.disabled = true
-			button.modulate = Color.GRAY
-		else:
-			# Actualizar disponibilidad basada en dinero
-			var cost = 100.0 + (i * 150.0)  # Costo incremental
-			var can_afford = money >= cost
-			button.disabled = not can_afford
-			button.modulate = Color.WHITE if can_afford else Color.GRAY
-
-# Métodos de eventos
-func _on_upgrade_purchase_requested(upgrade_id: String) -> void:
-	"""Maneja la solicitud de compra de upgrade"""
-	autosell_upgrade_purchased.emit(upgrade_id)
-
-# Funciones de utilidad
-func _clear_container(container: Container) -> void:
-	"""Limpia un contenedor de forma segura"""
-	if not container:
+func update_automation_displays(game_data: Dictionary) -> void:
+	"""Actualiza el estado de automatización usando componentes modulares"""
+	if not is_initialized:
 		return
-	for child in container.get_children():
-		container.remove_child(child)
-		child.queue_free()
 
-func _clear_upgrade_buttons() -> void:
-	"""Limpia los botones de upgrade"""
-	for button in upgrade_buttons:
-		if button:
-			button.queue_free()
-	upgrade_buttons.clear()
+	var automation = game_data.get("automation", {})
+
+	# Actualizar cada tarjeta de automatización
+	for i in range(automation_cards.size()):
+		var card = automation_cards[i]
+		if not card:
+			continue
+
+		var automation_configs = ["auto_production", "auto_sales", "auto_purchase"]
+		if i < automation_configs.size():
+			var auto_id = automation_configs[i]
+			var is_active = automation.get(auto_id, false)
+
+			card.update_data(
+				{
+					id = auto_id,
+					status = "Activo" if is_active else "Inactivo",
+					efficiency = "100%" if is_active else "0%"
+				}
+			)
+
+			# Actualizar botón según estado
+			var button_config = {
+				text = "Desactivar" if is_active else "Activar",
+				icon = "⏸️" if is_active else "▶️",
+				action = "toggle_auto"
+			}
+			card.configure_button(button_config)
+
+
+# Manejadores de señales modulares
+
+
+func _on_timer_action(item_id: String, action: String) -> void:
+	"""Manejar acciones de timers desde ItemListCard"""
+	match action:
+		"configure_timer":
+			print("⚙️ Configurar timer: ", item_id)
+			# TODO: Implementar modal de configuración de timer
+		_:
+			print("⚠️ Acción no reconocida para timer: ", action)
+
+
+func _on_upgrade_purchase(item_id: String, quantity: int, total_cost: float) -> void:
+	"""Manejar compras de upgrades desde ShopContainer"""
+	print("💎 Compra de upgrade: %s x%d por $%.2f" % [item_id, quantity, total_cost])
+
+	# Emitir señal según tipo de upgrade
+	if item_id.begins_with("autosell"):
+		autosell_upgrade_purchased.emit(item_id)
+	else:
+		automation_upgrade_purchased.emit(item_id)
+
+
+func _on_automation_action(item_id: String, action: String) -> void:
+	"""Manejar acciones de automatización desde ItemListCard"""
+	match action:
+		"toggle_auto":
+			print("🔄 Toggle automatización: ", item_id)
+			# Cambiar estado de automatización
+			var current_automation = current_game_data.get("automation", {})
+			var is_active = current_automation.get(item_id, false)
+
+			# TODO: Conectar con sistema de automatización real
+			print("📊 Estado automatización %s: %s → %s" % [item_id, is_active, not is_active])
+		_:
+			print("⚠️ Acción no reconocida para automatización: ", action)
+
+
+# Funciones de compatibilidad con GameController
+
+
+func update_customer_display(game_data: Dictionary, timer_progress: float) -> void:
+	"""Actualizar display de clientes con progreso de timer (compatibilidad GameController)"""
+	# Agregar información del timer al game_data
+	var enhanced_data = game_data.duplicate()
+	enhanced_data["timer_progress"] = timer_progress
+
+	# Usar función existente
+	update_customer_displays(enhanced_data)
+	print("🔄 Display de clientes actualizado con progreso: %.1f%%" % (timer_progress * 100))
+
+
+func update_offer_interfaces(game_data: Dictionary) -> void:
+	"""Actualizar interfaces de ofertas (compatibilidad GameController)"""
+	if not is_initialized:
+		return
+
+	var offers = game_data.get("offers", [])
+	print("🔄 Interfaces de ofertas actualizadas: %d ofertas" % offers.size())
+
+	# TODO: Implementar actualización de interfaces de ofertas cuando estén disponibles

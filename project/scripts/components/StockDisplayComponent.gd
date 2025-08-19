@@ -9,32 +9,30 @@ signal action_requested(action: String, item_type: String, item_name: String, qu
 @export var display_mode: DisplayMode = DisplayMode.READ_ONLY
 @export var show_actions: bool = true
 @export var show_prices: bool = true
-@export var filter_items: Array[String] = [] # Filtrar por tipos: ["product", "ingredient"]
-@export var compact_mode: bool = false # Modo compacto para espacios reducidos
-@export var theme_style: String = "default" # Estilo visual
+@export var filter_items: Array[String] = []  # Filtrar por tipos: ["product", "ingredient"]
+@export var compact_mode: bool = false  # Modo compacto para espacios reducidos
+@export var theme_style: String = "default"  # Estilo visual
 
-enum DisplayMode {
-	READ_ONLY,        # Solo mostrar información
-	SELECTABLE,       # Permitir seleccionar items
-	INTERACTIVE       # Permitir acciones (vender, usar, etc.)
-}
+enum DisplayMode { READ_ONLY, SELECTABLE, INTERACTIVE }  # Solo mostrar información  # Permitir seleccionar items  # Permitir acciones (vender, usar, etc.)
 
-var stock_interfaces: Dictionary = {} # item_key -> controls
+var stock_interfaces: Dictionary = {}  # item_key -> controls
 var current_data: Dictionary = {}
 
 # Colores y estilos para presentación profesional
 var style_colors = {
-	"primary": Color(0.2, 0.6, 1.0),      # Azul primario
-	"secondary": Color(0.7, 0.7, 0.7),    # Gris secundario
-	"success": Color(0.2, 0.8, 0.2),      # Verde éxito
-	"warning": Color(1.0, 0.8, 0.0),      # Amarillo advertencia
-	"background": Color(0.1, 0.1, 0.1, 0.8), # Fondo semi-transparente
-	"card": Color(0.15, 0.15, 0.15, 0.9)   # Fondo de tarjetas
+	"primary": Color(0.2, 0.6, 1.0),  # Azul primario
+	"secondary": Color(0.7, 0.7, 0.7),  # Gris secundario
+	"success": Color(0.2, 0.8, 0.2),  # Verde éxito
+	"warning": Color(1.0, 0.8, 0.0),  # Amarillo advertencia
+	"background": Color(0.1, 0.1, 0.1, 0.8),  # Fondo semi-transparente
+	"card": Color(0.15, 0.15, 0.15, 0.9)  # Fondo de tarjetas
 }
+
 
 func _ready() -> void:
 	print("📦 StockDisplayComponent inicializado (modo: %s)" % DisplayMode.keys()[display_mode])
 	_setup_visual_style()
+
 
 func _setup_visual_style() -> void:
 	"""Configura el estilo visual del componente"""
@@ -47,16 +45,24 @@ func _setup_visual_style() -> void:
 	add_child(bg_panel)  # Agregar primero como hijo
 	move_child(bg_panel, 0)  # Luego moverlo al fondo
 
+
 ## Configurar el componente
 func setup(mode: DisplayMode = DisplayMode.READ_ONLY, show_actions_enabled: bool = true) -> void:
 	display_mode = mode
 	show_actions = show_actions_enabled
-	print("📦 StockDisplayComponent configurado - Modo: %s, Acciones: %s" % [DisplayMode.keys()[mode], show_actions])
+	print(
+		(
+			"📦 StockDisplayComponent configurado - Modo: %s, Acciones: %s"
+			% [DisplayMode.keys()[mode], show_actions]
+		)
+	)
+
 
 ## Actualizar con datos de stock
 func update_display(stock_data: Dictionary) -> void:
 	current_data = stock_data
 	_refresh_interfaces()
+
 
 ## Actualizar usando StockManager directamente
 func update_from_stock_manager() -> void:
@@ -67,7 +73,9 @@ func update_from_stock_manager() -> void:
 	var stock_data = StockManager.get_sellable_stock()
 	update_display(stock_data)
 
+
 ## === INTERFAZ INTERNA ===
+
 
 func _refresh_interfaces() -> void:
 	# Limpiar interfaces existentes
@@ -81,8 +89,12 @@ func _refresh_interfaces() -> void:
 	if current_data.has("products") and (filter_items.is_empty() or "product" in filter_items):
 		_create_category_section("🍺 PRODUCTOS", current_data.products, "product")
 
-	if current_data.has("ingredients") and (filter_items.is_empty() or "ingredient" in filter_items):
+	if (
+		current_data.has("ingredients")
+		and (filter_items.is_empty() or "ingredient" in filter_items)
+	):
 		_create_category_section("🌾 INGREDIENTES", current_data.ingredients, "ingredient")
+
 
 func _create_category_section(title: String, items: Dictionary, item_type: String) -> void:
 	if items.is_empty():
@@ -118,6 +130,7 @@ func _create_category_section(title: String, items: Dictionary, item_type: Strin
 		var item_data = items[item_name]
 		_create_item_interface(item_name, item_type, item_data)
 
+
 func _create_count_badge(count: int) -> Panel:
 	"""Crea un badge con el contador de items"""
 	var badge = Panel.new()
@@ -143,6 +156,7 @@ func _create_count_badge(count: int) -> Panel:
 	badge.add_child(count_label)
 
 	return badge
+
 
 func _create_item_interface(item_name: String, item_type: String, item_data: Dictionary) -> void:
 	var quantity = item_data.get("quantity", 0)
@@ -217,6 +231,7 @@ func _create_item_interface(item_name: String, item_type: String, item_data: Dic
 		"quantity": quantity
 	}
 
+
 func _create_item_card() -> Panel:
 	"""Crea una tarjeta estilizada para un item"""
 	var card = Panel.new()
@@ -243,13 +258,19 @@ func _create_item_card() -> Panel:
 
 	return card
 
-func _add_selection_controls(container: HBoxContainer, item_name: String, item_type: String, quantity: int) -> void:
+
+func _add_selection_controls(
+	container: HBoxContainer, item_name: String, item_type: String, quantity: int
+) -> void:
 	var select_button = _create_styled_button("✓ Seleccionar", style_colors.primary)
 	select_button.custom_minimum_size = Vector2(100, 32)
 	select_button.pressed.connect(func(): _on_item_selected(item_type, item_name, quantity))
 	container.add_child(select_button)
 
-func _add_action_controls(container: HBoxContainer, item_name: String, item_type: String, quantity: int) -> void:
+
+func _add_action_controls(
+	container: HBoxContainer, item_name: String, item_type: String, quantity: int
+) -> void:
 	if not show_actions:
 		return
 
@@ -273,8 +294,11 @@ func _add_action_controls(container: HBoxContainer, item_name: String, item_type
 			button.modulate = Color(0.5, 0.5, 0.5)
 
 		button.custom_minimum_size = Vector2(50, 32)
-		button.pressed.connect(func(): _on_action_requested("sell", item_type, item_name, action_quantity))
+		button.pressed.connect(
+			func(): _on_action_requested("sell", item_type, item_name, action_quantity)
+		)
 		container.add_child(button)
+
 
 func _create_styled_button(text: String, color: Color) -> Button:
 	"""Crea un botón con estilo profesional"""
@@ -321,6 +345,7 @@ func _create_styled_button(text: String, color: Color) -> Button:
 	button.add_theme_color_override("font_color", Color.WHITE)
 
 	return button
+
 
 func _show_empty_message() -> void:
 	"""Muestra un mensaje elegante cuando no hay items"""
@@ -380,32 +405,42 @@ func _show_empty_message() -> void:
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content_container.add_child(hint_label)
 
+
 func _clear_interfaces() -> void:
 	for child in get_children():
 		child.queue_free()
 	stock_interfaces.clear()
 
+
 ## === EVENTOS ===
+
 
 func _on_item_selected(item_type: String, item_name: String, quantity: int) -> void:
 	print("📦 Item seleccionado: %s %s (%d)" % [item_type, item_name, quantity])
 	item_selected.emit(item_type, item_name, quantity)
 
-func _on_action_requested(action: String, item_type: String, item_name: String, quantity: int) -> void:
+
+func _on_action_requested(
+	action: String, item_type: String, item_name: String, quantity: int
+) -> void:
 	print("📦 Acción solicitada: %s - %d %s (%s)" % [action, quantity, item_name, item_type])
 	action_requested.emit(action, item_type, item_name, quantity)
 
+
 ## === API PÚBLICA ===
+
 
 ## Obtener item seleccionado actual
 func get_selected_item() -> Dictionary:
 	# Implementar lógica de selección si es necesario
 	return {}
 
+
 ## Filtrar por tipo de item
 func set_filter(types: Array[String]) -> void:
 	filter_items = types
 	_refresh_interfaces()
+
 
 ## Actualizar un item específico
 func update_item(item_type: String, item_name: String, new_quantity: int) -> void:

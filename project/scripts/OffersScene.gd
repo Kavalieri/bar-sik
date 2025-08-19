@@ -5,9 +5,12 @@ class_name OffersScene
 
 @onready var back_button: Button = $MainContainer/Header/BackButton
 @onready var timer_label: Label = $MainContainer/Header/TimerLabel
-@onready var daily_offers_list: GridContainer = $MainContainer/OffersContainer/DailyOffers/DailyOffersList
-@onready var weekly_offers_list: GridContainer = $MainContainer/OffersContainer/WeeklyOffers/WeeklyOffersList
-@onready var special_offers_list: VBoxContainer = $MainContainer/OffersContainer/SpecialOffers/SpecialOffersList
+@onready
+var daily_offers_list: GridContainer = $MainContainer/OffersContainer/DailyOffers/DailyOffersList
+@onready
+var weekly_offers_list: GridContainer = $MainContainer/OffersContainer/WeeklyOffers/WeeklyOffersList
+@onready
+var special_offers_list: VBoxContainer = $MainContainer/OffersContainer/SpecialOffers/SpecialOffersList
 
 # Datos del juego
 var game_data: GameData
@@ -23,6 +26,7 @@ var offer_timer: Timer
 # Señales
 signal offers_closed
 signal offer_claimed(offer_type: String, offer_id: String, reward: Dictionary)
+
 
 func _ready() -> void:
 	print_rich("[color=yellow]🎁 OffersScene._ready() iniciado[/color]")
@@ -43,11 +47,13 @@ func _ready() -> void:
 
 	print_rich("[color=green]✅ OffersScene listo[/color]")
 
+
 func _apply_theme_styling() -> void:
 	# Aplicar estilos coherentes
 	UITheme.apply_button_style(back_button, "medium")
 	UITheme.apply_label_style($MainContainer/Header/TitleLabel, "title_medium")
 	UITheme.apply_label_style(timer_label, "body_large")
+
 
 func _setup_offer_timer() -> void:
 	offer_timer = Timer.new()
@@ -56,16 +62,20 @@ func _setup_offer_timer() -> void:
 	offer_timer.timeout.connect(_update_timer_display)
 	add_child(offer_timer)
 
+
 func _update_timer_display() -> void:
 	# Calcular tiempo hasta medianoche para ofertas diarias
 	var time = Time.get_datetime_dict_from_system()
-	var seconds_until_midnight = (24 - time.hour) * 3600 + (60 - time.minute) * 60 + (60 - time.second)
+	var seconds_until_midnight = (
+		(24 - time.hour) * 3600 + (60 - time.minute) * 60 + (60 - time.second)
+	)
 
 	var hours = seconds_until_midnight / 3600
 	var minutes = (seconds_until_midnight % 3600) / 60
 	var seconds = seconds_until_midnight % 60
 
 	timer_label.text = "⏰ %02d:%02d:%02d" % [hours, minutes, seconds]
+
 
 func _generate_daily_offers() -> void:
 	# Ofertas que cambian cada día
@@ -86,6 +96,7 @@ func _generate_daily_offers() -> void:
 
 	_populate_offers_list(daily_offers_list, daily_offers, "daily")
 
+
 func _generate_weekly_offers() -> void:
 	# Ofertas que cambian cada semana
 	weekly_offers = [
@@ -98,6 +109,7 @@ func _generate_weekly_offers() -> void:
 	]
 
 	_populate_offers_list(weekly_offers_list, weekly_offers, "weekly")
+
 
 func _generate_special_offers() -> void:
 	# Ofertas especiales por eventos
@@ -112,9 +124,11 @@ func _generate_special_offers() -> void:
 
 	_populate_offers_list(special_offers_list, special_offers, "special")
 
+
 func _populate_offers_list(container: Control, offers: Array, offer_type: String) -> void:
 	for offer in offers:
 		_create_offer_card(container, offer, offer_type)
+
 
 func _create_offer_card(parent: Control, offer: Dictionary, offer_type: String) -> void:
 	# Crear card de oferta
@@ -149,9 +163,11 @@ func _create_offer_card(parent: Control, offer: Dictionary, offer_type: String) 
 
 	parent.add_child(card)
 
+
 func _on_offer_claim(offer_type: String, offer_id: String, reward: Dictionary) -> void:
 	offer_claimed.emit(offer_type, offer_id, reward)
 	print_rich("[color=green]🎁 Oferta reclamada: %s[/color]" % offer_id)
+
 
 func _on_back_pressed() -> void:
 	offers_closed.emit()

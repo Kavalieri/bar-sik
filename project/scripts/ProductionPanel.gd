@@ -1,296 +1,293 @@
-extends ScrollContainer
-## ProductionPanel - Panel de producción MODULAR Y PROFESIONAL
-## Maneja estaciones de producción y crafteo de productos con UI coherente
+extends BasePanel
+## ProductionPanel - Panel de producción usando componentes modulares
+## Implementa Scene Composition con ShopContainer e ItemListCard
 
-# Referencias a contenedores
-@onready var main_container: VBoxContainer = $MainContainer
-@onready var products_container: VBoxContainer = $MainContainer/ProductsSection/ProductContainer
-@onready var stations_container: VBoxContainer = $MainContainer/StationsSection/StationContainer
-
-# Estado del panel
-var is_initialized: bool = false
-var product_labels: Dictionary = {}
-var station_interfaces: Array[Control] = []
-
-# Señales
+# Señales específicas del panel
 signal station_purchased(station_index: int)
 signal manual_production_requested(station_index: int, quantity: int)
 signal offer_toggled(station_index: int, enabled: bool)
 signal offer_price_requested(station_index: int)
 
-func _ready() -> void:
-	print("🍺 ProductionPanel inicializando con sistema modular...")
-	call_deferred("_initialize_panel")
+# Estado específico del panel
+var production_manager_ref: Node = null
 
-func _initialize_panel() -> void:
-	"""Inicialización completa del panel con tema coherente"""
-	_create_sections()
-	_apply_consistent_theming()
-	is_initialized = true
-	print("✅ ProductionPanel inicializado con tema profesional")
+# Componentes modulares
+var products_cards: Array[Node] = []
+var stations_shop: Node = null
+var recipes_cards: Array[Node] = []
 
-func _apply_consistent_theming() -> void:
-	"""Aplicar tema coherente a todo el panel"""
-	# Aplicar responsive design
-	UIComponentsFactory.make_responsive(self)
+# Referencias a contenedores específicos
+@onready var products_container: VBoxContainer = $MainContainer/ProductsSection/ProductContainer
+@onready var stations_container: VBoxContainer = $MainContainer/StationsSection
+@onready var recipes_container: VBoxContainer = $MainContainer/RecipesSection/RecipeContainer
 
-	# Animación de entrada para el contenido
-	UIComponentsFactory.animate_fade_in(main_container, 0.4)
 
-func _create_sections() -> void:
-	"""Crear secciones del panel con componentes modulares"""
-	_create_products_section()
-	_add_section_separator()
-	_create_stations_section()
+## Establecer referencia al ProductionManager
+func set_production_manager(manager: Node) -> void:
+	production_manager_ref = manager
+	print("🔗 ProductionPanel conectado con ProductionManager")
 
-func _add_section_separator() -> void:
-	"""Añadir separador visual profesional"""
-	var separator = UIComponentsFactory.create_section_separator()
-	main_container.add_child(separator)
 
-func _create_products_section() -> void:
-	"""Crear sección de productos con componentes profesionales"""
-	UIComponentsFactory.clear_container(products_container)
+# =============================================================================
+# IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE BasePanel
+# =============================================================================
 
-	var header = UIComponentsFactory.create_section_header(
-		"🍺 PRODUCTOS FABRICADOS",
-		"Inventario de productos terminados"
-	)
-	products_container.add_child(header)
 
-	# Panel de contenido profesional
-	var content_panel = UIComponentsFactory.create_content_panel(150)
-	products_container.add_child(content_panel)
+func _initialize_panel_specific() -> void:
+	"""Inicialización específica del panel de producción"""
+	_setup_modular_products()
+	_setup_modular_stations()
+	_setup_modular_recipes()
+	print("✅ ProductionPanel inicializado con componentes modulares")
 
-func _create_stations_section() -> void:
-	"""Crear sección de estaciones con componentes profesionales"""
-	UIComponentsFactory.clear_container(stations_container)
 
-	var header = UIComponentsFactory.create_section_header(
-		"⚙️ ESTACIONES DE PRODUCCIÓN",
-		"Compra y gestiona estaciones de fabricación"
-	)
-	stations_container.add_child(header)
+func _connect_panel_signals() -> void:
+	"""Conectar señales específicas del panel"""
+	# Las señales se conectan en los componentes modulares
+	return
 
-	# Lista scrolleable para estaciones
-	var stations_scroll = UIComponentsFactory.create_scrollable_list()
-	stations_container.add_child(stations_scroll)
 
-func setup_products(game_data: Dictionary) -> void:
-	"""Configura los productos del juego"""
-	if not is_initialized:
-		call_deferred("setup_products", game_data)
-		return
+func _update_panel_data(game_data: Dictionary) -> void:
+	"""Actualizar datos específicos del panel"""
+	update_product_displays(game_data)
+	update_station_displays(game_data)
+	update_recipe_displays(game_data)
 
-	product_labels.clear()
 
-	# Crear cards para productos
-	for product_name in game_data["products"].keys():
-		var product_card = UIComponentsFactory.create_content_panel(50)
+func _setup_modular_products() -> void:
+	"""Configurar tarjetas de productos usando ItemListCard"""
+	# Limpiar contenedor existente
+	for child in products_container.get_children():
+		child.queue_free()
+	products_cards.clear()
 
-		var label = Label.new()
-		label.text = "%s %s: 0" % [GameUtils.get_item_emoji(product_name), product_name.capitalize()]
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
+	# Definir productos disponibles
+	var product_configs = [
+		{id = "beer", name = "Cerveza", icon = "🍺", action = "view_stats"},
+		{id = "light_beer", name = "Cerveza Ligera", icon = "🍻", action = "view_stats"},
+		{id = "wheat_beer", name = "Cerveza de Trigo", icon = "🌾", action = "view_stats"},
+		{id = "premium_beer", name = "Cerveza Premium", icon = "👑", action = "view_stats"}
+	]
 
-		product_card.add_child(label)
-		products_container.add_child(product_card)
-		product_labels[product_name] = label
+	# Crear tarjeta para cada producto
+	for config in product_configs:
+		var card = ComponentsPreloader.create_item_list_card()
+		var button_config = {text = "Stats", icon = "📊", action = config.action}
 
-func setup_stations(production_stations: Array[Dictionary]) -> void:
-	"""Configura las estaciones de producción"""
-	if not is_initialized:
-		call_deferred("setup_stations", production_stations)
-		return
+		card.setup_item(config, button_config)
+		card.action_requested.connect(_on_product_action)
+		products_container.add_child(card)
+		products_cards.append(card)
 
-	_clear_station_interfaces()
 
-	# Crear interface para cada estación
-	for i in range(production_stations.size()):
-		var station = production_stations[i]
-		var interface = _create_station_interface(station, i)
-		stations_container.add_child(interface)
-		station_interfaces.append(interface)
-
-func _create_station_interface(station: Dictionary, index: int) -> Control:
-	"""Crea una interface limpia para una estación"""
-	var card = UIComponentsFactory.create_content_panel(140)
-
-	var vbox = VBoxContainer.new()
-	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	vbox.add_theme_constant_override("separation", UITheme.Spacing.SMALL)
-	card.add_child(vbox)
-
-	# Título
-	var title_label = Label.new()
-	title_label.text = station.get("name", "Estación")
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
-	vbox.add_child(title_label)
-
-	# Información
-	var info_label = Label.new()
-	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
-	info_label.text = _format_station_info(station, 0, false)
-	vbox.add_child(info_label)
-
-	# Botón de compra IdleBuyButton para estaciones
-	var idle_button = preload("res://scripts/ui/IdleBuyButton.gd").new()
-
-	# Configurar calculadora de costo para estaciones
-	var cost_calculator = func(_station_id: String, quantity: int) -> float:
-		# Las estaciones tienen precio fijo (no escalado como generadores)
-		return station.base_cost * quantity
-
-	idle_button.setup(station.id, station.name, station.base_cost, cost_calculator)
-	idle_button.purchase_requested.connect(_on_station_purchase_idle_wrapper.bind(index))
-
-	# Establecer affordability inicial (será actualizada después)
-	idle_button.set_affordability(true)  # Se actualizará en update_station_interfaces
-	vbox.add_child(idle_button)
-
-	# Separador
-	_add_separator_to_container(vbox, 4)
-
-	# Botones de producción manual
-	var production_label = Label.new()
-	production_label.text = "🔨 Producción:"
-	production_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
-	vbox.add_child(production_label)
-
-	var button_container = HBoxContainer.new()
-	button_container.add_theme_constant_override("separation", 8)  # Más espacio
-	var quantities = [1, 5, 10, 25]
-
-	for quantity in quantities:
-		var button = UIComponentsFactory.create_primary_button("×%d" % quantity)
-		button.set_custom_minimum_size(Vector2(70, 50))  # Más grande para móvil
-		button.add_theme_font_size_override("font_size", 16)  # Fuente móvil
-		button.pressed.connect(_on_manual_production_requested.bind(index, quantity))
-		button_container.add_child(button)
-
-	vbox.add_child(button_container)
-
-	return card
-
-func _format_station_info(station: Dictionary, owned: int, unlocked: bool) -> String:
-	"""Formatea la información de estación"""
-	var cost = station.get("cost", 100.0)
-	var description = station.get("description", "")
-	var status = "🔓 Disponible" if unlocked else "🔒 Bloqueada"
-
-	if owned > 0:
-		status = "✅ Poseída (×%d)" % owned
-
-	return "%s • $%.0f\n%s" % [status, cost, description]
-
-func update_product_displays(game_data: Dictionary) -> void:
-	"""Actualiza las visualizaciones de productos"""
-	if not is_initialized:
-		return
-
-	for product_name in product_labels.keys():
-		if product_name in game_data["products"]:
-			var amount = game_data["products"][product_name]
-			var label = product_labels[product_name]
-			if label:
-				label.text = "%s: %s" % [
-					product_name.capitalize(),
-					GameUtils.format_large_number(amount)
-				]
-
-func update_station_interfaces(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
-	"""Actualiza las interfaces de estaciones"""
-	if not is_initialized:
-		return
-
-	var stations_owned = game_data.get("stations", {})
-	var money = game_data.get("money", 0.0)
-
-	for i in range(min(station_interfaces.size(), production_stations.size())):
-		var interface = station_interfaces[i]
-		var station = production_stations[i]
-		var station_id = station.get("id", "")
-		var owned_count = stations_owned.get(station_id, 0)
-		var is_unlocked = station.get("unlocked", true)
-
-		_update_station_interface(interface, station, owned_count, is_unlocked, money)
-
-func _update_station_interface(interface: Control, station: Dictionary, owned: int, unlocked: bool, money: float) -> void:
-	"""Actualiza una interface específica de estación"""
-	var vbox = interface.get_child(0) as VBoxContainer
-	if not vbox or vbox.get_child_count() < 3:
-		return
-
-	# Actualizar información (segundo elemento)
-	var info_label = vbox.get_child(1) as Label
-	if info_label:
-		info_label.text = _format_station_info(station, owned, unlocked)
-
-	# Actualizar botón de compra (tercer elemento)
-	var purchase_element = vbox.get_child(2)
-
-	# Verificar si es IdleBuyButton o Button tradicional
-	if purchase_element.get_script() and purchase_element.get_script().get_global_name() == "IdleBuyButton":
-		var idle_button = purchase_element
-		idle_button.update_cost_display()
-		var current_cost = idle_button.get_current_cost()
-		var can_afford = money >= current_cost
-		var can_buy = unlocked and can_afford
-		idle_button.set_affordability(can_buy)
-
-		if not unlocked:
-			idle_button.main_button.text = "🔒 BLOQUEADA\nRequisitos no cumplidos"
-	else:
-		# Compatibilidad con botones tradicionales
-		var purchase_button = purchase_element as Button
-		if purchase_button:
-			var cost = station.get("base_cost", 100.0)
-			var can_afford = money >= cost
-			var can_buy = unlocked and can_afford
-
-			purchase_button.text = "Comprar Estación\n$%s" % GameUtils.format_large_number(cost)
-			purchase_button.disabled = not can_buy
-			purchase_button.modulate = Color.WHITE if can_buy else Color.GRAY
-
-			if not unlocked:
-				purchase_button.text = "🔒 BLOQUEADA\nRequisitos no cumplidos"
-
-# Métodos de eventos
-func _on_station_purchase_requested(station_index: int) -> void:
-	"""Maneja la solicitud de compra de estación"""
-	station_purchased.emit(station_index)
-
-func _on_station_purchase_idle_wrapper(item_id: String, quantity: int, station_index: int) -> void:
-	"""Wrapper para IdleBuyButton de estaciones"""
-	print("🏭 Compra de estación solicitada: %d (%s) x%d" % [station_index, item_id, quantity])
-	station_purchased.emit(station_index)
-
-func _on_manual_production_requested(station_index: int, quantity: int) -> void:
-	"""Maneja la solicitud de producción manual"""
-	manual_production_requested.emit(station_index, quantity)
-
-# Funciones de utilidad
-func _clear_container(container: Container) -> void:
-	"""Limpia un contenedor de forma segura"""
-	if not container:
-		return
-	for child in container.get_children():
-		container.remove_child(child)
+func _setup_modular_stations() -> void:
+	"""Configurar tienda de estaciones usando ShopContainer"""
+	# Limpiar contenedor existente
+	for child in stations_container.get_children():
 		child.queue_free()
 
-func _clear_station_interfaces() -> void:
-	"""Limpia las interfaces de estaciones"""
-	for interface in station_interfaces:
-		if interface:
-			interface.queue_free()
-	station_interfaces.clear()
+	# Crear ShopContainer para estaciones
+	stations_shop = ComponentsPreloader.create_shop_container()
+	stations_shop.setup("Estaciones de Producción", "buy")
 
-func _add_separator_to_container(container: Container, height: int = 16) -> void:
-	"""Agrega un separador a un contenedor"""
-	var separator = VSeparator.new()
-	separator.set_custom_minimum_size(Vector2(0, height))
-	separator.modulate = Color.TRANSPARENT
-	container.add_child(separator)
+	# Definir estaciones disponibles
+	var station_configs = [
+		{
+			id = "brewery_station",
+			name = "Estación Cervecera",
+			description = "Produce cerveza automáticamente",
+			base_price = 50.0,
+			icon = "⚗️"
+		},
+		{
+			id = "fermentation_tank",
+			name = "Tanque de Fermentación",
+			description = "Fermenta ingredientes en cerveza",
+			base_price = 75.0,
+			icon = "🛢️"
+		},
+		{
+			id = "bottling_machine",
+			name = "Máquina Embotelladora",
+			description = "Embotella cerveza producida",
+			base_price = 100.0,
+			icon = "🍾"
+		}
+	]
+
+	# Agregar cada estación a la tienda
+	for i in range(station_configs.size()):
+		var config = station_configs[i]
+		var card = stations_shop.add_item(config)
+
+		# Configurar calculadora de costo específica usando GameUtils
+		var cost_calculator = GameUtils.create_cost_calculator(
+			production_manager_ref, config.id, "get_station_cost"
+		)
+
+		card.set_cost_calculator(cost_calculator)
+
+	# Conectar señales de la tienda
+	stations_shop.purchase_requested.connect(_on_station_purchase)
+
+	# Agregar tienda al contenedor
+	stations_container.add_child(stations_shop)
+
+
+func _setup_modular_recipes() -> void:
+	"""Configurar lista de recetas usando ItemListCard"""
+	# Limpiar contenedor existente
+	for child in recipes_container.get_children():
+		child.queue_free()
+	recipes_cards.clear()
+
+	# Definir recetas usando GameConfig centralizado
+	var recipe_configs = []
+	for product_id in GameConfig.PRODUCT_DATA.keys():
+		var data = GameConfig.PRODUCT_DATA[product_id]
+		recipe_configs.append(
+			{id = product_id, name = "Receta: " + data.name, icon = "📋", action = "toggle_recipe"}
+		)
+
+	# Crear tarjeta para cada receta
+	for config in recipe_configs:
+		var card = ComponentsPreloader.create_item_list_card()
+		var button_config = {text = "Activar", icon = "▶️", action = config.action}
+
+		card.setup_item(config, button_config)
+		card.action_requested.connect(_on_recipe_action)
+		recipes_container.add_child(card)
+		recipes_cards.append(card)
+
+
+func update_product_displays(game_data: Dictionary) -> void:
+	"""Actualiza las visualizaciones de productos usando componentes modulares"""
+	if not is_initialized:
+		return
+
+	var products = game_data.get("products", {})
+
+	# Actualizar cada tarjeta de producto
+	for i in range(products_cards.size()):
+		var card = products_cards[i]
+		if not card:
+			continue
+
+		var product_configs = ["beer", "light_beer", "wheat_beer", "premium_beer"]
+		if i < product_configs.size():
+			var product_id = product_configs[i]
+			var amount = products.get(product_id, 0)
+
+			card.update_data(
+				{
+					id = product_id,
+					amount = GameUtils.format_large_number(amount),
+					status = "En stock" if amount > 0 else "Agotado"
+				}
+			)
+
+
+func update_station_displays(game_data: Dictionary) -> void:
+	"""Actualiza las interfaces de estaciones usando ShopContainer"""
+	if not is_initialized or not stations_shop:
+		return
+
+	var money = game_data.get("money", 0.0)
+
+	# Actualizar dinero disponible en la tienda
+	stations_shop.update_player_money(money)
+
+
+func update_station_interfaces(station_definitions: Array, game_data: Dictionary) -> void:
+	"""Alias para update_station_displays con definiciones adicionales"""
+	update_station_displays(game_data)
+
+	# Usar station_definitions para información adicional si es necesario
+	if station_definitions.size() > 0:
+		print("🔄 Actualizando interfaces de estaciones con %d definiciones" % [
+			station_definitions.size()
+		])
+
+
+func update_recipe_displays(game_data: Dictionary) -> void:
+	"""Actualiza el estado de las recetas usando componentes modulares"""
+	if not is_initialized:
+		return
+
+	var active_recipes = game_data.get("active_recipes", {})
+
+	# Actualizar cada tarjeta de receta
+	for i in range(recipes_cards.size()):
+		var card = recipes_cards[i]
+		if not card:
+			continue
+
+		var recipe_configs = ["basic_beer", "light_beer", "wheat_beer"]
+		if i < recipe_configs.size():
+			var recipe_id = recipe_configs[i]
+			var is_active = active_recipes.has(recipe_id)
+
+			card.update_data(
+				{
+					id = recipe_id,
+					status = "Activa" if is_active else "Inactiva",
+					progress = str(active_recipes.get(recipe_id, {}).get("progress", 0)) + "%"
+				}
+			)
+
+			# Actualizar botón según estado
+			var button_config = {
+				text = "Pausar" if is_active else "Activar",
+				icon = "⏸️" if is_active else "▶️",
+				action = "toggle_recipe"
+			}
+			card.configure_button(button_config)
+
+
+# Manejadores de señales modulares
+
+
+func _on_product_action(item_id: String, action: String) -> void:
+	"""Manejar acciones de productos desde ItemListCard"""
+	match action:
+		"view_stats":
+			print("📊 Ver estadísticas de producto: ", item_id)
+			# TODO: Implementar modal de estadísticas de producto
+		_:
+			print("⚠️ Acción no reconocida para producto: ", action)
+
+
+func _on_station_purchase(item_id: String, quantity: int, total_cost: float) -> void:
+	"""Manejar compras de estaciones desde ShopContainer"""
+	print("🏭 Compra de estación solicitada: %s x%d por $%.2f" % [item_id, quantity, total_cost])
+
+	# Buscar índice de la estación para mantener compatibilidad
+	var station_configs = ["brewery_station", "fermentation_tank", "bottling_machine"]
+	var station_index = station_configs.find(item_id)
+
+	if station_index >= 0:
+		station_purchased.emit(station_index)
+	else:
+		print("⚠️ Estación no encontrada: ", item_id)
+
+
+func _on_recipe_action(item_id: String, action: String) -> void:
+	"""Manejar acciones de recetas desde ItemListCard"""
+	match action:
+		"toggle_recipe":
+			print("🔄 Toggle receta: ", item_id)
+			# Buscar índice de la receta para mantener compatibilidad
+			var recipe_configs = ["basic_beer", "light_beer", "wheat_beer"]
+			var recipe_index = recipe_configs.find(item_id)
+
+			if recipe_index >= 0:
+				var current_recipes = current_game_data.get("active_recipes", {})
+				if current_recipes.has(item_id):
+					# Pausar receta activa
+					print("⏸️ Pausando receta: ", item_id)
+				else:
+					# Activar receta
+					print("▶️ Activando receta: ", item_id)
+					manual_production_requested.emit(recipe_index, 1)
+		_:
+			print("⚠️ Acción no reconocida para receta: ", action)

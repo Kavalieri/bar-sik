@@ -19,6 +19,7 @@ var loading_tips: Array = [
 	"👥 Cada cliente tiene preferencias únicas..."
 ]
 
+
 func _ready() -> void:
 	print_rich("[color=yellow]🎬 SplashScreen iniciado - Versión responsive[/color]")
 	start_time = Time.get_ticks_msec() / 1000.0
@@ -32,34 +33,41 @@ func _ready() -> void:
 	# Iniciar simulación de carga
 	_start_loading()
 
+
 func _apply_responsive_styling() -> void:
 	"""Aplicar estilos del sistema de temas coherente"""
 	var font_scale = UITheme.get_font_scale()
 
 	if logo_label:
-		logo_label.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.TITLE_LARGE * font_scale))
+		logo_label.add_theme_font_size_override(
+			"font_size", int(UITheme.Typography.TITLE_LARGE * font_scale)
+		)
 		logo_label.add_theme_color_override("font_color", UITheme.Colors.ACCENT)
 
 	if subtitle_label:
-		subtitle_label.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.TITLE_SMALL * font_scale))
+		subtitle_label.add_theme_font_size_override(
+			"font_size", int(UITheme.Typography.TITLE_SMALL * font_scale)
+		)
 		subtitle_label.add_theme_color_override("font_color", UITheme.Colors.LIGHT)
 
 	if version_label:
-		version_label.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BODY_SMALL * font_scale))
+		version_label.add_theme_font_size_override(
+			"font_size", int(UITheme.Typography.BODY_SMALL * font_scale)
+		)
 		version_label.add_theme_color_override("font_color", UITheme.Colors.SECONDARY)
 
 	if loading_label:
-		loading_label.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BODY_MEDIUM * font_scale))
+		loading_label.add_theme_font_size_override(
+			"font_size", int(UITheme.Typography.BODY_MEDIUM * font_scale)
+		)
 		loading_label.add_theme_color_override("font_color", UITheme.Colors.LIGHT)
 
 	if loading_tip:
-		loading_tip.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BODY_SMALL * font_scale))
+		loading_tip.add_theme_font_size_override(
+			"font_size", int(UITheme.Typography.BODY_SMALL * font_scale)
+		)
 		loading_tip.add_theme_color_override("font_color", UITheme.Colors.SECONDARY)
+
 
 func _setup_loading_elements() -> void:
 	"""Configurar elementos de carga"""
@@ -71,6 +79,7 @@ func _setup_loading_elements() -> void:
 	# Mostrar tip de carga aleatorio
 	if loading_tip and loading_tips.size() > 0:
 		loading_tip.text = loading_tips[randi() % loading_tips.size()]
+
 
 func _start_loading() -> void:
 	"""Iniciar proceso de carga con timer"""
@@ -110,7 +119,6 @@ func _finish_loading() -> void:
 
 	# Cambiar al menú principal
 	Router.goto_scene("main_menu")
-
 
 # Función para debug - permitir saltar splash con clic (DESACTIVADA)
 # func _input(event: InputEvent) -> void:

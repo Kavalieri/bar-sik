@@ -40,8 +40,10 @@ var generator_definitions: Array[Dictionary] = [
 var game_data: GameData
 var generation_timer: Timer
 
+
 func _ready() -> void:
 	_setup_generation_timer()
+
 
 ## Configurar timer de generación de recursos
 func _setup_generation_timer() -> void:
@@ -51,6 +53,7 @@ func _setup_generation_timer() -> void:
 	generation_timer.timeout.connect(_generate_resources)
 	add_child(generation_timer)
 
+
 ## Asignar datos del juego
 func set_game_data(data: GameData) -> void:
 	game_data = data
@@ -58,6 +61,7 @@ func set_game_data(data: GameData) -> void:
 
 	# CRÍTICO: Verificar que el timer esté funcionando
 	_verify_generation_timer()
+
 
 func _verify_generation_timer() -> void:
 	"""Verifica y reinicia el timer de generación si es necesario"""
@@ -69,6 +73,7 @@ func _verify_generation_timer() -> void:
 		generation_timer.start()
 	else:
 		print("✅ Timer de generación funcionando correctamente")
+
 
 ## Procesar generación automática de recursos
 func _generate_resources() -> void:
@@ -95,7 +100,12 @@ func _generate_resources() -> void:
 			var space_available = max_limit - current_amount
 
 			if space_available <= 0:
-				print("📦 %s LLENO (%d/%d) - generación pausada" % [resource_type, current_amount, max_limit])
+				print(
+					(
+						"📦 %s LLENO (%d/%d) - generación pausada"
+						% [resource_type, current_amount, max_limit]
+					)
+				)
 				continue
 
 			# Limitar cantidad generada al espacio disponible
@@ -109,14 +119,25 @@ func _generate_resources() -> void:
 			resource_generated.emit(resource_type, actual_amount)
 
 			if actual_amount < amount:
-				print("  ⚠️ Generación limitada: %dx %s (máx %d/%d)" % [actual_amount, resource_type, current_amount + actual_amount, max_limit])
+				print(
+					(
+						"  ⚠️ Generación limitada: %dx %s (máx %d/%d)"
+						% [actual_amount, resource_type, current_amount + actual_amount, max_limit]
+					)
+				)
 			else:
-				print("  ✅ Generado: %dx %s (de %d %s)" % [actual_amount, resource_type, owned_count, generator_def.name])
+				print(
+					(
+						"  ✅ Generado: %dx %s (de %d %s)"
+						% [actual_amount, resource_type, owned_count, generator_def.name]
+					)
+				)
 
 	if total_generated > 0:
 		print("📦 Total generado este ciclo: %d recursos" % total_generated)
 	else:
 		print("💤 No hay generadores activos para generar recursos")
+
 
 ## Comprar generador por cantidad
 func purchase_generator(generator_id: String, quantity: int) -> bool:
@@ -153,6 +174,7 @@ func purchase_generator(generator_id: String, quantity: int) -> bool:
 	generator_purchased.emit(generator_id, quantity)
 	return true
 
+
 ## Obtener costo de compra de generador (precio escalado)
 func get_generator_cost(generator_id: String, quantity: int = 1) -> float:
 	var generator_def = _find_generator_by_id(generator_id)
@@ -163,12 +185,14 @@ func get_generator_cost(generator_id: String, quantity: int = 1) -> float:
 	# Usar costo escalado exponencial como los edificios
 	return GameUtils.calculate_exponential_cost(generator_def.base_cost, owned, quantity)
 
+
 ## Obtener definición de generador por ID
 func _find_generator_by_id(generator_id: String) -> Dictionary:
 	for generator_def in generator_definitions:
 		if generator_def.id == generator_id:
 			return generator_def
 	return {}
+
 
 ## Obtener todas las definiciones
 func get_generator_definitions() -> Array[Dictionary]:

@@ -32,69 +32,145 @@ const BULK_BUYER_MAX_QUANTITY: int = 3
 
 ## === CONFIGURACIÓN DE DATOS INICIALES ===
 
-## Recursos iniciales
-static func get_default_resources() -> Dictionary:
-	return {
-		"barley": 0,
-		"hops": 0,
-		"water": 0,
-		"yeast": 0
+## Definición centralizada de recursos
+const RESOURCE_DATA = {
+	"barley":
+	{
+		"name": "Cebada",
+		"emoji": "🌾",
+		"tier": 1,
+		"base_generation": 1,
+		"max_storage": 100,
+		"unlock_cost": 0,
+		"unlocked": true
+	},
+	"hops":
+	{
+		"name": "Lúpulo",
+		"emoji": "🌱",
+		"tier": 1,
+		"base_generation": 1,
+		"max_storage": 100,
+		"unlock_cost": 0,
+		"unlocked": true
+	},
+	"water":
+	{
+		"name": "Agua",
+		"emoji": "🧃",
+		"tier": 1,
+		"base_generation": 1,
+		"max_storage": 50,
+		"unlock_cost": 0,
+		"unlocked": true
+	},
+	"yeast":
+	{
+		"name": "Levadura",
+		"emoji": "🍞",
+		"tier": 1,
+		"base_generation": 1,
+		"max_storage": 25,
+		"unlock_cost": 0,
+		"unlocked": true
 	}
+}
+
+## Definición centralizada de productos
+const PRODUCT_DATA = {
+	"basic_beer":
+	{
+		"name": "Cerveza Básica",
+		"emoji": "🍺",
+		"base_price": 5.0,
+		"recipe": {"barley": 1, "water": 1, "yeast": 1}
+	},
+	"premium_beer":
+	{
+		"name": "Cerveza Premium",
+		"emoji": "🍻",
+		"base_price": 12.0,
+		"recipe": {"barley": 2, "hops": 1, "water": 2, "yeast": 1}
+	},
+	"cocktail":
+	{"name": "Cóctel", "emoji": "🍹", "base_price": 20.0, "recipe": {"water": 1, "yeast": 1}}
+}
+
+## Definición centralizada de generadores
+const GENERATOR_DATA = {
+	"barley_farm":
+	{
+		"name": "Granja de Cebada",
+		"description": "Genera cebada automáticamente",
+		"emoji": "🚜",
+		"base_price": 10.0,
+		"resource_type": "barley"
+	},
+	"hops_farm":
+	{
+		"name": "Granja de Lúpulo",
+		"description": "Genera lúpulo para cerveza",
+		"emoji": "🌿",
+		"base_price": 15.0,
+		"resource_type": "hops"
+	},
+	"water_collector":
+	{
+		"name": "Recolector de Agua",
+		"description": "Recolecta agua pura",
+		"emoji": "💧",
+		"base_price": 8.0,
+		"resource_type": "water"
+	}
+}
+
+## Definición centralizada de estaciones
+const STATION_DATA = {
+	"brewery":
+	{
+		"name": "Cervecería",
+		"description": "Produce cerveza",
+		"emoji": "🏭",
+		"base_price": 50.0,
+		"products": ["basic_beer", "premium_beer"]
+	},
+	"bar_station":
+	{
+		"name": "Estación de Bar",
+		"description": "Prepara cócteles",
+		"emoji": "🍸",
+		"base_price": 75.0,
+		"products": ["cocktail"]
+	}
+}
+
 
 ## Productos iniciales
 static func get_default_products() -> Dictionary:
-	return {
-		"basic_beer": 0,
-		"premium_beer": 0,
-		"cocktail": 0
-	}
+	var dict = {}
+	for key in PRODUCT_DATA.keys():
+		dict[key] = 0
+	return dict
+
 
 ## Generadores iniciales
 static func get_default_generators() -> Dictionary:
-	return {
-		"water_collector": 0,
-		"barley_farm": 0,
-		"hops_farm": 0
-	}
+	var dict = {}
+	for key in GENERATOR_DATA.keys():
+		dict[key] = 0
+	return dict
+
 
 ## Estaciones iniciales
 static func get_default_stations() -> Dictionary:
-	return {
-		"brewery": 0,
-		"bar_station": 0
-	}
+	var dict = {}
+	for key in STATION_DATA.keys():
+		dict[key] = 0
+	return dict
 
-## Upgrades iniciales
-static func get_default_upgrades() -> Dictionary:
-	return {
-		"auto_sell_enabled": false,
-		"auto_sell_speed": 1.0,
-		"auto_sell_efficiency": 1.0,
-		"manager_level": 0,
-		"faster_customers": false,
-		"premium_customers": false,
-		"bulk_buyers": false
-	}
-
-## Hitos iniciales
-static func get_default_milestones() -> Dictionary:
-	return {
-		"generators": {},
-		"stations": {}
-	}
-
-## Estadísticas iniciales
-static func get_default_statistics() -> Dictionary:
-	return {
-		"total_money_earned": 0.0,
-		"products_sold": 0,
-		"customers_served": 0,
-		"resources_generated": 0,
-		"products_crafted": 0,
-		"autosell_earnings": 0.0
-	}
 
 ## === VALIDACIÓN DE CONFIGURACIÓN ===
+
 
 ## Validar que la configuración es coherente
 static func validate_config() -> bool:

@@ -20,6 +20,7 @@ var game_data: GameData
 signal shop_closed
 signal item_purchased(item_type: String, item_id: String, cost: float)
 
+
 func _ready() -> void:
 	print_rich("[color=yellow]🛒 ShopScene._ready() iniciado[/color]")
 
@@ -34,19 +35,23 @@ func _ready() -> void:
 
 	print_rich("[color=green]✅ ShopScene listo[/color]")
 
+
 func _apply_theme_styling() -> void:
 	# Aplicar estilos del sistema de temas
 	UITheme.apply_button_style(back_button, "medium")
 	UITheme.apply_label_style($MainContainer/Header/TitleLabel, "title_medium")
 	UITheme.apply_label_style(money_label, "body_large")
 
+
 func set_game_data(data: GameData) -> void:
 	game_data = data
 	_update_money_display()
 
+
 func _update_money_display() -> void:
 	if game_data and money_label:
 		money_label.text = "💰 $%.0f" % game_data.money
+
 
 func _setup_shop_content() -> void:
 	# Configurar contenido de cada tab
@@ -55,31 +60,117 @@ func _setup_shop_content() -> void:
 	_setup_equipment_tab()
 	_setup_recipes_tab()
 
+
 func _setup_generators_tab() -> void:
 	# Crear botones para generadores disponibles
-	_create_shop_item(generators_list, "🚰 Recolector de Agua", "Genera agua automáticamente", 100, "generator", "water_collector")
-	_create_shop_item(generators_list, "🌾 Granja de Cebada", "Produce cebada constantemente", 250, "generator", "barley_farm")
-	_create_shop_item(generators_list, "🌿 Cultivo de Lúpulo", "Cultiva lúpulo premium", 500, "generator", "hops_farm")
+	_create_shop_item(
+		generators_list,
+		"🚰 Recolector de Agua",
+		"Genera agua automáticamente",
+		100,
+		"generator",
+		"water_collector"
+	)
+	_create_shop_item(
+		generators_list,
+		"🌾 Granja de Cebada",
+		"Produce cebada constantemente",
+		250,
+		"generator",
+		"barley_farm"
+	)
+	_create_shop_item(
+		generators_list,
+		"🌿 Cultivo de Lúpulo",
+		"Cultiva lúpulo premium",
+		500,
+		"generator",
+		"hops_farm"
+	)
+
 
 func _setup_upgrades_tab() -> void:
 	# Crear mejoras disponibles
-	_create_shop_item(upgrades_list, "⚡ Velocidad +25%", "Aumenta velocidad de generación", 200, "upgrade", "speed_boost_1")
-	_create_shop_item(upgrades_list, "💧 Eficiencia +50%", "Reduce consumo de recursos", 400, "upgrade", "efficiency_1")
-	_create_shop_item(upgrades_list, "🎯 Calidad Premium", "Mejora calidad de productos", 800, "upgrade", "quality_boost")
+	_create_shop_item(
+		upgrades_list,
+		"⚡ Velocidad +25%",
+		"Aumenta velocidad de generación",
+		200,
+		"upgrade",
+		"speed_boost_1"
+	)
+	_create_shop_item(
+		upgrades_list,
+		"💧 Eficiencia +50%",
+		"Reduce consumo de recursos",
+		400,
+		"upgrade",
+		"efficiency_1"
+	)
+	_create_shop_item(
+		upgrades_list,
+		"🎯 Calidad Premium",
+		"Mejora calidad de productos",
+		800,
+		"upgrade",
+		"quality_boost"
+	)
+
 
 func _setup_equipment_tab() -> void:
 	# Crear equipamiento disponible
-	_create_shop_item(equipment_list, "🍺 Barril Grande", "Aumenta capacidad +100", 300, "equipment", "large_barrel")
-	_create_shop_item(equipment_list, "⚗️ Destiladora Pro", "Permite cócteles premium", 600, "equipment", "pro_distiller")
-	_create_shop_item(equipment_list, "❄️ Sistema de Frío", "Mantiene calidad perfecta", 1000, "equipment", "cooling_system")
+	_create_shop_item(
+		equipment_list,
+		"🍺 Barril Grande",
+		"Aumenta capacidad +100",
+		300,
+		"equipment",
+		"large_barrel"
+	)
+	_create_shop_item(
+		equipment_list,
+		"⚗️ Destiladora Pro",
+		"Permite cócteles premium",
+		600,
+		"equipment",
+		"pro_distiller"
+	)
+	_create_shop_item(
+		equipment_list,
+		"❄️ Sistema de Frío",
+		"Mantiene calidad perfecta",
+		1000,
+		"equipment",
+		"cooling_system"
+	)
+
 
 func _setup_recipes_tab() -> void:
 	# Crear recetas disponibles
-	_create_shop_item(recipes_list, "🍺 Cerveza Premium", "Receta de cerveza artesanal", 150, "recipe", "premium_beer")
-	_create_shop_item(recipes_list, "🍸 Cóctel Especial", "Bebida mixta premium", 300, "recipe", "special_cocktail")
-	_create_shop_item(recipes_list, "🥃 Whisky de Casa", "Destilado exclusivo", 750, "recipe", "house_whisky")
+	_create_shop_item(
+		recipes_list,
+		"🍺 Cerveza Premium",
+		"Receta de cerveza artesanal",
+		150,
+		"recipe",
+		"premium_beer"
+	)
+	_create_shop_item(
+		recipes_list, "🍸 Cóctel Especial", "Bebida mixta premium", 300, "recipe", "special_cocktail"
+	)
+	_create_shop_item(
+		recipes_list, "🥃 Whisky de Casa", "Destilado exclusivo", 750, "recipe", "house_whisky"
+	)
 
-func _create_shop_item(parent: VBoxContainer, title: String, description: String, cost: float, item_type: String, item_id: String) -> void:
+
+func _create_shop_item(
+	parent: VBoxContainer,
+	title: String,
+	description: String,
+	cost: float,
+	item_type: String,
+	item_id: String
+) -> void:
 	# Crear contenedor del item
 	var item_container = HBoxContainer.new()
 	parent.add_child(item_container)
@@ -112,12 +203,14 @@ func _create_shop_item(parent: VBoxContainer, title: String, description: String
 	separator.custom_minimum_size = Vector2(0, 10)
 	parent.add_child(separator)
 
+
 func _on_item_purchase(item_type: String, item_id: String, cost: float) -> void:
 	if game_data and game_data.money >= cost:
 		item_purchased.emit(item_type, item_id, cost)
 		print_rich("[color=green]💰 Comprado: %s por $%.0f[/color]" % [item_id, cost])
 	else:
 		print_rich("[color=red]❌ Dinero insuficiente para %s ($%.0f)[/color]" % [item_id, cost])
+
 
 func _on_back_pressed() -> void:
 	shop_closed.emit()

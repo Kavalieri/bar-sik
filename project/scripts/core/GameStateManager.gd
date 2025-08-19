@@ -25,10 +25,13 @@ var sales_panel: Control
 var customers_panel: Control
 var tab_navigator: Control
 
+
 func _ready() -> void:
 	print("🔄 GameStateManager inicializado - Sistema reactivo activo")
 
+
 ## === CONFIGURACIÓN DEL SISTEMA ===
+
 
 func setup_panel_references(panels: Dictionary) -> void:
 	"""Configura las referencias a todos los paneles"""
@@ -40,7 +43,9 @@ func setup_panel_references(panels: Dictionary) -> void:
 
 	print("📱 GameStateManager - Referencias de paneles configuradas")
 
+
 ## === GESTIÓN DE ESTADO CENTRALIZADA ===
+
 
 func update_game_state(new_state: Dictionary) -> void:
 	"""Actualiza el estado completo del juego y notifica cambios"""
@@ -51,6 +56,7 @@ func update_game_state(new_state: Dictionary) -> void:
 
 	# Emisión general de cambio de estado
 	game_state_updated.emit(new_state)
+
 
 func _check_and_emit_changes(old_state: Dictionary, new_state: Dictionary) -> void:
 	"""Detecta cambios específicos y emite señales correspondientes"""
@@ -80,6 +86,7 @@ func _check_and_emit_changes(old_state: Dictionary, new_state: Dictionary) -> vo
 		cached_stations = new_stations.duplicate()
 		stations_changed.emit(new_stations)
 
+
 func _update_affordability_states(money: float) -> void:
 	"""Actualiza solo los estados de botones según dinero disponible"""
 
@@ -90,6 +97,7 @@ func _update_affordability_states(money: float) -> void:
 	# Actualizar estaciones en ProductionPanel
 	if production_panel and production_panel.has_method("update_button_affordability"):
 		production_panel.update_button_affordability(money)
+
 
 func _dictionaries_equal(dict1: Dictionary, dict2: Dictionary) -> bool:
 	"""Compara si dos diccionarios son iguales"""
@@ -102,25 +110,32 @@ func _dictionaries_equal(dict1: Dictionary, dict2: Dictionary) -> bool:
 
 	return true
 
+
 ## === MÉTODOS DE CONVENIENCIA ===
+
 
 func get_current_money() -> float:
 	"""Obtiene el dinero actual"""
 	return cached_money
 
+
 func get_current_resources() -> Dictionary:
 	"""Obtiene los recursos actuales"""
 	return cached_resources.duplicate()
+
 
 func get_current_generators() -> Dictionary:
 	"""Obtiene los generadores actuales"""
 	return cached_generators.duplicate()
 
+
 func get_full_state() -> Dictionary:
 	"""Obtiene el estado completo actual"""
 	return cached_game_state.duplicate()
 
+
 ## === FUNCIONES DE DEBUG ===
+
 
 func debug_print_state() -> void:
 	"""Imprime el estado actual para debugging"""

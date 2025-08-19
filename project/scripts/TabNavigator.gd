@@ -51,6 +51,7 @@ func _setup_ui() -> void:
 	# Setup menú de guardado
 	_setup_save_menu()
 
+
 func _setup_mobile_friendly_tabs() -> void:
 	"""Configurar tabs con tamaños móviles"""
 	var tab_buttons = [generation_tab, production_tab, sales_tab, customers_tab]

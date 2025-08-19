@@ -9,36 +9,18 @@ signal purchase_attempted(item_id: String, cost: Dictionary, success: bool)
 signal not_enough_currency(currency_type: String, required: int, available: int)
 
 # Tipos de moneda
-enum CurrencyType {
-	CASH,    # 💵 Dinero - Venta de bebidas
-	TOKENS,  # 🎯 Tokens - Misiones completadas
-	STARS    # ⭐ Estrellas - Sistema de prestigio
-}
+enum CurrencyType { CASH, TOKENS, STARS }  # 💵 Dinero - Venta de bebidas  # 🎯 Tokens - Misiones completadas  # ⭐ Estrellas - Sistema de prestigio
 
 # Datos de las monedas
 var currencies: Dictionary = {
-	"cash": {
-		"amount": 0,
-		"total_earned": 0,  # Histórico para estadísticas
-		"emoji": "💵",
-		"name": "Dinero",
-		"resets_on_prestige": true
-	},
-	"tokens": {
-		"amount": 0,
-		"total_earned": 0,
-		"emoji": "🎯",
-		"name": "Tokens",
-		"resets_on_prestige": false
-	},
-	"stars": {
-		"amount": 0,
-		"total_earned": 0,
-		"emoji": "⭐",
-		"name": "Estrellas",
-		"resets_on_prestige": false
-	}
+	"cash":  # Histórico para estadísticas
+	{"amount": 0, "total_earned": 0, "emoji": "💵", "name": "Dinero", "resets_on_prestige": true},
+	"tokens":
+	{"amount": 0, "total_earned": 0, "emoji": "🎯", "name": "Tokens", "resets_on_prestige": false},
+	"stars":
+	{"amount": 0, "total_earned": 0, "emoji": "⭐", "name": "Estrellas", "resets_on_prestige": false}
 }
+
 
 func _ready() -> void:
 	print("💰 CurrencyManager inicializado")
@@ -46,6 +28,7 @@ func _ready() -> void:
 	# Dar algo de dinero inicial para testing
 	if AppConfig.is_debug:
 		add_currency("cash", 100)
+
 
 ## Añadir cantidad a una moneda
 func add_currency(currency_type: String, amount: int) -> bool:
@@ -69,6 +52,7 @@ func add_currency(currency_type: String, amount: int) -> bool:
 
 	return true
 
+
 ## Remover cantidad de una moneda (para compras)
 func spend_currency(currency_type: String, amount: int) -> bool:
 	if not currencies.has(currency_type):
@@ -91,6 +75,7 @@ func spend_currency(currency_type: String, amount: int) -> bool:
 
 	return true
 
+
 ## Verificar si se puede pagar un costo múltiple
 func can_afford(cost: Dictionary) -> bool:
 	for currency_type in cost:
@@ -99,6 +84,7 @@ func can_afford(cost: Dictionary) -> bool:
 		if available < required:
 			return false
 	return true
+
 
 ## Realizar compra con costo múltiple
 func make_purchase(item_id: String, cost: Dictionary) -> bool:
@@ -121,17 +107,20 @@ func make_purchase(item_id: String, cost: Dictionary) -> bool:
 
 	return success
 
+
 ## Obtener cantidad actual de una moneda
 func get_currency_amount(currency_type: String) -> int:
 	if not currencies.has(currency_type):
 		return 0
 	return currencies[currency_type].amount
 
+
 ## Obtener cantidad total ganada históricamente
 func get_total_earned(currency_type: String) -> int:
 	if not currencies.has(currency_type):
 		return 0
 	return currencies[currency_type].total_earned
+
 
 ## Obtener datos de display de una moneda
 func get_currency_display(currency_type: String) -> Dictionary:
@@ -146,6 +135,7 @@ func get_currency_display(currency_type: String) -> Dictionary:
 		"formatted": format_currency(data.amount)
 	}
 
+
 ## Formatear número de moneda para mostrar
 func format_currency(amount: int) -> String:
 	if amount < 1000:
@@ -156,6 +146,7 @@ func format_currency(amount: int) -> String:
 		return "%.1fM" % (amount / 1000000.0)
 	else:
 		return "%.1fB" % (amount / 1000000000.0)
+
 
 ## Calcular ingresos por venta de bebida
 func sell_beverage(beverage_id: String, base_price: int, quantity: int = 1) -> int:
@@ -172,6 +163,7 @@ func sell_beverage(beverage_id: String, base_price: int, quantity: int = 1) -> i
 
 	return final_price
 
+
 ## Sistema de prestigio - resetear monedas que corresponda
 func reset_for_prestige() -> Dictionary:
 	var reset_data = {}
@@ -186,6 +178,7 @@ func reset_for_prestige() -> Dictionary:
 	print("🔄 Monedas reseteadas para prestigio")
 	return reset_data
 
+
 ## Calcular estrellas de prestigio basado en dinero total
 func calculate_prestige_stars() -> int:
 	var total_cash = get_total_earned("cash")
@@ -195,16 +188,17 @@ func calculate_prestige_stars() -> int:
 
 	return max(stars, 1)  # Mínimo 1 estrella
 
+
 ## Recompensas de misiones
 func complete_mission(mission_id: String, token_reward: int) -> void:
 	add_currency("tokens", token_reward)
 	GameEvents.emit_custom_event("mission_completed", {"id": mission_id, "reward": token_reward})
 
+
 ## Obtener estado para guardado
 func get_save_data() -> Dictionary:
-	return {
-		"currencies": currencies
-	}
+	return {"currencies": currencies}
+
 
 ## Cargar estado desde guardado
 func load_save_data(data: Dictionary) -> void:
@@ -215,9 +209,11 @@ func load_save_data(data: Dictionary) -> void:
 		for currency_type in currencies:
 			currency_changed.emit(currency_type, 0, currencies[currency_type].amount)
 
+
 ## Método de conveniencia para obtener tipos como strings
 func get_currency_types() -> Array:
 	return ["cash", "tokens", "stars"]
+
 
 ## Debug: Añadir monedas de testing
 func debug_add_currencies() -> void:

@@ -17,6 +17,7 @@ var main_button: Button
 var multiplier_button: Button
 var cost_calculator_func: Callable
 
+
 func setup(id: String, display_name: String, cost: float, calculator: Callable) -> void:
 	"""Configurar el botón con datos del item"""
 	item_id = id
@@ -27,6 +28,7 @@ func setup(id: String, display_name: String, cost: float, calculator: Callable) 
 
 	_create_ui()
 	_update_display()
+
 
 func _create_ui() -> void:
 	"""Crear la interfaz del botón"""
@@ -56,6 +58,7 @@ func _create_ui() -> void:
 	main_button.pressed.connect(_on_main_button_pressed)
 	add_child(main_button)
 
+
 func _update_display() -> void:
 	"""Actualizar el display del botón"""
 	if not main_button or not multiplier_button:
@@ -70,10 +73,13 @@ func _update_display() -> void:
 
 	# Botón principal: iconos + precio con formato claro
 	var icon = _get_item_icon(item_id)
-	main_button.text = "%s %s\n💰 $%s" % [icon, item_display_name, GameUtils.format_large_number(total_cost)]
+	main_button.text = (
+		"%s %s\n💰 $%s" % [icon, item_display_name, GameUtils.format_large_number(total_cost)]
+	)
 
 	# Botón multiplicador: cantidad con icono claro
 	multiplier_button.text = "� x%d" % current_multiplier
+
 
 func set_affordability(can_afford: bool) -> void:
 	"""Establecer si se puede permitir la compra"""
@@ -81,10 +87,12 @@ func set_affordability(can_afford: bool) -> void:
 		main_button.disabled = not can_afford
 		main_button.modulate = Color.WHITE if can_afford else Color.GRAY
 
+
 func _on_main_button_pressed() -> void:
 	"""Manejar clic en botón principal"""
 	print("🔘 IdleBuyButton presionado: %s x%d" % [item_id, current_multiplier])
 	purchase_requested.emit(item_id, current_multiplier)
+
 
 func _on_multiplier_button_pressed() -> void:
 	"""Rotar multiplicador"""
@@ -92,9 +100,11 @@ func _on_multiplier_button_pressed() -> void:
 	current_multiplier = multipliers[multiplier_index]
 	_update_display()
 
+
 func update_cost_display() -> void:
 	"""Actualizar solo el costo sin cambiar el multiplicador"""
 	_update_display()
+
 
 func get_current_cost() -> float:
 	"""Obtener el costo actual"""
@@ -102,12 +112,19 @@ func get_current_cost() -> float:
 		return cost_calculator_func.call(item_id, current_multiplier)
 	return base_cost * current_multiplier
 
+
 func _get_item_icon(item_id: String) -> String:
 	"""Obtener icono apropiado para cada item"""
 	match item_id:
-		"barley_farm": return "🌾"
-		"hops_farm": return "🌿"
-		"water_collector": return "💧"
-		"brewery": return "🍺"
-		"bar_station": return "🍹"
-		_: return "🏭"
+		"barley_farm":
+			return "🌾"
+		"hops_farm":
+			return "🌿"
+		"water_collector":
+			return "💧"
+		"brewery":
+			return "🍺"
+		"bar_station":
+			return "🍹"
+		_:
+			return "🏭"

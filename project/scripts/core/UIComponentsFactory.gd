@@ -4,6 +4,7 @@ extends Node
 
 ## 🏭 FÁBRICA DE COMPONENTES BASE
 
+
 ## Crear header de sección con estilo coherente
 static func create_section_header(title: String, subtitle: String = "") -> VBoxContainer:
 	var header_container = VBoxContainer.new()
@@ -12,8 +13,9 @@ static func create_section_header(title: String, subtitle: String = "") -> VBoxC
 	# Título principal
 	var title_label = Label.new()
 	title_label.text = title
-	title_label.add_theme_font_size_override("font_size",
-		int(UITheme.Typography.TITLE_SMALL * UITheme.get_font_scale()))
+	title_label.add_theme_font_size_override(
+		"font_size", int(UITheme.Typography.TITLE_SMALL * UITheme.get_font_scale())
+	)
 	title_label.add_theme_color_override("font_color", UITheme.Colors.ACCENT)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header_container.add_child(title_label)
@@ -22,14 +24,16 @@ static func create_section_header(title: String, subtitle: String = "") -> VBoxC
 	if subtitle != "":
 		var subtitle_label = Label.new()
 		subtitle_label.text = subtitle
-		subtitle_label.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BODY_SMALL * UITheme.get_font_scale()))
+		subtitle_label.add_theme_font_size_override(
+			"font_size", int(UITheme.Typography.BODY_SMALL * UITheme.get_font_scale())
+		)
 		subtitle_label.add_theme_color_override("font_color", UITheme.Colors.LIGHT)
 		subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		subtitle_label.modulate.a = 0.8
 		header_container.add_child(subtitle_label)
 
 	return header_container
+
 
 ## Crear panel de contenido estilizado
 static func create_content_panel(min_height: int = 0) -> Panel:
@@ -66,6 +70,7 @@ static func create_content_panel(min_height: int = 0) -> Panel:
 
 	return panel
 
+
 ## Crear botón principal estilizado
 static func create_primary_button(text: String, size: String = "medium") -> Button:
 	var button = Button.new()
@@ -78,6 +83,7 @@ static func create_primary_button(text: String, size: String = "medium") -> Butt
 	button.custom_minimum_size.y = UITheme.Spacing.TOUCH_TARGET_MIN
 
 	return button
+
 
 ## Crear botón secundario (menos prominente)
 static func create_secondary_button(text: String, size: String = "small") -> Button:
@@ -94,6 +100,7 @@ static func create_secondary_button(text: String, size: String = "small") -> But
 	button.custom_minimum_size.y = UITheme.Spacing.TOUCH_TARGET_MIN
 
 	return button
+
 
 ## Crear separador visual profesional
 static func create_section_separator() -> Control:
@@ -122,7 +129,9 @@ static func create_section_separator() -> Control:
 
 	return separator_container
 
+
 ## 📊 COMPONENTES ESPECIALIZADOS
+
 
 ## Crear tarjeta de estadística
 static func create_stats_card(title: String, value: String, icon: String = "") -> Panel:
@@ -136,8 +145,9 @@ static func create_stats_card(title: String, value: String, icon: String = "") -
 	if icon != "":
 		var icon_label = Label.new()
 		icon_label.text = icon
-		icon_label.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.TITLE_MEDIUM * UITheme.get_font_scale()))
+		icon_label.add_theme_font_size_override(
+			"font_size", int(UITheme.Typography.TITLE_MEDIUM * UITheme.get_font_scale())
+		)
 		icon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hbox.add_child(icon_label)
 
@@ -148,20 +158,23 @@ static func create_stats_card(title: String, value: String, icon: String = "") -
 
 	var title_label = Label.new()
 	title_label.text = title
-	title_label.add_theme_font_size_override("font_size",
-		int(UITheme.Typography.BODY_SMALL * UITheme.get_font_scale()))
+	title_label.add_theme_font_size_override(
+		"font_size", int(UITheme.Typography.BODY_SMALL * UITheme.get_font_scale())
+	)
 	title_label.add_theme_color_override("font_color", UITheme.Colors.LIGHT)
 	title_label.modulate.a = 0.8
 	content_vbox.add_child(title_label)
 
 	var value_label = Label.new()
 	value_label.text = value
-	value_label.add_theme_font_size_override("font_size",
-		int(UITheme.Typography.TITLE_SMALL * UITheme.get_font_scale()))
+	value_label.add_theme_font_size_override(
+		"font_size", int(UITheme.Typography.TITLE_SMALL * UITheme.get_font_scale())
+	)
 	value_label.add_theme_color_override("font_color", UITheme.Colors.ACCENT)
 	content_vbox.add_child(value_label)
 
 	return card
+
 
 ## Crear lista de elementos scrolleable
 static func create_scrollable_list() -> ScrollContainer:
@@ -181,7 +194,9 @@ static func create_scrollable_list() -> ScrollContainer:
 
 	return scroll
 
+
 ## 🔧 UTILIDADES DE LAYOUT
+
 
 ## Limpiar contenedor de forma segura
 static func clear_container(container: Node) -> void:
@@ -189,6 +204,7 @@ static func clear_container(container: Node) -> void:
 		return
 	for child in container.get_children():
 		child.queue_free()
+
 
 ## Crear espaciador flexible
 static func create_spacer(size: int = 0) -> Control:
@@ -198,6 +214,7 @@ static func create_spacer(size: int = 0) -> Control:
 	else:
 		spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	return spacer
+
 
 ## Aplicar tema responsive a cualquier control
 static func make_responsive(control: Control) -> void:
@@ -213,7 +230,9 @@ static func make_responsive(control: Control) -> void:
 			if button.custom_minimum_size.y < UITheme.Spacing.TOUCH_TARGET_MIN:
 				button.custom_minimum_size.y = UITheme.Spacing.TOUCH_TARGET_MIN
 
+
 ## 🎭 ANIMACIONES SUAVES
+
 
 ## Animar aparición de elemento
 static func animate_fade_in(control: Control, duration: float = 0.3) -> void:
@@ -222,18 +241,23 @@ static func animate_fade_in(control: Control, duration: float = 0.3) -> void:
 	tween.tween_property(control, "modulate:a", 1.0, duration)
 	tween.tween_callback(func(): print("✨ Animación fade-in completada"))
 
+
 ## Animar hover de botón
 static func setup_button_hover(button: Button) -> void:
 	var original_scale = button.scale
 
-	button.mouse_entered.connect(func():
-		var tween = button.create_tween()
-		tween.tween_property(button, "scale", original_scale * 1.05,
-			UITheme.Animations.TRANSITION_FAST)
+	button.mouse_entered.connect(
+		func():
+			var tween = button.create_tween()
+			tween.tween_property(
+				button, "scale", original_scale * 1.05, UITheme.Animations.TRANSITION_FAST
+			)
 	)
 
-	button.mouse_exited.connect(func():
-		var tween = button.create_tween()
-		tween.tween_property(button, "scale", original_scale,
-			UITheme.Animations.TRANSITION_FAST)
+	button.mouse_exited.connect(
+		func():
+			var tween = button.create_tween()
+			tween.tween_property(
+				button, "scale", original_scale, UITheme.Animations.TRANSITION_FAST
+			)
 	)

@@ -1,9 +1,11 @@
 extends Node
 ## SystemRepairSummary - Resumen de reparaciones del sistema
 
+
 func _ready() -> void:
 	print("\n🔧 === RESUMEN DE REPARACIONES DEL SISTEMA ===")
 	call_deferred("_show_repair_summary")
+
 
 func _show_repair_summary() -> void:
 	await get_tree().process_frame
@@ -31,6 +33,7 @@ func _show_repair_summary() -> void:
 
 	await get_tree().create_timer(1.0).timeout
 	_test_new_systems()
+
 
 func _test_new_systems() -> void:
 	print("\n🧪 TESTEANDO NUEVOS SISTEMAS...")

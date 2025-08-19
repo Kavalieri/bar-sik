@@ -27,6 +27,7 @@ var save_timer: Timer
 # Cache para sistema reactivo
 var cached_money: float = 0.0
 
+
 func _ready() -> void:
 	print_rich("[color=yellow]🎮 GameController._ready() iniciado[/color]")
 
@@ -51,12 +52,15 @@ func _ready() -> void:
 	print_rich("[color=green]✅ GameController listo - Sistema modular activo[/color]")
 	debug_game_state()
 
+
 ## === DEBUGGING FUNCTIONS ===
+
 
 # Función para mostrar info sin breakpoints automáticos
 func debug_game_info(location: String):
 	print_rich("[color=cyan]📍 DEBUG INFO: %s[/color]" % location)
 	print_stack()
+
 
 # Función para inspeccionar variables en vivo
 func debug_game_state():
@@ -67,6 +71,7 @@ func debug_game_state():
 	print_rich("🏢 Estaciones: %s" % game_data.stations)
 	print_rich("📊 Estadísticas: %s" % game_data.statistics)
 	print_rich("🎯 Upgrades: %s" % game_data.upgrades)
+
 
 # Función para pausar y mostrar info (inteligente)
 func debug_pause_and_inspect(location: String, force: bool = false):
@@ -80,6 +85,7 @@ func debug_pause_and_inspect(location: String, force: bool = false):
 	else:
 		print_rich("[color=cyan]ℹ️  Breakpoint deshabilitado (modo normal)[/color]")
 
+
 ## Configurar datos del juego
 func _setup_game_data() -> void:
 	game_data = GameData.new()
@@ -92,6 +98,7 @@ func _setup_game_data() -> void:
 			print("💾 Datos cargados del sistema de guardado")
 
 	print("🎯 Datos del juego configurados")
+
 
 ## Configurar managers
 func _setup_managers() -> void:
@@ -126,6 +133,7 @@ func _setup_managers() -> void:
 
 	print("🏭 Managers configurados y conectados")
 
+
 ## Configurar sistema de estado centralizado
 func _setup_state_manager() -> void:
 	"""Configura el GameStateManager para gestión reactiva de estado"""
@@ -137,6 +145,7 @@ func _setup_state_manager() -> void:
 	GameStateManager.stations_changed.connect(_on_stations_changed)
 
 	print("🔄 GameStateManager configurado - Sistema reactivo activo")
+
 
 ## Conectar señales de los managers
 func _connect_manager_signals() -> void:
@@ -156,22 +165,31 @@ func _connect_manager_signals() -> void:
 	customer_manager.customer_served.connect(_on_customer_served)
 	customer_manager.upgrade_purchased.connect(_on_customer_upgrade_purchased)
 
+
 ## Configurar sistema de UI
 func _setup_ui_system() -> void:
 	# Obtener referencias a paneles
-	generation_panel = tab_navigator.get_node("MainContainer/ContentContainer/GenerationPanel").get_child(0)
-	production_panel = tab_navigator.get_node("MainContainer/ContentContainer/ProductionPanel").get_child(0)
+	generation_panel = (
+		tab_navigator.get_node("MainContainer/ContentContainer/GenerationPanel").get_child(0)
+	)
+	production_panel = (
+		tab_navigator.get_node("MainContainer/ContentContainer/ProductionPanel").get_child(0)
+	)
 	sales_panel = tab_navigator.get_node("MainContainer/ContentContainer/SalesPanel").get_child(0)
-	customers_panel = tab_navigator.get_node("MainContainer/ContentContainer/CustomersPanel").get_child(0)
+	customers_panel = (
+		tab_navigator.get_node("MainContainer/ContentContainer/CustomersPanel").get_child(0)
+	)
 
 	# Configurar GameStateManager con referencias a paneles
-	GameStateManager.setup_panel_references({
-		"generation": generation_panel,
-		"production": production_panel,
-		"sales": sales_panel,
-		"customers": customers_panel,
-		"tab_navigator": tab_navigator
-	})
+	GameStateManager.setup_panel_references(
+		{
+			"generation": generation_panel,
+			"production": production_panel,
+			"sales": sales_panel,
+			"customers": customers_panel,
+			"tab_navigator": tab_navigator
+		}
+	)
 
 	# Inicializar estado en GameStateManager
 	GameStateManager.update_game_state(game_data.to_dict())
@@ -189,89 +207,76 @@ func _setup_ui_system() -> void:
 
 	print("📱 Sistema UI configurado")
 
+
 ## Configurar paneles con managers
 func _setup_panels() -> void:
 	print("🔧 _setup_panels iniciado")
 
-	# Setup GenerationPanel
-	if generation_panel.has_method("setup_resources"):
-		var initial_game_data = game_data.to_dict()
-		print("📦 Configurando GenerationPanel con datos: %s" % initial_game_data)
-
-		# Establecer referencia al GeneratorManager para cálculos consistentes
-		if generation_panel.has_method("set_generator_manager"):
-			generation_panel.set_generator_manager(generator_manager)
-
-		generation_panel.setup_resources(initial_game_data)
-		generation_panel.setup_generators(generator_manager.get_generator_definitions())
+	# Setup GenerationPanel (nueva arquitectura modular)
+	if generation_panel.has_method("set_generator_manager"):
+		print("📦 Conectando GenerationPanel con GeneratorManager...")
+		generation_panel.set_generator_manager(generator_manager)
+		print("✅ GeneratorManager conectado a GenerationPanel")
 
 		# Reconectar señal si no está conectada
-		if not generation_panel.generator_purchased.is_connected(_on_ui_generator_purchase_requested):
+		if not generation_panel.generator_purchased.is_connected(
+			_on_ui_generator_purchase_requested
+		):
 			generation_panel.generator_purchased.connect(_on_ui_generator_purchase_requested)
 			print("✅ Señal generator_purchased reconectada")
 
-	# Setup ProductionPanel
-	if production_panel.has_method("setup_products"):
-		print("🔧 GameController - Configurando ProductionPanel")
-		print("📊 Datos del juego: ", game_data.to_dict())
-		var station_defs = production_manager.get_station_definitions()
-		print("🏭 Definiciones de estaciones: ", station_defs.size(), " estaciones")
-		for i in range(station_defs.size()):
-			print("   %d. %s (id: %s)" % [i, station_defs[i].name, station_defs[i].id])
+	# Setup ProductionPanel (nueva arquitectura modular)
+	if production_panel.has_method("set_production_manager"):
+		print("🔧 Conectando ProductionPanel con ProductionManager...")
+		production_panel.set_production_manager(production_manager)
+		print("✅ ProductionManager conectado a ProductionPanel")
 
-		production_panel.setup_products(game_data.to_dict())
-		production_panel.setup_stations(station_defs)
-
-		# Conectar señales solo si no están ya conectadas
-		if not production_panel.station_purchased.is_connected(_on_ui_station_purchase_requested):
+		# Conectar señales solo si existen y no están ya conectadas
+		if (
+			production_panel.has_signal("station_purchased")
+			and not production_panel.station_purchased.is_connected(
+				_on_ui_station_purchase_requested
+			)
+		):
 			production_panel.station_purchased.connect(_on_ui_station_purchase_requested)
-		if not production_panel.manual_production_requested.is_connected(_on_ui_manual_production_requested):
+		if (
+			production_panel.has_signal("manual_production_requested")
+			and not production_panel.manual_production_requested.is_connected(
+				_on_ui_manual_production_requested
+			)
+		):
 			production_panel.manual_production_requested.connect(_on_ui_manual_production_requested)
-		if not production_panel.offer_toggled.is_connected(_on_ui_offer_toggled):
-			production_panel.offer_toggled.connect(_on_ui_offer_toggled)
-		if not production_panel.offer_price_requested.is_connected(_on_ui_offer_price_requested):
-			production_panel.offer_price_requested.connect(_on_ui_offer_price_requested)
 
-	# Setup SalesPanel
-	print("🔧 GameController - Conectando SalesPanel...")
-	if sales_panel:
-		print("   - SalesPanel encontrado: %s" % sales_panel)
-		if sales_panel.has_signal("item_sell_requested"):
-			if not sales_panel.item_sell_requested.is_connected(_on_ui_item_sell_requested):
-				sales_panel.item_sell_requested.connect(_on_ui_item_sell_requested)
-				print("   - ✅ Señal item_sell_requested conectada")
-		else:
-			print("   - ❌ ERROR: SalesPanel no tiene señal item_sell_requested")
-	else:
-		print("   - ❌ ERROR: sales_panel es null")
+	# Setup SalesPanel (nueva arquitectura modular)
+	if sales_panel.has_method("set_sales_manager"):
+		print("💰 Conectando SalesPanel con SalesManager...")
+		sales_panel.set_sales_manager(sales_manager)
+		print("✅ SalesManager conectado a SalesPanel")
 
-	# Setup CustomersPanel
-	if customers_panel:
-		print("🔧 GameController - Conectando CustomersPanel...")
-		if customers_panel.has_method("setup_autosell_upgrades"):
-			customers_panel.setup_autosell_upgrades(game_data.to_dict())
+		# Conectar señales si existen
+		if (
+			sales_panel.has_signal("item_sell_requested")
+			and not sales_panel.item_sell_requested.is_connected(_on_ui_item_sell_requested)
+		):
+			sales_panel.item_sell_requested.connect(_on_ui_item_sell_requested)
+			print("✅ Señal item_sell_requested conectada")
 
-		# Conectar señales de upgrades solo si no están conectadas
-		if customers_panel.has_signal("autosell_upgrade_purchased"):
-			if not customers_panel.autosell_upgrade_purchased.is_connected(_on_ui_customer_upgrade_requested):
-				customers_panel.autosell_upgrade_purchased.connect(_on_ui_customer_upgrade_requested)
-				print("   - ✅ Señal autosell_upgrade_purchased conectada")
+	# Setup CustomersPanel (nueva arquitectura modular)
+	if customers_panel.has_method("set_customer_manager"):
+		print("� Conectando CustomersPanel con CustomerManager...")
+		customers_panel.set_customer_manager(customer_manager)
+		print("✅ CustomerManager conectado a CustomersPanel")
 
-		# Conectar nuevas señales de ofertas
-		if customers_panel.has_signal("offer_toggled"):
-			customers_panel.offer_toggled.connect(_on_ui_offer_toggled_customers)
-			print("   - ✅ Señal offer_toggled (customers) conectada")
+		# Conectar señales si existen
+		if (
+			customers_panel.has_signal("autosell_upgrade_purchased")
+			and not customers_panel.autosell_upgrade_purchased.is_connected(
+				_on_ui_customer_upgrade_requested
+			)
+		):
+			customers_panel.autosell_upgrade_purchased.connect(_on_ui_customer_upgrade_requested)
+			print("✅ Señal autosell_upgrade_purchased conectada")
 
-		if customers_panel.has_signal("offer_price_requested"):
-			customers_panel.offer_price_requested.connect(_on_ui_offer_price_requested_customers)
-			print("   - ✅ Señal offer_price_requested (customers) conectada")
-
-		# Configurar ofertas de productos
-		if customers_panel.has_method("setup_product_offers"):
-			customers_panel.setup_product_offers(production_manager.get_station_definitions(), game_data.to_dict())
-			print("   - ✅ Ofertas de productos configuradas en CustomersPanel")
-	else:
-		print("   - ❌ ERROR: customers_panel es null")
 
 ## Configurar timer de guardado automático
 func _setup_save_timer() -> void:
@@ -282,6 +287,7 @@ func _setup_save_timer() -> void:
 	add_child(save_timer)
 
 	print("💾 Timer de guardado automático configurado (cada 10s)")
+
 
 ## Actualizar todas las interfaces
 func _update_all_displays() -> void:
@@ -312,9 +318,7 @@ func _update_all_displays() -> void:
 		sales_panel.update_sell_interfaces(game_dict)
 
 	if customers_panel.has_method("update_customer_display"):
-		customers_panel.update_customer_display(
-			game_dict, customer_manager.get_timer_progress()
-		)
+		customers_panel.update_customer_display(game_dict, customer_manager.get_timer_progress())
 
 	# Actualizar interfaces de ofertas en CustomersPanel
 	if customers_panel.has_method("update_offer_interfaces"):
@@ -322,6 +326,7 @@ func _update_all_displays() -> void:
 
 	# Verificar desbloqueos automáticamente después de cada actualización
 	production_manager.check_unlock_stations()
+
 
 ## Actualizar solo el panel de generadores (para recursos generados)
 func _update_generation_panel() -> void:
@@ -332,11 +337,14 @@ func _update_generation_panel() -> void:
 			generator_manager.get_generator_definitions(), game_dict
 		)
 
+
 ## === EVENTOS DE MANAGERS ===
+
 
 func _on_generator_purchased(generator_id: String, quantity: int) -> void:
 	print("✅ Generador comprado: %dx %s" % [quantity, generator_id])
 	_update_all_displays()
+
 
 func _on_resource_generated(resource_type: String, amount: int) -> void:
 	"""Maneja la generación de recursos en tiempo real"""
@@ -346,38 +354,52 @@ func _on_resource_generated(resource_type: String, amount: int) -> void:
 	# Solo necesitamos actualizar el dinero por si hay ventas automáticas
 	tab_navigator.update_money_display(game_data.money)
 
+
 func _on_station_purchased(station_id: String) -> void:
 	print("✅ Estación comprada: %s" % station_id)
 	_update_all_displays()
+
 
 func _on_station_unlocked(station_id: String) -> void:
 	print("🔓 Estación desbloqueada: %s" % station_id)
 	_update_all_displays()
 
+
 func _on_product_produced(product_type: String, amount: int) -> void:
 	print("🍺 Producido: %dx %s" % [amount, product_type])
 	_update_all_displays()
 
-func _on_item_sold(item_type: String, item_name: String, quantity: int, total_earned: float) -> void:
+
+func _on_item_sold(
+	item_type: String, item_name: String, quantity: int, total_earned: float
+) -> void:
 	print("💰 Vendido: %dx %s (%s) por $%.2f" % [quantity, item_name, item_type, total_earned])
 	_update_all_displays()
 	# MEJORA: Guardar después de ventas importantes (>$10)
 	if total_earned >= 10.0:
 		_save_game_immediate()
 
-func _on_customer_served(customer_type: String, products_bought: Array, total_earned: float) -> void:
-	print("👤 %s compró %d productos por $%.2f" % [customer_type, products_bought.size(), total_earned])
+
+func _on_customer_served(
+	customer_type: String, products_bought: Array, total_earned: float
+) -> void:
+	print(
+		"👤 %s compró %d productos por $%.2f" % [customer_type, products_bought.size(), total_earned]
+	)
 	_update_all_displays()
 	# MEJORA: Guardar después de ventas importantes (>$5)
 	if total_earned >= 5.0:
 		_save_game_immediate()
+
 
 func _on_customer_upgrade_purchased(upgrade_id: String, cost: float) -> void:
 	print("⬆️ Upgrade de cliente: %s por $%.0f" % [upgrade_id, cost])
 	_update_all_displays()
 	_save_game_immediate()  # MEJORA: Siempre guardar después de upgrades
 
+
 ## === EVENTOS DE UI ===
+
 
 func _on_ui_generator_purchase_requested(generator_index: int, quantity: int) -> void:
 	var generator_defs = generator_manager.get_generator_definitions()
@@ -391,6 +413,7 @@ func _on_ui_generator_purchase_requested(generator_index: int, quantity: int) ->
 			_update_all_displays()
 			_save_game_immediate()  # MEJORA: Guardar inmediatamente después de compra crítica
 
+
 func _on_ui_station_purchase_requested(station_index: int) -> void:
 	var station_defs = production_manager.get_station_definitions()
 	if station_index < station_defs.size():
@@ -399,11 +422,13 @@ func _on_ui_station_purchase_requested(station_index: int) -> void:
 		if success:
 			_save_game_immediate()  # MEJORA: Guardar inmediatamente después de compra crítica
 
+
 func _on_ui_manual_production_requested(station_index: int, quantity: int) -> void:
 	var station_defs = production_manager.get_station_definitions()
 	if station_index < station_defs.size():
 		var station_id = station_defs[station_index].id
 		production_manager.manual_production(station_id, quantity)
+
 
 func _on_ui_item_sell_requested(item_type: String, item_name: String, quantity: int) -> void:
 	print("💰 GameController recibió solicitud de venta:")
@@ -413,13 +438,17 @@ func _on_ui_item_sell_requested(item_type: String, item_name: String, quantity: 
 	sales_manager.sell_item(item_type, item_name, quantity)
 	print("   - ✅ Venta procesada")
 
+
 func _on_ui_customer_upgrade_requested(upgrade_id: String) -> void:
 	customer_manager.purchase_upgrade(upgrade_id)
 
+
 ## === EVENTOS DE SISTEMA ===
+
 
 func _on_tab_changed(tab_name: String) -> void:
 	print("📱 Cambiado a pestaña: %s" % tab_name)
+
 
 func _on_pause_pressed() -> void:
 	print("⏸️ Botón pausa presionado")
@@ -438,6 +467,7 @@ func _on_pause_pressed() -> void:
 		get_tree().paused = true
 		_show_pause_menu()
 
+
 func _show_pause_menu() -> void:
 	# Cargar y mostrar el menú de pausa
 	var pause_menu_instance = PAUSE_MENU_SCENE.instantiate()
@@ -448,6 +478,7 @@ func _show_pause_menu() -> void:
 	add_child(pause_menu_instance)
 
 	print("⏸️ Menú de pausa mostrado")
+
 
 func _on_reset_data_requested() -> void:
 	print("🗑️ Resetear datos solicitado")
@@ -474,11 +505,13 @@ func _on_reset_data_requested() -> void:
 	_update_all_displays()
 	print("✅ Datos reseteados, paneles reconfigurados y guardados automáticamente")
 
+
 ## Guardado automático
 func _save_game() -> void:
 	if SaveSystem:
 		SaveSystem.save_game_data_with_encryption(game_data.to_dict())
 		print("💾 Juego guardado automáticamente con encriptación")
+
 
 ## Guardado inmediato para eventos críticos
 func _save_game_immediate() -> void:
@@ -486,13 +519,16 @@ func _save_game_immediate() -> void:
 		SaveSystem.save_game_data_immediate()
 		print("💾 Guardado inmediato realizado")
 
+
 ## Guardar al cerrar
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		_save_game()
 		get_tree().quit()
 
+
 ## === CALLBACKS DE OFERTAS ===
+
 
 func _on_ui_offer_toggled(station_index: int, enabled: bool) -> void:
 	print("🛒 GameController - Oferta toggled:")
@@ -507,9 +543,12 @@ func _on_ui_offer_toggled(station_index: int, enabled: bool) -> void:
 		# Actualizar GameData
 		if game_data.offers.has(station_id):
 			game_data.offers[station_id]["enabled"] = enabled
-			print("   - ✅ Oferta %s para %s" % ["ACTIVADA" if enabled else "DESACTIVADA", station_id])
+			print(
+				"   - ✅ Oferta %s para %s" % ["ACTIVADA" if enabled else "DESACTIVADA", station_id]
+			)
 		else:
 			print("   - ❌ ERROR: ID de estación no encontrado en ofertas")
+
 
 func _on_ui_offer_price_requested(station_index: int) -> void:
 	print("💰 GameController - Configuración de precio solicitada:")
@@ -526,13 +565,17 @@ func _on_ui_offer_price_requested(station_index: int) -> void:
 
 		# TODO: Aquí se podría abrir un diálogo para configurar el precio
 		# Por ahora, alternar entre valores comunes
-		var new_multiplier = 1.2 if current_multiplier <= 1.0 else (0.8 if current_multiplier >= 1.5 else 1.0)
+		var new_multiplier = (
+			1.2 if current_multiplier <= 1.0 else (0.8 if current_multiplier >= 1.5 else 1.0)
+		)
 		game_data.offers[station_id]["price_multiplier"] = new_multiplier
 
 		print("   - ✅ Nuevo multiplicador: %.2f" % new_multiplier)
 		_update_all_displays()  # Actualizar UI para mostrar el cambio
 
+
 ## === CALLBACKS PARA CUSTOMERSPANEL ===
+
 
 func _on_ui_offer_toggled_customers(station_id: String, enabled: bool) -> void:
 	"""Callback para toggle de ofertas desde CustomersPanel"""
@@ -551,7 +594,9 @@ func _on_ui_offer_toggled_customers(station_id: String, enabled: bool) -> void:
 	else:
 		print("   - ❌ ERROR: Estación no encontrada en ofertas")
 
+
 ## === MANEJADORES DE SEÑALES REACTIVAS ===
+
 
 func _on_money_changed(new_amount: float) -> void:
 	"""Reacciona a cambios de dinero actualizando solo affordability"""
@@ -559,10 +604,12 @@ func _on_money_changed(new_amount: float) -> void:
 	if tab_navigator:
 		tab_navigator.update_money_display(new_amount)
 
+
 func _on_resources_changed(resources: Dictionary) -> void:
 	"""Reacciona a cambios de recursos"""
 	if generation_panel and generation_panel.has_method("update_resource_displays"):
 		generation_panel.update_resource_displays({"resources": resources})
+
 
 func _on_generators_changed(generators: Dictionary) -> void:
 	"""Reacciona a cambios de generadores"""
@@ -572,6 +619,7 @@ func _on_generators_changed(generators: Dictionary) -> void:
 			{"generators": generators, "money": cached_money}
 		)
 
+
 func _on_stations_changed(stations: Dictionary) -> void:
 	"""Reacciona a cambios de estaciones"""
 	if production_panel and production_panel.has_method("update_station_interfaces"):
@@ -579,6 +627,7 @@ func _on_stations_changed(stations: Dictionary) -> void:
 			production_manager.get_station_definitions(),
 			{"stations": stations, "money": cached_money}
 		)
+
 
 func _on_ui_offer_price_requested_customers(station_id: String) -> void:
 	"""Callback para cambio de precio desde CustomersPanel"""
@@ -607,7 +656,9 @@ func _on_ui_offer_price_requested_customers(station_id: String) -> void:
 	else:
 		print("   - ❌ ERROR: Estación no encontrada en ofertas")
 
+
 ## === MANEJADORES DE ACTUALIZACIÓN EN TIEMPO REAL ===
+
 
 func _on_stock_updated(item_type: String, item_name: String, new_quantity: int) -> void:
 	"""Maneja actualizaciones de stock en tiempo real desde StockManager"""

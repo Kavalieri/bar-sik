@@ -102,34 +102,34 @@ size_flags_vertical = 0
 alignment = 1
 
 [node name="GenerationTab" type="Button" parent="MainContainer/BottomNavigation"]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 90)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 toggle_mode = true
 button_pressed = true
-text = "🏭 GENERACIÓN"
+text = "🏭"
 
 [node name="ProductionTab" type="Button" parent="MainContainer/BottomNavigation"]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 90)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 toggle_mode = true
-text = "⚒️ PRODUCCIÓN"
+text = "⚒️"
 
 [node name="SalesTab" type="Button" parent="MainContainer/BottomNavigation"]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 90)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 toggle_mode = true
-text = "💰 VENTAS"
+text = "💰"
 
 [node name="CustomersTab" type="Button" parent="MainContainer/BottomNavigation"]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 90)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 toggle_mode = true
-text = "👥 CLIENTES"
+text = "👥"

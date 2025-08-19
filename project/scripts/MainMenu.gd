@@ -9,6 +9,7 @@ extends Control
 @onready var quit_button: Button = $VBoxContainer/QuitButton
 @onready var version_label: Label = $VersionLabel
 
+
 func _ready() -> void:
 	print("📱 MainMenu cargado - Aplicando tema profesional")
 
@@ -37,6 +38,7 @@ func _ready() -> void:
 
 	print("🎯 MainMenu configurado con tema profesional cervecería")
 
+
 func _apply_consistent_theming() -> void:
 	"""Aplicar el tema coherente a todos los botones del menú"""
 	var buttons = [start_button, settings_button, credits_button, quit_button]
@@ -45,6 +47,7 @@ func _apply_consistent_theming() -> void:
 		if button:
 			UITheme.apply_button_style(button, "large")
 			UIComponentsFactory.make_responsive(button)
+
 
 func _setup_hover_effects() -> void:
 	"""Configurar efectos hover profesionales"""

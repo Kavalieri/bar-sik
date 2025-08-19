@@ -28,6 +28,7 @@ GameManager="*res://singletons/GameManager.gd"
 GameUtils="*res://scripts/core/GameUtils.gd"
 UITheme="*res://scripts/core/UITheme.gd"
 UIComponentsFactory="*res://scripts/core/UIComponentsFactory.gd"
+ComponentsPreloader="*res://singletons/ComponentsPreloader.gd"
 GameStateManager="*res://scripts/core/GameStateManager.gd"
 
 [display]

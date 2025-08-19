@@ -1,9 +1,11 @@
 extends Node
 ## DebugPersistence - Debug manual de persistencia sin resets automáticos
 
+
 func _ready() -> void:
 	print("\n🛠️ === DEBUG PERSISTENCIA MANUAL ===")
 	call_deferred("_debug_save_load")
+
 
 func _debug_save_load() -> void:
 	await get_tree().process_frame
@@ -21,6 +23,7 @@ func _debug_save_load() -> void:
 	# Verificar archivo de guardado
 	_check_save_file()
 
+
 func _show_current_state(game_controller) -> void:
 	print("\n📊 ESTADO ACTUAL:")
 	var game_data = game_controller.game_data
@@ -28,6 +31,7 @@ func _show_current_state(game_controller) -> void:
 	print("📦 Recursos: %s" % game_data.resources)
 	print("🏭 Generadores: %s" % game_data.generators)
 	print("🏢 Estaciones: %s" % game_data.stations)
+
 
 func _check_save_file() -> void:
 	print("\n💾 VERIFICANDO ARCHIVO DE GUARDADO:")
@@ -61,6 +65,7 @@ func _check_save_file() -> void:
 	else:
 		print("❌ No existe archivo de guardado")
 
+
 # Función manual para testear guardado
 func test_manual_save() -> void:
 	var game_controller = get_tree().get_first_node_in_group("game_controller")
@@ -69,6 +74,7 @@ func test_manual_save() -> void:
 		game_controller._save_game()
 		await get_tree().create_timer(0.5).timeout
 		_check_save_file()
+
 
 # Función manual para testear reset SIN ejecutarlo
 func show_reset_info() -> void:

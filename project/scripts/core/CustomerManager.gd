@@ -43,15 +43,18 @@ var customer_upgrades: Array[Dictionary] = [
 	}
 ]
 
+
 func _ready() -> void:
 	print("👥 CustomerManager inicializado")
 	_setup_customer_timer()
+
 
 func _process(_delta: float) -> void:
 	# Actualizar progreso del timer si está activo
 	if customer_timer and game_data and game_data.upgrades["auto_sell_enabled"]:
 		customer_timer_progress = 1.0 - (customer_timer.time_left / customer_timer.wait_time)
 		customer_timer_progress = clamp(customer_timer_progress, 0.0, 1.0)
+
 
 ## Configurar timer de clientes automáticos
 func _setup_customer_timer() -> void:
@@ -61,14 +64,17 @@ func _setup_customer_timer() -> void:
 	customer_timer.timeout.connect(_process_automatic_customer)
 	add_child(customer_timer)
 
+
 ## Asignar datos del juego
 func set_game_data(data: GameData) -> void:
 	game_data = data
+
 
 ## Asignar referencia al ProductionManager
 func set_production_manager(manager: ProductionManager) -> void:
 	production_manager = manager
 	_update_timer_settings()
+
 
 ## Actualizar configuración del timer según upgrades
 func _update_timer_settings() -> void:
@@ -90,6 +96,7 @@ func _update_timer_settings() -> void:
 		customer_timer.start()
 	else:
 		customer_timer.stop()
+
 
 ## Procesar llegada de cliente automático
 func _process_automatic_customer() -> void:
@@ -125,7 +132,12 @@ func _process_automatic_customer() -> void:
 
 			if has_offer:
 				available_products.append(product_type)
-				print("🛒 Producto disponible: %s (stock: %d, con oferta)" % [product_type, stock_quantity])
+				print(
+					(
+						"🛒 Producto disponible: %s (stock: %d, con oferta)"
+						% [product_type, stock_quantity]
+					)
+				)
 
 	if available_products.is_empty():
 		print("❌ No hay productos con ofertas habilitadas")
@@ -149,7 +161,9 @@ func _process_automatic_customer() -> void:
 	if game_data.upgrades.get("premium_customers", false):
 		final_price *= 1.5  # 50% más
 
-	print("💰 Cliente comprando %s por $%.2f (x%.2f)" % [chosen_product, final_price, price_multiplier])
+	print(
+		"💰 Cliente comprando %s por $%.2f (x%.2f)" % [chosen_product, final_price, price_multiplier]
+	)
 
 	# Determinar cantidad (bulk buyers pueden comprar más)
 	var max_quantity = StockManager.get_stock("product", chosen_product)
@@ -169,7 +183,9 @@ func _process_automatic_customer() -> void:
 	game_data.statistics["products_sold"] += quantity
 	game_data.statistics["customers_served"] += 1
 
-	print("✅ Venta automática completada: %d %s por $%.2f" % [quantity, chosen_product, total_earned])
+	print(
+		"✅ Venta automática completada: %d %s por $%.2f" % [quantity, chosen_product, total_earned]
+	)
 
 	# Determinar tipo de cliente
 	var customer_type = "Cliente Normal"
@@ -181,6 +197,7 @@ func _process_automatic_customer() -> void:
 		products_bought.append(chosen_product)
 
 	customer_served.emit(customer_type, products_bought, total_earned)
+
 
 ## Comprar upgrade de cliente
 func purchase_upgrade(upgrade_id: String) -> bool:
@@ -214,6 +231,7 @@ func purchase_upgrade(upgrade_id: String) -> bool:
 	upgrade_purchased.emit(upgrade_id, upgrade_def.cost)
 	return true
 
+
 ## Obtener upgrades disponibles
 func get_available_upgrades() -> Array[Dictionary]:
 	if not game_data:
@@ -226,6 +244,7 @@ func get_available_upgrades() -> Array[Dictionary]:
 			available.append(upgrade_def)
 
 	return available
+
 
 ## Verificar si se puede comprar un upgrade
 func can_purchase_upgrade(upgrade_id: String) -> bool:
@@ -241,9 +260,11 @@ func can_purchase_upgrade(upgrade_id: String) -> bool:
 
 	return not has_upgrade and can_afford
 
+
 ## Obtener progreso del timer de clientes
 func get_timer_progress() -> float:
 	return customer_timer_progress
+
 
 ## Obtener tiempo restante del timer
 func get_timer_remaining() -> float:
@@ -251,12 +272,14 @@ func get_timer_remaining() -> float:
 		return customer_timer.time_left
 	return 0.0
 
+
 ## Encontrar upgrade por ID
 func _find_upgrade_by_id(upgrade_id: String) -> Dictionary:
 	for upgrade_def in customer_upgrades:
 		if upgrade_def.id == upgrade_id:
 			return upgrade_def
 	return {}
+
 
 ## Obtener estadísticas de clientes
 func get_customer_stats() -> Dictionary:

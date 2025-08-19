@@ -5,6 +5,7 @@ extends Node
 var debug_timer: Timer
 var test_counter: int = 0
 
+
 func _ready() -> void:
 	print("🔍 DebugGeneratorTest iniciado")
 
@@ -14,6 +15,7 @@ func _ready() -> void:
 	debug_timer.autostart = true
 	debug_timer.timeout.connect(_debug_check_generation)
 	add_child(debug_timer)
+
 
 func _debug_check_generation() -> void:
 	test_counter += 1
@@ -44,8 +46,18 @@ func _debug_check_generation() -> void:
 	if gen_manager:
 		print("✅ GeneratorManager existe")
 		if gen_manager.generation_timer:
-			print("✅ Timer de generación existe - Activo: %s" % gen_manager.generation_timer.autostart)
-			print("⏰ Timer: %.1fs restantes de %.1fs" % [gen_manager.generation_timer.time_left, gen_manager.generation_timer.wait_time])
+			print(
+				"✅ Timer de generación existe - Activo: %s" % gen_manager.generation_timer.autostart
+			)
+			print(
+				(
+					"⏰ Timer: %.1fs restantes de %.1fs"
+					% [
+						gen_manager.generation_timer.time_left,
+						gen_manager.generation_timer.wait_time
+					]
+				)
+			)
 		else:
 			print("❌ Timer de generación NO existe")
 	else:

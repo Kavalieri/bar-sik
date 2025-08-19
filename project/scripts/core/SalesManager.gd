@@ -7,12 +7,15 @@ signal item_sold(item_type: String, item_name: String, quantity: int, total_earn
 
 var game_data: GameData
 
+
 func _ready() -> void:
 	print("💰 SalesManager inicializado - Sistema modular")
+
 
 ## Asignar datos del juego
 func set_game_data(data: GameData) -> void:
 	game_data = data
+
 
 ## Vender producto o ingrediente usando StockManager
 func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
@@ -63,6 +66,7 @@ func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 	item_sold.emit(item_type, item_name, actual_quantity, total_earned)
 	return true
 
+
 ## Obtener precio de un ítem
 func get_item_price(item_type: String, item_name: String) -> float:
 	if item_type == "product":
@@ -71,11 +75,13 @@ func get_item_price(item_type: String, item_name: String) -> float:
 		return GameUtils.get_ingredient_price(item_name)
 	return 0.0
 
+
 ## Verificar si un ítem se puede vender usando StockManager
 func can_sell_item(item_type: String, item_name: String, quantity: int = 1) -> bool:
 	if not StockManager:
 		return false
 	return StockManager.get_stock(item_type, item_name) >= quantity
+
 
 ## Obtener inventario disponible para venta desde StockManager
 func get_sellable_inventory() -> Dictionary:

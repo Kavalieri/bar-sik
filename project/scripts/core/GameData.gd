@@ -11,51 +11,24 @@ class_name GameData
 @export var first_generator_bought: bool = false
 
 ## Recursos disponibles
-@export var resources: Dictionary = {
-	"barley": 0,
-	"hops": 0,
-	"water": 0,
-	"yeast": 0
-}
+@export var resources: Dictionary = {"barley": 0, "hops": 0, "water": 0, "yeast": 0}
 
 ## Límites máximos de recursos (capacidad de almacenamiento)
-@export var resource_limits: Dictionary = {
-	"barley": 100,
-	"hops": 100,
-	"water": 50,
-	"yeast": 25
-}
+@export var resource_limits: Dictionary = {"barley": 100, "hops": 100, "water": 50, "yeast": 25}
 
 ## Productos fabricados
-@export var products: Dictionary = {
-	"basic_beer": 0,
-	"premium_beer": 0,
-	"cocktail": 0
-}
+@export var products: Dictionary = GameConfig.get_default_products()
 
 ## Generadores poseídos
-@export var generators: Dictionary = {
-	"water_collector": 0,
-	"barley_farm": 0,
-	"hops_farm": 0
-}
+@export var generators: Dictionary = GameConfig.get_default_generators()
 
 ## Estaciones de producción
-@export var stations: Dictionary = {
-	"brewery": 0,
-	"bar_station": 0
-}
+@export var stations: Dictionary = GameConfig.get_default_stations()
 
 ## Sistema de ofertas automáticas para clientes
 @export var offers: Dictionary = {
-	"brewery": {
-		"enabled": false,
-		"price_multiplier": 1.0  # Multiplicador del precio base
-	},
-	"bar_station": {
-		"enabled": false,
-		"price_multiplier": 1.0
-	}
+	"brewery": {"enabled": false, "price_multiplier": 1.0},  # Multiplicador del precio base
+	"bar_station": {"enabled": false, "price_multiplier": 1.0}
 }
 
 ## Sistema de upgrades
@@ -70,10 +43,7 @@ class_name GameData
 }
 
 ## Hitos desbloqueados
-@export var milestones: Dictionary = {
-	"generators": {},
-	"stations": {}
-}
+@export var milestones: Dictionary = {"generators": {}, "stations": {}}
 
 ## Estadísticas del juego
 @export var statistics: Dictionary = {
@@ -85,9 +55,11 @@ class_name GameData
 	"autosell_earnings": 0.0
 }
 
+
 ## Validar integridad de datos
 func validate() -> bool:
 	return money >= 0.0 and resources.size() > 0
+
 
 ## Obtener datos como diccionario (compatibilidad legacy)
 func to_dict() -> Dictionary:
@@ -102,6 +74,7 @@ func to_dict() -> Dictionary:
 		"milestones": milestones,
 		"statistics": statistics
 	}
+
 
 ## Cargar desde diccionario
 func from_dict(data: Dictionary) -> void:

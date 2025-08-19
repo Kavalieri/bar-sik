@@ -1,110 +1,120 @@
-extends ScrollContainer
-class_name BasePanel
-## BasePanel - Clase base para todos los paneles de la UI
-## Proporciona funcionalidad común y estructura consistente
+class_name BasePanel extends ScrollContainer
+## BasePanel - Clase base abstracta para todos los paneles del juego
+## Implementa funcionalidad común y template method pattern
+##
+## Elimina duplicación de código entre GenerationPanel, ProductionPanel,
+## SalesPanel y CustomersPanel mediante herencia y métodos abstractos.
 
-# Referencias a contenedores principales (deben ser definidas por las subclases)
-@onready var main_container: VBoxContainer
+# =============================================================================
+# SEÑALES COMUNES
+# =============================================================================
 
-# Estado de inicialización
-var is_initialized: bool = false
-var pending_setup_calls: Array = []
-
-# Señales comunes
 signal panel_ready
 
-func _ready() -> void:
-	# Esperar un frame para asegurar que todos los nodos estén listos
-	call_deferred("_initialize_panel")
+# =============================================================================
+# ESTADO COMÚN DE PANELES
+# =============================================================================
 
-func _initialize_panel() -> void:
-	"""Inicialización base del panel"""
-	if not _validate_structure():
-		push_error("Panel structure validation failed for " + name)
-		return
+var is_initialized: bool = false
+var current_game_data: Dictionary = {}
 
-	_setup_base_styling()
-	_create_sections()
+# Referencias a contenedores principales (cada panel debe configurar)
+@onready var main_container: VBoxContainer
+
+# =============================================================================
+# TEMPLATE METHOD PATTERN - Flujo de inicialización estandarizado
+# =============================================================================
+
+
+func _ready():
+	"""Template method - Define el flujo de inicialización común"""
+	if not is_initialized:
+		call_deferred("_initialize_complete_panel")
+
+
+func _initialize_complete_panel():
+	"""Inicialización completa del panel usando template method"""
+	_initialize_base_components()
+	_initialize_panel_specific()
+	_connect_base_signals()
+	_connect_panel_signals()
 	is_initialized = true
-
-	# Procesar llamadas pendientes
-	for call_data in pending_setup_calls:
-		match call_data.method:
-			"setup_data":
-				_setup_data_internal(call_data.args[0])
-			"update_displays":
-				_update_displays_internal(call_data.args[0])
-
-	pending_setup_calls.clear()
 	panel_ready.emit()
 
-	print("✅ Panel inicializado: %s" % name)
 
-func _validate_structure() -> bool:
-	"""Valida que la estructura del panel sea correcta"""
-	if not main_container:
-		main_container = get_node_or_null("MainContainer")
-		if not main_container:
-			push_error("MainContainer no encontrado en " + name)
-			return false
-	return true
+# Métodos del template - implementados en la clase base
+func _initialize_base_components():
+	"""Inicializar componentes comunes a todos los paneles"""
+	# Configuración base del scroll container
+	horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	follow_focus = true
 
-func _setup_base_styling() -> void:
-	"""Configura el estilo base del panel"""
-	# Configurar el ScrollContainer
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	set_horizontal_scroll_mode(ScrollContainer.SCROLL_MODE_DISABLED)
-	set_vertical_scroll_mode(ScrollContainer.SCROLL_MODE_AUTO)
 
-func _create_sections() -> void:
-	"""Crear secciones del panel - debe ser sobrescrita por subclases"""
-	pass
+func _connect_base_signals():
+	"""Conectar señales comunes a todos los paneles"""
+	# Señales de gamedata actualizado
+	if GameEvents.has_signal("game_data_updated"):
+		GameEvents.game_data_updated.connect(_on_game_data_updated)
 
-# Métodos públicos con validación de inicialización
-func setup_data(data: Dictionary) -> void:
-	"""Configura los datos del panel"""
+
+# =============================================================================
+# FUNCIONALIDAD COMÚN DE PANELES
+# =============================================================================
+
+
+func update_with_game_data(game_data: Dictionary):
+	"""Actualizar panel con datos del juego - Template method"""
 	if not is_initialized:
-		pending_setup_calls.append({"method": "setup_data", "args": [data]})
 		return
-	_setup_data_internal(data)
 
-func update_displays(data: Dictionary) -> void:
-	"""Actualiza las visualizaciones del panel"""
-	if not is_initialized:
-		pending_setup_calls.append({"method": "update_displays", "args": [data]})
-		return
-	_update_displays_internal(data)
+	current_game_data = game_data
+	_update_panel_data(game_data)
 
-# Métodos internos - deben ser sobrescritos por subclases
-func _setup_data_internal(data: Dictionary) -> void:
-	"""Implementación interna de setup_data"""
-	pass
 
-func _update_displays_internal(data: Dictionary) -> void:
-	"""Implementación interna de update_displays"""
-	pass
+func _on_game_data_updated(game_data: Dictionary):
+	"""Callback común para actualización de datos del juego"""
+	update_with_game_data(game_data)
 
-# Utilidades comunes
-func clear_container(container: Container) -> void:
-	"""Limpia un contenedor de forma segura"""
-	if not container:
+
+# =============================================================================
+# UTILIDADES COMUNES
+# =============================================================================
+
+
+func is_manager_valid(manager_ref: Node) -> bool:
+	"""Validación robusta de referencias a managers"""
+	return manager_ref != null and is_instance_valid(manager_ref)
+
+
+func clear_container_children(container: Node):
+	"""Limpiar todos los hijos de un contenedor de forma segura"""
+	if not is_instance_valid(container):
 		return
 
 	for child in container.get_children():
-		container.remove_child(child)
-		child.queue_free()
+		if is_instance_valid(child):
+			child.queue_free()
 
-func create_section_header(title: String, subtitle: String = "") -> Control:
-	"""Crea un header de sección consistente"""
-	return UIStyleManager.create_section_header(title, subtitle)
 
-func create_styled_card() -> Control:
-	"""Crea una tarjeta con estilo consistente"""
-	return UIStyleManager.create_styled_panel()
+# =============================================================================
+# MÉTODOS ABSTRACTOS - DEBEN IMPLEMENTARSE EN PANELES HIJOS
+# =============================================================================
 
-func add_separator_to_container(container: Container, height: int = 16) -> void:
-	"""Agrega un separador a un contenedor"""
-	var separator = VSeparator.new()
-	separator.set_custom_minimum_size(Vector2(0, height))
-	separator.modulate = Color.TRANSPARENT
-	container.add_child(separator)
+
+func _initialize_panel_specific():
+	"""ABSTRACTO: Inicializar componentes específicos del panel"""
+	var script_name = str(get_script().resource_path)
+	push_error("BasePanel: _initialize_panel_specific() debe implementarse en " + script_name)
+
+
+func _connect_panel_signals():
+	"""ABSTRACTO: Conectar señales específicas del panel"""
+	var script_name = str(get_script().resource_path)
+	push_error("BasePanel: _connect_panel_signals() debe implementarse en " + script_name)
+
+
+func _update_panel_data(_game_data: Dictionary):
+	"""ABSTRACTO: Actualizar datos específicos del panel"""
+	var script_name = str(get_script().resource_path)
+	push_error("BasePanel: _update_panel_data() debe implementarse en " + script_name)

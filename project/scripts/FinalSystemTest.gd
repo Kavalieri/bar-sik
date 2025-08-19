@@ -1,9 +1,11 @@
 extends Node
 ## FinalSystemTest - Test completo del sistema reparado
 
+
 func _ready() -> void:
 	print("\n🎯 === TEST FINAL DEL SISTEMA REPARADO ===")
 	call_deferred("_run_complete_test")
+
 
 func _run_complete_test() -> void:
 	await get_tree().process_frame
@@ -23,6 +25,7 @@ func _run_complete_test() -> void:
 
 	# Test 3: Verificar generación en tiempo real
 	await _test_realtime_generation(game_controller)
+
 
 func _test_pricing_system(game_controller) -> void:
 	print("\n💰 TEST 1: Sistema de precios escalados")
@@ -51,6 +54,7 @@ func _test_pricing_system(game_controller) -> void:
 	# Restaurar estado
 	game_data.generators[generator_id] = owned
 	print("🔄 Estado restaurado")
+
 
 func _test_manual_persistence(game_controller) -> void:
 	print("\n💾 TEST 2: Persistencia manual")
@@ -82,6 +86,7 @@ func _test_manual_persistence(game_controller) -> void:
 	else:
 		print("❌ No existe archivo de guardado")
 
+
 func _test_realtime_generation(game_controller) -> void:
 	print("\n⚡ TEST 3: Generación en tiempo real")
 
@@ -92,7 +97,12 @@ func _test_realtime_generation(game_controller) -> void:
 	if gen_manager.generation_timer:
 		var is_active = not gen_manager.generation_timer.is_stopped()
 		print("✅ Timer existe - Activo: %s" % is_active)
-		print("⏰ Tiempo restante: %.1fs de %.1fs" % [gen_manager.generation_timer.time_left, gen_manager.generation_timer.wait_time])
+		print(
+			(
+				"⏰ Tiempo restante: %.1fs de %.1fs"
+				% [gen_manager.generation_timer.time_left, gen_manager.generation_timer.wait_time]
+			)
+		)
 	else:
 		print("❌ Timer no existe")
 

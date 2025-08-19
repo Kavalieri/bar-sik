@@ -18,9 +18,7 @@ var station_definitions: Array[Dictionary] = [
 		"production_time": 10.0,
 		"scale_factor": 1.15,
 		"unlocked": false,
-		"unlock_conditions": {
-			"resources": {"barley": 5, "hops": 5, "water": 10}
-		},
+		"unlock_conditions": {"resources": {"barley": 5, "hops": 5, "water": 10}},
 		"description": "Convierte ingredientes en cerveza básica\n🌾x2 + 🌿x1 + 💧x3 → 🍺"
 	},
 	{
@@ -32,21 +30,22 @@ var station_definitions: Array[Dictionary] = [
 		"production_time": 15.0,
 		"scale_factor": 1.15,
 		"unlocked": false,
-		"unlock_conditions": {
-			"products": {"basic_beer": 10}
-		},
+		"unlock_conditions": {"products": {"basic_beer": 10}},
 		"description": "Mejora cerveza básica a premium\n🍺x2 + 💧x1 → 🍹"
 	}
 ]
 
 var game_data: GameData
 
+
 func _ready() -> void:
 	print("🏭 ProductionManager inicializado")
+
 
 ## Asignar datos del juego
 func set_game_data(data: GameData) -> void:
 	game_data = data
+
 
 ## Verificar y desbloquear estaciones automáticamente
 func check_unlock_stations() -> void:
@@ -59,6 +58,7 @@ func check_unlock_stations() -> void:
 				station_def.unlocked = true
 				station_unlocked.emit(station_def.id)
 				print("🔓 Estación desbloqueada: %s" % station_def.name)
+
 
 ## Verificar si se cumplen condiciones de desbloqueo
 func _meets_unlock_conditions(station_def: Dictionary) -> bool:
@@ -81,6 +81,7 @@ func _meets_unlock_conditions(station_def: Dictionary) -> bool:
 				return false
 
 	return true
+
 
 ## Comprar estación
 func purchase_station(station_id: String) -> bool:
@@ -106,6 +107,7 @@ func purchase_station(station_id: String) -> bool:
 
 	station_purchased.emit(station_id)
 	return true
+
 
 ## Producir manualmente en una estación
 func manual_production(station_id: String, quantity: int) -> int:
@@ -145,6 +147,7 @@ func manual_production(station_id: String, quantity: int) -> int:
 
 	return successful_productions
 
+
 ## Obtener costo de estación
 func get_station_cost(station_id: String) -> float:
 	var station_def = _find_station_by_id(station_id)
@@ -154,6 +157,7 @@ func get_station_cost(station_id: String) -> float:
 	var owned = game_data.stations.get(station_id, 0) if game_data else 0
 	# Precio fijo simple (consistente con GeneratorManager)
 	return station_def.base_cost
+
 
 ## Verificar si se puede producir en una estación
 func can_produce(station_id: String, quantity: int = 1) -> bool:
@@ -166,12 +170,14 @@ func can_produce(station_id: String, quantity: int = 1) -> bool:
 
 	return StockManager.can_afford_recipe(station_def.recipe, quantity)
 
+
 ## Obtener definición de estación por ID
 func _find_station_by_id(station_id: String) -> Dictionary:
 	for station_def in station_definitions:
 		if station_def.id == station_id:
 			return station_def
 	return {}
+
 
 ## Obtener todas las definiciones
 func get_station_definitions() -> Array[Dictionary]:

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://fb6y40vg13a1"]
+[gd_scene load_steps=2 format=3 uid="uid://d0oas50cv7m3f"]
 
-[ext_resource type="Script" uid="uid://bunab5ejne4h0" path="res://scripts/SalesPanel.gd" id="1_sales_panel"]
+[ext_resource type="Script" uid="uid://djnd5mgohujf1" path="res://scripts/SalesPanel.gd" id="1_sales_panel"]
 
 [node name="SalesPanel" type="ScrollContainer"]
 anchors_preset = 15
@@ -15,13 +15,30 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SalesSection" type="VBoxContainer" parent="MainContainer"]
-custom_minimum_size = Vector2(0, 200)
+[node name="TitleLabel" type="Label" parent="MainContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "💰 VENTAS"
+horizontal_alignment = 1
+
+[node name="SalesSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="ProductsHeader" type="Label" parent="MainContainer/SalesSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🍺 PRODUCTOS"
+horizontal_alignment = 1
 
 [node name="ProductsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="IngredientsHeader" type="Label" parent="MainContainer/SalesSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🌾 INGREDIENTES"
+horizontal_alignment = 1
 
 [node name="IngredientsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
 layout_mode = 2
@@ -36,8 +53,13 @@ custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
 [node name="StatisticsSection" type="VBoxContainer" parent="MainContainer"]
-custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
+
+[node name="StatisticsHeader" type="Label" parent="MainContainer/StatisticsSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "📊 ESTADÍSTICAS"
+horizontal_alignment = 1
 
 [node name="StatsContainer" type="VBoxContainer" parent="MainContainer/StatisticsSection"]
 layout_mode = 2

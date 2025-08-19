@@ -10,13 +10,15 @@ signal offer_price_requested(station_id: String)
 @onready var description_label: Label
 @onready var offers_container: VBoxContainer
 
-var offer_interfaces: Dictionary = {} # station_id -> controls
+var offer_interfaces: Dictionary = {}  # station_id -> controls
 var station_definitions: Array = []
 var current_offers_data: Dictionary = {}
+
 
 func _ready() -> void:
 	print("🏪 OffersComponent inicializado")
 	_setup_base_ui()
+
 
 ## Configuración inicial
 func _setup_base_ui() -> void:
@@ -40,6 +42,7 @@ func _setup_base_ui() -> void:
 	offers_container = VBoxContainer.new()
 	add_child(offers_container)
 
+
 ## Configurar ofertas con datos de estaciones
 func setup_offers(stations: Array, offers_data: Dictionary, game_data: Dictionary) -> void:
 	station_definitions = stations
@@ -48,12 +51,15 @@ func setup_offers(stations: Array, offers_data: Dictionary, game_data: Dictionar
 
 	_refresh_offer_interfaces(game_data)
 
+
 ## Actualizar ofertas con nuevos datos
 func update_offers(offers_data: Dictionary, game_data: Dictionary) -> void:
 	current_offers_data = offers_data
 	_update_existing_interfaces(game_data)
 
+
 ## === INTERFAZ INTERNA ===
+
 
 func _refresh_offer_interfaces(game_data: Dictionary) -> void:
 	_clear_offer_interfaces()
@@ -77,6 +83,7 @@ func _refresh_offer_interfaces(game_data: Dictionary) -> void:
 
 	if stations_with_offers == 0:
 		_show_no_stations_message()
+
 
 func _create_station_offer_interface(station_def: Dictionary, game_data: Dictionary) -> void:
 	var station_id = station_def.id
@@ -149,6 +156,7 @@ func _create_station_offer_interface(station_def: Dictionary, game_data: Diction
 		"station_def": station_def
 	}
 
+
 func _update_existing_interfaces(game_data: Dictionary) -> void:
 	for station_id in offer_interfaces.keys():
 		var interface = offer_interfaces[station_id]
@@ -167,12 +175,16 @@ func _update_existing_interfaces(game_data: Dictionary) -> void:
 
 		# Actualizar estado
 		interface.status_label.text = _get_offer_status_text(offer_data, game_data, station_def)
-		interface.status_label.modulate = _get_offer_status_color(offer_data, game_data, station_def)
+		interface.status_label.modulate = _get_offer_status_color(
+			offer_data, game_data, station_def
+		)
+
 
 func _clear_offer_interfaces() -> void:
 	for child in offers_container.get_children():
 		child.queue_free()
 	offer_interfaces.clear()
+
 
 func _show_no_stations_message() -> void:
 	var message_label = Label.new()
@@ -181,7 +193,9 @@ func _show_no_stations_message() -> void:
 	message_label.modulate = Color.GRAY
 	offers_container.add_child(message_label)
 
+
 ## === UTILIDADES ===
+
 
 func _station_produces_products(station_def: Dictionary) -> bool:
 	"""Verifica si una estación produce productos (no solo ingredientes)"""
@@ -194,6 +208,7 @@ func _station_produces_products(station_def: Dictionary) -> bool:
 				if output_type in StockManager.game_data.products:
 					return true
 	return false
+
 
 func _get_station_stock_summary(station_def: Dictionary, game_data: Dictionary) -> String:
 	"""Obtiene resumen de stock para productos de esta estación"""
@@ -210,6 +225,7 @@ func _get_station_stock_summary(station_def: Dictionary, game_data: Dictionary) 
 
 	return products[0] if products.size() > 0 else "Sin productos"
 
+
 func _get_price_button_text(multiplier: float) -> String:
 	"""Convierte multiplicador a texto del botón"""
 	if multiplier <= 0.8:
@@ -218,7 +234,10 @@ func _get_price_button_text(multiplier: float) -> String:
 		return "💰 Precio Alto (+20%)"
 	return "💵 Precio Normal"
 
-func _get_offer_status_text(offer_data: Dictionary, game_data: Dictionary, station_def: Dictionary) -> String:
+
+func _get_offer_status_text(
+	offer_data: Dictionary, game_data: Dictionary, station_def: Dictionary
+) -> String:
 	"""Obtiene texto de estado de la oferta"""
 	if not offer_data.get("enabled", false):
 		return "⚫ Desactivado"
@@ -239,7 +258,10 @@ func _get_offer_status_text(offer_data: Dictionary, game_data: Dictionary, stati
 		return "🟢 Activo"
 	return "🟡 Sin stock"
 
-func _get_offer_status_color(offer_data: Dictionary, game_data: Dictionary, station_def: Dictionary) -> Color:
+
+func _get_offer_status_color(
+	offer_data: Dictionary, game_data: Dictionary, station_def: Dictionary
+) -> Color:
 	"""Obtiene color de estado de la oferta"""
 	if not offer_data.get("enabled", false):
 		return Color.GRAY
@@ -258,24 +280,27 @@ func _get_offer_status_color(offer_data: Dictionary, game_data: Dictionary, stat
 
 	return Color.GREEN if has_stock else Color.YELLOW
 
+
 ## === EVENTOS ===
+
 
 func _on_offer_toggled(station_id: String, enabled: bool) -> void:
 	print("🏪 Oferta toggled: %s = %s" % [station_id, enabled])
 	offer_toggled.emit(station_id, enabled)
 
+
 func _on_price_requested(station_id: String) -> void:
 	print("💰 Precio solicitado para: %s" % station_id)
 	offer_price_requested.emit(station_id)
 
+
 ## === API PÚBLICA ===
+
 
 ## Obtener estado actual de ofertas
 func get_offers_summary() -> Dictionary:
 	var summary = {
-		"total_stations": offer_interfaces.size(),
-		"active_offers": 0,
-		"stations_with_stock": 0
+		"total_stations": offer_interfaces.size(), "active_offers": 0, "stations_with_stock": 0
 	}
 
 	for station_id in offer_interfaces.keys():
@@ -284,6 +309,7 @@ func get_offers_summary() -> Dictionary:
 			summary.active_offers += 1
 
 	return summary
+
 
 ## Habilitar/deshabilitar todas las ofertas
 func toggle_all_offers(enabled: bool) -> void:

@@ -93,11 +93,12 @@ Autoloads tradicionales (solo para referencia futura):
 
 ### 🔧 **Herramientas de Calidad - BAR-SIK:**
 - **gdtoolkit**: Instalado y configurado (gdformat, gdlint, gdparse)
-- **analyze_code.py**: Script personalizado para detectar duplicados
+- **analyze_code.py**: ✅ Script personalizado recreado y funcional
 - **VS Code Extensions**:
   - ✅ GDScript Formatter & Linter (eddiedover.gdscript-formatter-linter)
   - ✅ godot-tools (geequlim.godot-tools)
 - **Workflow**: `gdformat → gdlint → analyze_code.py → get_errors`
+- **Estado**: ✅ UIDs regenerados, errores críticos corregidos
 
 ## 🚨 Errores que debo evitar
 
@@ -133,7 +134,18 @@ Crear un **framework base sólido** que permita desarrollar cualquier tipo de ju
 - ✅ **Persistencia**: Guardado/carga automática implementado
 - ✅ **Arquitectura simplificada**: Router único, scripts independientes
 - ✅ **Herramientas QA**: gdtoolkit configurado, análisis automático funcionando
-- ⚠️ **45 problemas menores** documentados (no críticos, para cleanup futuro)
+- ✅ **DUPLICADOS ELIMINADOS**: Limpieza masiva completada (Agosto 2025)
+  - 🧹 **40+ archivos obsoletos** eliminados
+  - 📦 **ComponentsPreloader** singleton implementado
+  - 🏗️ **BasePanel** template method pattern aplicado
+  - 🎯 **GameConfig** centralización total de configuraciones
+  - 🔧 **GameUtils** factory methods para eliminar duplicación
+- ✅ **ERRORES CRÍTICOS RESUELTOS**: Parse errors y métodos faltantes corregidos
+  - 🔧 **GenerationPanel.gd**: Syntax error "Unexpected extends" corregido
+  - 🔧 **UIStyleManager.gd**: Función duplicada create_section_header eliminada
+  - 🔧 **CustomersPanel.gd/SalesPanel.gd**: Métodos base agregados
+  - 🔧 **UIDs regenerados**: 54 archivos .uid recreados por Godot
+- ⚠️ **Problemas restantes**: Solo duplicados menores normales para el proyecto
 
 ---
 

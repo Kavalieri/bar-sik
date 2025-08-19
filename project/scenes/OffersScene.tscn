@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b52c08exda4sw"]
 
-[ext_resource type="Script" uid="uid://xsv2ukxpxi4l" path="res://scripts/OffersScene.gd" id="1_offers"]
+[ext_resource type="Script" uid="uid://b4tl58x5yy4y4" path="res://scripts/OffersScene.gd" id="1_offers"]
 
 [node name="OffersScene" type="Control"]
 layout_mode = 3

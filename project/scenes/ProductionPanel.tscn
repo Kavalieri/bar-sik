@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://b8n7q3xar5k1d"]
+[gd_scene load_steps=2 format=3 uid="uid://dam8r4ybs6l2e"]
 
-[ext_resource type="Script" uid="uid://dsklnfrhbvfmd" path="res://scripts/ProductionPanel.gd" id="1_prod_panel"]
+[ext_resource type="Script" uid="uid://dgq0hdq26t3ly" path="res://scripts/ProductionPanel.gd" id="1_prod_panel"]
 
 [node name="ProductionPanel" type="ScrollContainer"]
 anchors_preset = 15
@@ -15,9 +15,20 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ProductsSection" type="VBoxContainer" parent="MainContainer"]
-custom_minimum_size = Vector2(0, 200)
+[node name="TitleLabel" type="Label" parent="MainContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "🍺 PRODUCCIÓN"
+horizontal_alignment = 1
+
+[node name="ProductsSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="ProductsHeader" type="Label" parent="MainContainer/ProductsSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🍺 PRODUCTOS"
+horizontal_alignment = 1
 
 [node name="ProductContainer" type="VBoxContainer" parent="MainContainer/ProductsSection"]
 layout_mode = 2
@@ -27,22 +38,28 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
-[node name="ProductionSection" type="VBoxContainer" parent="MainContainer"]
-custom_minimum_size = Vector2(0, 250)
+[node name="StationsSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
 
-[node name="ProductionContainer" type="VBoxContainer" parent="MainContainer/ProductionSection"]
+[node name="StationsHeader" type="Label" parent="MainContainer/StationsSection"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "⚗️ ESTACIONES"
+horizontal_alignment = 1
 
 [node name="VSeparator2" type="VSeparator" parent="MainContainer"]
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
-[node name="StationsSection" type="VBoxContainer" parent="MainContainer"]
-custom_minimum_size = Vector2(0, 200)
+[node name="RecipesSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
 
-[node name="StationContainer" type="VBoxContainer" parent="MainContainer/StationsSection"]
+[node name="RecipesHeader" type="Label" parent="MainContainer/RecipesSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "📋 RECETAS"
+horizontal_alignment = 1
+
+[node name="RecipeContainer" type="VBoxContainer" parent="MainContainer/RecipesSection"]
 layout_mode = 2
 size_flags_horizontal = 3

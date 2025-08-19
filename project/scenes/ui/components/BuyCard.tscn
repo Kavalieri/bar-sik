@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://buy_card_component"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/BuyCard.gd" id="1_buy_card"]
+
+[node name="BuyCard" type="Panel"]
+custom_minimum_size = Vector2(280, 160)
+script = ExtResource("1_buy_card")
+
+[node name="CardContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="ItemIcon" type="TextureRect" parent="CardContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(64, 64)
+size_flags_horizontal = 4
+size_flags_vertical = 0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="CardContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Título del Item"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="InfoLabel" type="Label" parent="CardContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 14
+text = "Descripción del item"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="PriceLabel" type="Label" parent="CardContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "💰 $100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuyButton" type="Button" parent="CardContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 55)
+theme_override_font_sizes/font_size = 16
+text = "🛒 Comprar"
