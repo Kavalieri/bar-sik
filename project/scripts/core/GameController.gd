@@ -25,14 +25,47 @@ var customers_panel: Control
 var save_timer: Timer
 
 func _ready() -> void:
-	print("🎮 GameController inicializado - Arquitectura modular")
+	print_rich("[color=yellow]🎮 GameController._ready() iniciado[/color]")
+
+	# Info de debugging sin breakpoints automáticos
+	debug_game_info("GameController._ready inicio")
 
 	_setup_game_data()
 	_setup_managers()
 	_setup_ui_system()
 	_setup_save_timer()
 
-	print("✅ GameController listo - Sistema modular activo")
+	print_rich("[color=green]✅ GameController listo - Sistema modular activo[/color]")
+	debug_game_state()
+
+## === DEBUGGING FUNCTIONS ===
+
+# Función para mostrar info sin breakpoints automáticos
+func debug_game_info(location: String):
+	print_rich("[color=cyan]📍 DEBUG INFO: %s[/color]" % location)
+	print_stack()
+
+# Función para inspeccionar variables en vivo
+func debug_game_state():
+	print_rich("[color=cyan]📊 ESTADO DEL JUEGO COMPLETO[/color]")
+	print_rich("💰 Dinero: %s" % game_data.money)
+	print_rich("🌾 Recursos: %s" % game_data.resources)
+	print_rich("🏭 Generadores: %s" % game_data.generators)
+	print_rich("🏢 Estaciones: %s" % game_data.stations)
+	print_rich("📊 Estadísticas: %s" % game_data.statistics)
+	print_rich("🎯 Upgrades: %s" % game_data.upgrades)
+
+# Función para pausar y mostrar info (inteligente)
+func debug_pause_and_inspect(location: String, force: bool = false):
+	print_rich("[color=red]⏸️  DEBUG INFO en: %s[/color]" % location)
+	print_stack()
+
+	# Solo breakpoint si está forzado o la variable de entorno está activa
+	if force or OS.has_environment("GODOT_DEBUG_BREAKPOINTS"):
+		print_rich("[color=yellow]🛑 BREAKPOINT ACTIVADO - VS Code tomará control[/color]")
+		breakpoint  # ¡Pausa aquí y VS Code lo detecta!
+	else:
+		print_rich("[color=cyan]ℹ️  Breakpoint deshabilitado (modo normal)[/color]")
 
 ## Configurar datos del juego
 func _setup_game_data() -> void:
