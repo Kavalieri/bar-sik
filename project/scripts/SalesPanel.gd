@@ -164,50 +164,50 @@ func _create_sell_interface(item_type: String, item_name: String, amount: int) -
 
 	var name_label = Label.new()
 	name_label.text = "%s %s" % [GameUtils.get_item_emoji(item_name), item_name.capitalize()]
-	name_label.add_theme_font_size_override("font_size", 14)
+	name_label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
 	info_vbox.add_child(name_label)
 
 	var amount_label = Label.new()
-	amount_label.text = "Disponible: %s" % GameUtils.format_large_number(amount)
-	amount_label.add_theme_font_size_override("font_size", 12)
+	amount_label.text = "📦 %s" % GameUtils.format_large_number(amount)  # Icono + texto más corto
+	amount_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
 	amount_label.modulate = Color.GRAY
 	info_vbox.add_child(amount_label)
 
 	var price_label = Label.new()
 	var unit_price = _get_sell_price(item_type, item_name)
-	price_label.text = "Precio: $%.2f cada uno" % unit_price
-	price_label.add_theme_font_size_override("font_size", 12)
+	price_label.text = "💰 $%.2f c/u" % unit_price  # Icono + texto más corto
+	price_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
 	price_label.modulate = Color.GREEN
 	info_vbox.add_child(price_label)
 
-	# Botones de venta
-	var button_vbox = VBoxContainer.new()
-	button_vbox.add_theme_constant_override("separation", 4)
-	hbox.add_child(button_vbox)
+	# Botones de venta (HORIZONTAL)
+	var button_hbox = HBoxContainer.new()
+	button_hbox.add_theme_constant_override("separation", 4)
+	hbox.add_child(button_hbox)
 
 	var quantities = [1, 5, 10, "Todo"]
 	for qty in quantities:
 		var button = UIComponentsFactory.create_primary_button("")
-		button.set_custom_minimum_size(Vector2(60, 18))
-		button.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BUTTON_SMALL * UITheme.get_font_scale()))
-		var sell_amount = amount if qty == "Todo" else min(qty as int, amount)
+		button.set_custom_minimum_size(Vector2(85, 55))  # Tamaño móvil más grande
+		button.add_theme_font_size_override("font_size", 16)  # Fuente móvil
+		var sell_amount = amount if str(qty) == "Todo" else min(qty as int, amount)
 		var total_price = unit_price * sell_amount
 
-		button.text = "%s\n$%s" % [str(qty), GameUtils.format_large_number(total_price)]
+		# Usar iconos en los botones
+		var qty_icon = "🛍️" if str(qty) == "Todo" else "📦"
+		button.text = "%s %s\n💰 $%s" % [qty_icon, str(qty), GameUtils.format_large_number(total_price)]
 		button.disabled = sell_amount <= 0
 		button.pressed.connect(_on_sell_requested.bind(item_type, item_name, sell_amount))
 
-		button_vbox.add_child(button)
+		button_hbox.add_child(button)
 
 	return card
 
 func _get_sell_price(item_type: String, item_name: String) -> float:
 	"""Obtiene el precio de venta de un item"""
-	# Precios base por tipo
+	# Precios base por tipo (SIN AGUA - no se puede vender)
 	var base_prices = {
 		"ingredient": {
-			"water": 0.1,
 			"barley": 0.5,
 			"hops": 1.0,
 			"yeast": 2.0

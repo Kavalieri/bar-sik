@@ -89,10 +89,10 @@ func setup_products(game_data: Dictionary) -> void:
 		var product_card = UIComponentsFactory.create_content_panel(50)
 
 		var label = Label.new()
-		label.text = "%s: 0" % product_name.capitalize()
+		label.text = "%s %s: 0" % [GameUtils.get_item_emoji(product_name), product_name.capitalize()]
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_font_size_override("font_size", 14)
+		label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
 
 		product_card.add_child(label)
 		products_container.add_child(product_card)
@@ -126,21 +126,30 @@ func _create_station_interface(station: Dictionary, index: int) -> Control:
 	var title_label = Label.new()
 	title_label.text = station.get("name", "Estación")
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 15)
+	title_label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
 	vbox.add_child(title_label)
 
 	# Información
 	var info_label = Label.new()
 	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info_label.add_theme_font_size_override("font_size", 12)
+	info_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
 	info_label.text = _format_station_info(station, 0, false)
 	vbox.add_child(info_label)
 
-	# Botón de compra
-	var purchase_button = UIComponentsFactory.create_primary_button("Comprar Estación\n$0")
-	purchase_button.set_custom_minimum_size(Vector2(0, 35))
-	purchase_button.pressed.connect(_on_station_purchase_requested.bind(index))
-	vbox.add_child(purchase_button)
+	# Botón de compra IdleBuyButton para estaciones
+	var idle_button = preload("res://scripts/ui/IdleBuyButton.gd").new()
+
+	# Configurar calculadora de costo para estaciones
+	var cost_calculator = func(_station_id: String, quantity: int) -> float:
+		# Las estaciones tienen precio fijo (no escalado como generadores)
+		return station.base_cost * quantity
+
+	idle_button.setup(station.id, station.name, station.base_cost, cost_calculator)
+	idle_button.purchase_requested.connect(_on_station_purchase_idle_wrapper.bind(index))
+
+	# Establecer affordability inicial (será actualizada después)
+	idle_button.set_affordability(true)  # Se actualizará en update_station_interfaces
+	vbox.add_child(idle_button)
 
 	# Separador
 	_add_separator_to_container(vbox, 4)
@@ -148,18 +157,17 @@ func _create_station_interface(station: Dictionary, index: int) -> Control:
 	# Botones de producción manual
 	var production_label = Label.new()
 	production_label.text = "🔨 Producción:"
-	production_label.add_theme_font_size_override("font_size", 12)
+	production_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
 	vbox.add_child(production_label)
 
 	var button_container = HBoxContainer.new()
-	button_container.add_theme_constant_override("separation", 4)
+	button_container.add_theme_constant_override("separation", 8)  # Más espacio
 	var quantities = [1, 5, 10, 25]
 
 	for quantity in quantities:
 		var button = UIComponentsFactory.create_primary_button("×%d" % quantity)
-		button.set_custom_minimum_size(Vector2(50, 25))
-		button.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BUTTON_SMALL * UITheme.get_font_scale()))
+		button.set_custom_minimum_size(Vector2(70, 50))  # Más grande para móvil
+		button.add_theme_font_size_override("font_size", 16)  # Fuente móvil
 		button.pressed.connect(_on_manual_production_requested.bind(index, quantity))
 		button_container.add_child(button)
 
@@ -222,22 +230,42 @@ func _update_station_interface(interface: Control, station: Dictionary, owned: i
 		info_label.text = _format_station_info(station, owned, unlocked)
 
 	# Actualizar botón de compra (tercer elemento)
-	var purchase_button = vbox.get_child(2) as Button
-	if purchase_button:
-		var cost = station.get("cost", 100.0)
-		var can_afford = money >= cost
-		var can_buy = unlocked and can_afford
+	var purchase_element = vbox.get_child(2)
 
-		purchase_button.text = "Comprar Estación\n$%s" % GameUtils.format_large_number(cost)
-		purchase_button.disabled = not can_buy
-		purchase_button.modulate = Color.WHITE if can_buy else Color.GRAY
+	# Verificar si es IdleBuyButton o Button tradicional
+	if purchase_element.get_script() and purchase_element.get_script().get_global_name() == "IdleBuyButton":
+		var idle_button = purchase_element
+		idle_button.update_cost_display()
+		var current_cost = idle_button.get_current_cost()
+		var can_afford = money >= current_cost
+		var can_buy = unlocked and can_afford
+		idle_button.set_affordability(can_buy)
 
 		if not unlocked:
-			purchase_button.text = "🔒 BLOQUEADA\nRequisitos no cumplidos"
+			idle_button.main_button.text = "🔒 BLOQUEADA\nRequisitos no cumplidos"
+	else:
+		# Compatibilidad con botones tradicionales
+		var purchase_button = purchase_element as Button
+		if purchase_button:
+			var cost = station.get("base_cost", 100.0)
+			var can_afford = money >= cost
+			var can_buy = unlocked and can_afford
+
+			purchase_button.text = "Comprar Estación\n$%s" % GameUtils.format_large_number(cost)
+			purchase_button.disabled = not can_buy
+			purchase_button.modulate = Color.WHITE if can_buy else Color.GRAY
+
+			if not unlocked:
+				purchase_button.text = "🔒 BLOQUEADA\nRequisitos no cumplidos"
 
 # Métodos de eventos
 func _on_station_purchase_requested(station_index: int) -> void:
 	"""Maneja la solicitud de compra de estación"""
+	station_purchased.emit(station_index)
+
+func _on_station_purchase_idle_wrapper(item_id: String, quantity: int, station_index: int) -> void:
+	"""Wrapper para IdleBuyButton de estaciones"""
+	print("🏭 Compra de estación solicitada: %d (%s) x%d" % [station_index, item_id, quantity])
 	station_purchased.emit(station_index)
 
 func _on_manual_production_requested(station_index: int, quantity: int) -> void:

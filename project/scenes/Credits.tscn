@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ct8w5v1qn4r7m"]
 
-[ext_resource type="Script" path="res://scripts/Credits.gd" id="1_h6y2n"]
+[ext_resource type="Script" uid="uid://da85bv7fsjxry" path="res://scripts/Credits.gd" id="1_h6y2n"]
 
 [node name="Credits" type="Control"]
 layout_mode = 3
@@ -43,8 +43,8 @@ text = "📜 Créditos"
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
 
 [node name="GameTitle" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -59,8 +59,8 @@ text = "Idle Bar Management Game"
 horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
 
 [node name="DevelopmentLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -75,8 +75,8 @@ text = "Tu Nombre Aquí"
 horizontal_alignment = 1
 
 [node name="Spacer3" type="Control" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="EngineLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -91,8 +91,8 @@ text = "Godot Engine 4.4.1"
 horizontal_alignment = 1
 
 [node name="Spacer4" type="Control" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="SpecialThanks" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -101,8 +101,8 @@ text = "🙏 Agradecimientos Especiales"
 horizontal_alignment = 1
 
 [node name="ThanksText" type="RichTextLabel" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
 text = "[center]Godot Community
@@ -111,8 +111,8 @@ Todos los jugadores y testers
 ¡Y a ti por jugar![/center]"
 
 [node name="Spacer5" type="Control" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="VersionInfo" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2

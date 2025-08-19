@@ -37,16 +37,32 @@ func _ready() -> void:
 
 
 func _setup_ui() -> void:
-	# Setup dinero display
+	# Setup dinero display con tamaño móvil
 	money_label = Label.new()
-	money_label.add_theme_font_size_override("font_size", 20)
+	money_label.add_theme_font_size_override("font_size", 28)  # Aumentado para móvil
 	currency_container.add_child(money_label)
+
+	# Setup botones con tamaños móviles
+	_setup_mobile_friendly_tabs()
 
 	# Setup pause button
 	pause_button.pressed.connect(_on_pause_pressed)
 
 	# Setup menú de guardado
 	_setup_save_menu()
+
+func _setup_mobile_friendly_tabs() -> void:
+	"""Configurar tabs con tamaños móviles"""
+	var tab_buttons = [generation_tab, production_tab, sales_tab, customers_tab]
+
+	for button in tab_buttons:
+		if button:
+			button.set_custom_minimum_size(Vector2(0, 60))  # Altura móvil
+			button.add_theme_font_size_override("font_size", 16)  # Fuente móvil
+
+	# Botón de pausa más grande
+	pause_button.set_custom_minimum_size(Vector2(50, 50))
+	pause_button.add_theme_font_size_override("font_size", 20)
 
 
 func _connect_signals() -> void:

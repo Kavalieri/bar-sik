@@ -12,9 +12,16 @@ var is_initialized: bool = false
 var resource_labels: Dictionary = {}
 var generator_interfaces: Array[Control] = []
 var generator_definitions: Array[Dictionary] = []
+var current_game_data: Dictionary = {}  # Cache local de datos del juego
+var generator_manager_ref: Node = null  # Referencia al GeneratorManager
 
 # Señales
 signal generator_purchased(generator_index: int, quantity: int)
+
+## Establecer referencia al GeneratorManager para cálculos precisos
+func set_generator_manager(manager: Node) -> void:
+	generator_manager_ref = manager
+	print("🔗 GenerationPanel conectado con GeneratorManager")
 
 func _ready() -> void:
 	print("📦 GenerationPanel inicializando con sistema modular...")
@@ -76,27 +83,38 @@ func _create_generators_section() -> void:
 
 
 func setup_resources(game_data: Dictionary) -> void:
-	"""Configura los recursos del juego"""
+	"""Configura recursos y actualiza datos locales"""
+	current_game_data = game_data.duplicate()  # Cache local
 	if not is_initialized:
 		call_deferred("setup_resources", game_data)
 		return
 
+	_clear_container(resources_container)
+
+	# CRÍTICO: Limpiar referencias de labels antiguos
 	resource_labels.clear()
+	print("🧹 GenerationPanel: resource_labels limpiado")
 
-	# Crear labels para recursos
-	for resource_name in game_data["resources"].keys():
-		var resource_card = UIComponentsFactory.create_content_panel(50)
+	# Crear header de recursos
+	var header = UIComponentsFactory.create_section_header(
+		"📦 RECURSOS DISPONIBLES",
+		"Materia prima para la producción"
+	)
+	resources_container.add_child(header)
 
+	# Crear displays de recursos
+	var resources = game_data.get("resources", {})
+	for resource_name in resources.keys():
 		var label = Label.new()
-		label.text = "%s: 0.0" % resource_name.capitalize()
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BODY_MEDIUM * UITheme.get_font_scale()))
-
-		resource_card.add_child(label)
-		resources_container.add_child(resource_card)
+		label.text = "%s: %s" % [
+			resource_name.capitalize(),
+			GameUtils.format_large_number(resources[resource_name])
+		]
+		label.add_theme_font_size_override("font_size", 14)
+		resources_container.add_child(label)
 		resource_labels[resource_name] = label
+
+	print("✅ GenerationPanel: %d resource labels creados" % resource_labels.size())
 
 func setup_generators(resource_generators: Array[Dictionary]) -> void:
 	"""Configura los generadores disponibles"""
@@ -107,15 +125,15 @@ func setup_generators(resource_generators: Array[Dictionary]) -> void:
 	generator_definitions = resource_generators
 	_clear_generator_interfaces()
 
-	# Crear interface para cada generador
+	# Crear interface para cada generador CON ESTADO INICIAL CORRECTO
 	for i in range(resource_generators.size()):
 		var generator = resource_generators[i]
-		var interface = _create_generator_interface(generator, i)
+		var interface = _create_generator_interface(generator, i, current_game_data)
 		generators_container.add_child(interface)
 		generator_interfaces.append(interface)
 
-func _create_generator_interface(generator: Dictionary, index: int) -> Control:
-	"""Crea la interface de un generador"""
+func _create_generator_interface(generator: Dictionary, index: int, initial_game_data: Dictionary = {}) -> Control:
+	"""Crea la interface de un generador CON ESTADO INICIAL CORRECTO"""
 	var card = UIComponentsFactory.create_content_panel(120)
 
 	var vbox = VBoxContainer.new()
@@ -123,31 +141,43 @@ func _create_generator_interface(generator: Dictionary, index: int) -> Control:
 	vbox.add_theme_constant_override("separation", UITheme.Spacing.SMALL)
 	card.add_child(vbox)
 
-	# Información del generador
+	# Obtener estado inicial
+	var generators_owned = initial_game_data.get("generators", {})
+	var money = initial_game_data.get("money", 0.0)
+	var generator_id = generator.get("id", "")
+	var owned_count = generators_owned.get(generator_id, 0)
+
+	# Información del generador CON ESTADO INICIAL
 	var info_label = Label.new()
 	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	info_label.add_theme_font_size_override("font_size", 13)
-	info_label.text = _format_generator_info(generator, 0)
+	info_label.text = _format_generator_info(generator, owned_count)
 	vbox.add_child(info_label)
 
-	# Contenedor de botones
+	# Contenedor de botones - NUEVO SISTEMA IDLE
 	var button_container = HBoxContainer.new()
-	button_container.set_custom_minimum_size(Vector2(0, 35))
-	button_container.add_theme_constant_override("separation", 4)
+	button_container.set_custom_minimum_size(Vector2(0, 80))
+	button_container.add_theme_constant_override("separation", 8)
 	vbox.add_child(button_container)
 
-	# Botones de compra
-	var increments = [1, 5, 10, 25]
-	for increment in increments:
-		var button = UIComponentsFactory.create_primary_button("×%d\n$0" % increment)
-		button.set_custom_minimum_size(Vector2(65, 30))
-		button.add_theme_font_size_override("font_size",
-			int(UITheme.Typography.BUTTON_SMALL * UITheme.get_font_scale()))
-		button.set_meta("generator_index", index)
-		button.set_meta("quantity", increment)
-		button.pressed.connect(_on_generator_purchase.bind(index, increment))
-		button_container.add_child(button)
+	# Crear botón idle estándar
+	var idle_button = preload("res://scripts/ui/IdleBuyButton.gd").new()
+
+	# Configurar calculadora de costo
+	var cost_calculator = func(gen_id: String, quantity: int) -> float:
+		if generator_manager_ref and generator_manager_ref.has_method("get_generator_cost"):
+			return generator_manager_ref.get_generator_cost(gen_id, quantity)
+		return _calculate_bulk_cost(generator, owned_count, quantity)
+
+	idle_button.setup(generator.id, generator.name, generator.base_cost, cost_calculator)
+	idle_button.purchase_requested.connect(_on_idle_button_purchase_wrapper.bind(index))
+
+	# Establecer affordability inicial
+	var initial_cost = cost_calculator.call(generator.id, 1)
+	idle_button.set_affordability(money >= initial_cost)
+
+	button_container.add_child(idle_button)
 
 	return card
 
@@ -228,7 +258,16 @@ func _update_generator_buttons(button_container: HBoxContainer, generator: Dicti
 		button.modulate = Color.WHITE if can_afford else Color.GRAY
 
 func _calculate_bulk_cost(generator: Dictionary, owned_count: int, quantity: int) -> float:
-	"""Calcula el costo de comprar múltiples generadores"""
+	"""Calcula el costo de comprar múltiples generadores usando GeneratorManager si está disponible"""
+
+	# Usar GeneratorManager si está disponible para consistencia
+	if generator_manager_ref and generator_manager_ref.has_method("get_generator_cost"):
+		# Temporalmente ajustar el owned para el cálculo
+		var generator_id = generator.get("id", "")
+		if generator_id != "":
+			return generator_manager_ref.get_generator_cost(generator_id, quantity)
+
+	# Fallback al cálculo manual (para compatibilidad)
 	var base_cost = generator.get("base_cost", 10.0)
 	var multiplier = generator.get("cost_multiplier", 1.15)
 
@@ -240,7 +279,12 @@ func _calculate_bulk_cost(generator: Dictionary, owned_count: int, quantity: int
 	return total_cost
 
 func _on_generator_purchase(generator_index: int, quantity: int) -> void:
-	"""Maneja la compra de generador"""
+	"""Maneja la compra de generador (sistema anterior)"""
+	generator_purchased.emit(generator_index, quantity)
+
+func _on_idle_button_purchase_wrapper(item_id: String, quantity: int, generator_index: int) -> void:
+	"""Wrapper para manejar la conexión de señal correctamente"""
+	print("🛒 Compra solicitada: generador %d (%s) x%d" % [generator_index, item_id, quantity])
 	generator_purchased.emit(generator_index, quantity)
 
 # Funciones de limpieza
@@ -264,9 +308,54 @@ func _clear_generator_interfaces() -> void:
 
 
 func update_with_game_data(game_data: Dictionary, generator_defs: Array[Dictionary]) -> void:
-	"""Actualizar panel con datos del juego"""
-	# TODO: Implementar actualización con datos del juego
-	pass
+	"""Actualiza el panel con nuevos datos del juego"""
+	current_game_data = game_data.duplicate()
+
+	# Actualizar solo las partes que han cambiado para eficiencia
+	update_resource_displays(game_data)
+	update_generator_displays(generator_defs, game_data)
+
+func update_button_affordability(money: float) -> void:
+	"""Actualiza solo la capacidad de compra de botones (optimizado)"""
+	if not is_initialized or generator_interfaces.is_empty():
+		return
+
+	var generators_owned = current_game_data.get("generators", {})
+
+	for i in range(min(generator_interfaces.size(), generator_definitions.size())):
+		var interface = generator_interfaces[i]
+		var generator = generator_definitions[i]
+		var generator_id = generator.get("id", "")
+		var owned_count = generators_owned.get(generator_id, 0)
+
+		_update_buttons_affordability_only(interface, generator, owned_count, money)
+
+func _update_buttons_affordability_only(interface: Control, generator: Dictionary, owned: int, money: float) -> void:
+	"""Actualiza solo el estado de affordability de los botones"""
+	var vbox = interface.get_child(0) as VBoxContainer
+	if not vbox or vbox.get_child_count() < 2:
+		return
+
+	var button_container = vbox.get_child(1) as HBoxContainer
+	if not button_container:
+		return
+
+	# Buscar IdleBuyButton en el contenedor
+	for child in button_container.get_children():
+		if child.get_script() and child.get_script().get_global_name() == "IdleBuyButton":
+			var idle_button = child
+			idle_button.update_cost_display()  # Actualizar precio
+			var current_cost = idle_button.get_current_cost()
+			idle_button.set_affordability(money >= current_cost)
+		else:
+			# Compatibilidad con botones antiguos
+			var button = child as Button
+			if button and button.has_meta("quantity"):
+				var quantity = button.get_meta("quantity", 1)
+				var total_cost = _calculate_bulk_cost(generator, owned, quantity)
+				var can_afford = money >= total_cost
+				button.disabled = not can_afford
+				button.modulate = Color.WHITE if can_afford else Color.GRAY
 
 
 func _clear_resource_labels() -> void:

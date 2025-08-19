@@ -1,9 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://ck2m9v7x8n4p5"]
+[gd_scene load_steps=2 format=3 uid="uid://ck2nav7x8n4p5"]
 
-[ext_resource type="Script" path="res://scripts/GenerationPanel.gd" id="1_gen_panel"]
+[ext_resource type="Script" uid="uid://d3xdtankamp0t" path="res://scripts/GenerationPanel.gd" id="1_gen_panel"]
 
 [node name="GenerationPanel" type="ScrollContainer"]
-layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,20 +16,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ResourcesSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
 
 [node name="ResourceContainer" type="VBoxContainer" parent="MainContainer/ResourcesSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="VSeparator1" type="VSeparator" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 
 [node name="GeneratorsSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
 
 [node name="GeneratorContainer" type="VBoxContainer" parent="MainContainer/GeneratorsSection"]
 layout_mode = 2

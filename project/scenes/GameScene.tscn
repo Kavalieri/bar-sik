@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cq7j1naxk3pn2"]
 
-[ext_resource type="Script" path="res://scripts/GameScene.gd" id="1_m8x4p"]
-[ext_resource type="PackedScene" path="res://scenes/TabNavigator.tscn" id="2_tab_nav"]
+[ext_resource type="Script" uid="uid://fefjl1m2bnwg" path="res://scripts/GameScene.gd" id="1_m8x4p"]
+[ext_resource type="PackedScene" uid="uid://b4f6xm8laj2n1" path="res://scenes/TabNavigator.tscn" id="2_tab_nav"]
 
 [node name="GameScene" type="Control"]
 layout_mode = 3

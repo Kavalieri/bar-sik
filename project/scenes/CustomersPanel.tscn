@@ -1,9 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://c1m7r8y4v6n2s"]
 
-[ext_resource type="Script" path="res://scripts/CustomersPanel.gd" id="1_customers_panel"]
+[ext_resource type="Script" uid="uid://c7kj6tlwekifc" path="res://scripts/CustomersPanel.gd" id="1_customers_panel"]
 
 [node name="CustomersPanel" type="ScrollContainer"]
-layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,44 +16,44 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TimerSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
 
 [node name="TimerContainer" type="VBoxContainer" parent="MainContainer/TimerSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="VSeparator1" type="VSeparator" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 
 [node name="UpgradesSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
 
 [node name="UpgradesContainer" type="VBoxContainer" parent="MainContainer/UpgradesSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="VSeparator2" type="VSeparator" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 
 [node name="AutomationSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
 
 [node name="AutomationContainer" type="VBoxContainer" parent="MainContainer/AutomationSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="VSeparator3" type="VSeparator" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 
 [node name="StatsSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
 
 [node name="StatsContainer" type="VBoxContainer" parent="MainContainer/StatsSection"]
 layout_mode = 2

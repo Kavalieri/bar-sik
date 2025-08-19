@@ -70,14 +70,14 @@ func _create_timer_section() -> void:
 
 	# Label del timer
 	timer_label = Label.new()
-	timer_label.text = "Esperando cliente..."
+	timer_label.text = "⏱️ Esperando cliente..."
 	timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	timer_label.add_theme_font_size_override("font_size", 14)
+	timer_label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
 	content_panel.add_child(timer_label)
 
-	# Barra de progreso
+	# Barra de progreso más grande
 	timer_progress = ProgressBar.new()
-	timer_progress.set_custom_minimum_size(Vector2(0, 20))
+	timer_progress.set_custom_minimum_size(Vector2(0, 30))  # Más alta para móvil
 	timer_progress.value = 0
 	timer_progress.max_value = 100
 	content_panel.add_child(timer_progress)
@@ -155,25 +155,25 @@ func _create_upgrade_interface(upgrade: Dictionary) -> Control:
 
 	var name_label = Label.new()
 	name_label.text = upgrade.get("name", "Upgrade")
-	name_label.add_theme_font_size_override("font_size", 14)
+	name_label.add_theme_font_size_override("font_size", 18)  # Aumentado para móvil
 	info_vbox.add_child(name_label)
 
 	var desc_label = Label.new()
 	desc_label.text = upgrade.get("description", "")
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 12)
+	desc_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
 	desc_label.modulate = Color.GRAY
 	info_vbox.add_child(desc_label)
 
 	var cost_label = Label.new()
-	cost_label.text = "Costo: $%s" % GameUtils.format_large_number(upgrade.get("cost", 0))
-	cost_label.add_theme_font_size_override("font_size", 12)
+	cost_label.text = "💰 $%s" % GameUtils.format_large_number(upgrade.get("cost", 0))  # Icono + texto más corto
+	cost_label.add_theme_font_size_override("font_size", 16)  # Aumentado para móvil
 	cost_label.modulate = Color.GREEN
 	info_vbox.add_child(cost_label)
 
-	# Botón de compra
-	var button = UIComponentsFactory.create_primary_button("Comprar")
-	button.set_custom_minimum_size(Vector2(80, 60))
+	# Botón de compra más grande para móvil
+	var button = UIComponentsFactory.create_primary_button("💳 Comprar")
+	button.set_custom_minimum_size(Vector2(120, 70))  # Más grande para móvil
 	var font_size = int(UITheme.Typography.BUTTON_MEDIUM * UITheme.get_font_scale())
 	button.add_theme_font_size_override("font_size", font_size)
 	button.pressed.connect(_on_upgrade_purchase_requested.bind(upgrade.get("id", "")))

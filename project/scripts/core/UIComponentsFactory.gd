@@ -74,9 +74,24 @@ static func create_primary_button(text: String, size: String = "medium") -> Butt
 	# Aplicar estilo usando UITheme
 	UITheme.apply_button_style(button, size)
 
-	# Tamaño mínimo para touch
-	if UITheme.is_mobile():
-		button.custom_minimum_size.y = UITheme.Spacing.TOUCH_TARGET_MIN
+	# Tamaño mínimo para touch - siempre aplicar para mejor UX móvil
+	button.custom_minimum_size.y = UITheme.Spacing.TOUCH_TARGET_MIN
+
+	return button
+
+## Crear botón secundario (menos prominente)
+static func create_secondary_button(text: String, size: String = "small") -> Button:
+	var button = Button.new()
+	button.text = text
+
+	# Aplicar estilo secundario usando UITheme
+	UITheme.apply_button_style(button, size)
+
+	# Estilo más sutil para botón secundario
+	button.modulate = Color(0.9, 0.9, 0.9)
+
+	# Tamaño mínimo para touch - siempre aplicar para mejor UX móvil
+	button.custom_minimum_size.y = UITheme.Spacing.TOUCH_TARGET_MIN
 
 	return button
 

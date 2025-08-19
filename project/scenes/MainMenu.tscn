@@ -36,14 +36,14 @@ grow_vertical = 2
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 56
 text = "🍺 BAR-SIK"
 horizontal_alignment = 1
 
 [node name="SubtitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Idle Bar Management"
+theme_override_font_sizes/font_size = 24
+text = "🏪 Idle Bar Management"
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="VBoxContainer"]
@@ -51,28 +51,28 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(280, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Iniciar Juego"
+theme_override_font_sizes/font_size = 22
+text = "🚀 Iniciar Juego"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(280, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Configuración"
+theme_override_font_sizes/font_size = 22
+text = "⚙️ Configuración"
 
 [node name="CreditsButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(280, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Créditos"
+theme_override_font_sizes/font_size = 22
+text = "📝 Créditos"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(280, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Salir"
+theme_override_font_sizes/font_size = 22
+text = "❌ Salir"
 
 [node name="VersionLabel" type="Label" parent="."]
 layout_mode = 1

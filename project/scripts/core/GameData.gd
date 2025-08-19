@@ -18,6 +18,14 @@ class_name GameData
 	"yeast": 0
 }
 
+## Límites máximos de recursos (capacidad de almacenamiento)
+@export var resource_limits: Dictionary = {
+	"barley": 100,
+	"hops": 100,
+	"water": 50,
+	"yeast": 25
+}
+
 ## Productos fabricados
 @export var products: Dictionary = {
 	"basic_beer": 0,

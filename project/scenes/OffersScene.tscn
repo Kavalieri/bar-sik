@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://offers_scene_new"]
+[gd_scene load_steps=2 format=3 uid="uid://b52c08exda4sw"]
 
-[ext_resource type="Script" path="res://scripts/OffersScene.gd" id="1_offers"]
+[ext_resource type="Script" uid="uid://xsv2ukxpxi4l" path="res://scripts/OffersScene.gd" id="1_offers"]
 
 [node name="OffersScene" type="Control"]
 layout_mode = 3
@@ -25,12 +25,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-anchor_left = 0.0
-anchor_top = 0.0
-offset_left = 20
-offset_right = -20
-offset_top = 20
-offset_bottom = -20
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -39,9 +37,9 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="BackButton" type="Button" parent="MainContainer/Header"]
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 size_flags_horizontal = 0
-custom_minimum_size = Vector2(100, 50)
 text = "← Volver"
 
 [node name="TitleLabel" type="Label" parent="MainContainer/Header"]
@@ -71,8 +69,8 @@ layout_mode = 2
 columns = 2
 
 [node name="Spacer1" type="Control" parent="MainContainer/OffersContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="WeeklyOffers" type="VBoxContainer" parent="MainContainer/OffersContainer"]
 layout_mode = 2
@@ -83,11 +81,10 @@ text = "📆 OFERTAS SEMANALES"
 
 [node name="WeeklyOffersList" type="GridContainer" parent="MainContainer/OffersContainer/WeeklyOffers"]
 layout_mode = 2
-columns = 1
 
 [node name="Spacer2" type="Control" parent="MainContainer/OffersContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="SpecialOffers" type="VBoxContainer" parent="MainContainer/OffersContainer"]
 layout_mode = 2

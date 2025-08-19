@@ -4,6 +4,8 @@ extends Node
 
 const SAVE_FILE_PATH = "user://barsik_save.dat"
 const BACKUP_FILE_PATH = "user://barsik_save_backup.dat"
+const BACKUP_FILE_PATH_2 = "user://barsik_save_backup_2.dat"
+const BACKUP_FILE_PATH_3 = "user://barsik_save_backup_3.dat"
 
 var current_save_data: Dictionary = {}
 
@@ -20,32 +22,47 @@ func _connect_to_events() -> void:
 		GameEvents.save_data_requested.connect(_on_save_requested)
 
 
-## Guardar datos del juego
-func save_game_data(data: Dictionary) -> bool:
+## Guardar datos del juego inmediatamente (para eventos críticos)
+func save_game_data_immediate() -> bool:
+	var game_controller = get_tree().get_first_node_in_group("game_controller")
+	if game_controller and game_controller.game_data:
+		return save_game_data_with_encryption(game_controller.game_data.to_dict())
+	return false
+
+## Guardar datos del juego con encriptación básica
+func save_game_data_with_encryption(data: Dictionary) -> bool:
 	var save_data = {
-		"version": "0.2.0", "timestamp": Time.get_unix_time_from_system(), "game_data": data
+		"version": "0.2.1",
+		"timestamp": Time.get_unix_time_from_system(),
+		"checksum": _calculate_checksum(data),
+		"game_data": data
 	}
 
-	# Crear backup del archivo anterior
-	if FileAccess.file_exists(SAVE_FILE_PATH):
-		var backup_success = _create_backup()
-		if not backup_success:
-			print("⚠️ No se pudo crear backup, pero continuando...")
+	# Rotar backups antes de guardar
+	_rotate_backups()
 
-	# Guardar nuevo archivo
+	# Encriptar datos
+	var json_string = JSON.stringify(save_data)
+	var encrypted_data = _encrypt_data(json_string)
+
+	# Guardar archivo principal
 	var save_file = FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
 	if save_file:
-		save_file.store_string(JSON.stringify(save_data))
+		save_file.store_string(encrypted_data)
 		save_file.close()
 		current_save_data = save_data
-		print("💾 Juego guardado exitosamente")
+		print("💾 Juego guardado con encriptación - checksum: %s" % save_data.checksum)
 		return true
 
 	print("❌ Error al guardar archivo")
 	return false
 
+## Guardar datos del juego (método original, ahora usa encriptación)
+func save_game_data(data: Dictionary) -> bool:
+	return save_game_data_with_encryption(data)
 
-## Cargar datos del juego
+
+## Cargar datos del juego con soporte para encriptación
 func load_game_data() -> Dictionary:
 	if not FileAccess.file_exists(SAVE_FILE_PATH):
 		print("📁 No existe archivo de guardado, devolviendo datos por defecto")
@@ -56,25 +73,28 @@ func load_game_data() -> Dictionary:
 		print("❌ Error al abrir archivo de guardado")
 		return get_default_save_data()
 
-	var json_string = save_file.get_as_text()
+	var file_content = save_file.get_as_text()
 	save_file.close()
 
-	var json = JSON.new()
-	var parse_result = json.parse(json_string)
+	# Intentar cargar como archivo encriptado primero
+	var save_data = _try_load_encrypted(file_content)
+	if save_data.is_empty():
+		# Si falla, intentar como JSON plano (compatibilidad)
+		save_data = _try_load_plain_json(file_content)
 
-	if parse_result != OK:
-		print("⚠️ Error al parsear guardado, intentando backup...")
+	if save_data.is_empty():
+		print("⚠️ Error al cargar guardado, intentando backups...")
 		return _try_load_backup()
 
-	var save_data = json.get_data()
-
-	# Validar estructura del archivo
-	if not _validate_save_data(save_data):
-		print("⚠️ Archivo de guardado corrupto, intentando backup...")
-		return _try_load_backup()
+	# Validar integridad con checksum si existe
+	if save_data.has("checksum"):
+		var calculated_checksum = _calculate_checksum(save_data.get("game_data", {}))
+		if save_data.checksum != calculated_checksum:
+			print("⚠️ Checksum no coincide, archivo modificado, intentando backup...")
+			return _try_load_backup()
 
 	current_save_data = save_data
-	print("📁 Datos cargados exitosamente")
+	print("📁 Datos cargados exitosamente - checksum válido")
 
 	# GameEvents puede no estar disponible aún durante la inicialización
 	if has_node("/root/GameEvents"):
@@ -88,6 +108,7 @@ func _get_default_game_data() -> Dictionary:
 	return {
 		"money": 50.0,
 		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},
+		"resource_limits": {"barley": 100, "hops": 100, "water": 50, "yeast": 25},
 		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
 		"generators": {"barley_farm": 0, "hops_farm": 0, "water_collector": 0},
 		"stations": {"brewery": 1, "bar_station": 0},
@@ -120,32 +141,39 @@ func _create_backup() -> bool:
 	return true
 
 
-## Intentar cargar backup
+## Intentar cargar backup con múltiples opciones
 func _try_load_backup() -> Dictionary:
-	if not FileAccess.file_exists(BACKUP_FILE_PATH):
-		print("💥 No hay backup disponible, usando datos por defecto")
-		return get_default_save_data()
+	print("🔄 Intentando cargar backups...")
 
-	var backup_file = FileAccess.open(BACKUP_FILE_PATH, FileAccess.READ)
-	if not backup_file:
-		print("💥 Error al abrir backup, usando datos por defecto")
-		return get_default_save_data()
+	# Intentar backup 1, 2, 3 en orden
+	var backup_paths = [BACKUP_FILE_PATH, BACKUP_FILE_PATH_2, BACKUP_FILE_PATH_3]
 
-	var json_string = backup_file.get_as_text()
-	backup_file.close()
+	for i in range(backup_paths.size()):
+		var backup_path = backup_paths[i]
+		print("🔄 Intentando backup %d: %s" % [i + 1, backup_path])
 
-	var json = JSON.new()
-	if json.parse(json_string) != OK:
-		print("💥 Backup también corrupto, usando datos por defecto")
-		return get_default_save_data()
+		if not FileAccess.file_exists(backup_path):
+			continue
 
-	var backup_data = json.get_data()
-	if not _validate_save_data(backup_data):
-		print("💥 Backup inválido, usando datos por defecto")
-		return get_default_save_data()
+		var backup_file = FileAccess.open(backup_path, FileAccess.READ)
+		if not backup_file:
+			continue
 
-	print("🔄 Backup cargado exitosamente")
-	return backup_data.get("game_data", _get_default_game_data())
+		var file_content = backup_file.get_as_text()
+		backup_file.close()
+
+		# Intentar cargar como encriptado primero
+		var save_data = _try_load_encrypted(file_content)
+		if save_data.is_empty():
+			# Si falla, intentar como JSON plano
+			save_data = _try_load_plain_json(file_content)
+
+		if not save_data.is_empty() and _validate_save_data(save_data):
+			print("✅ Backup %d cargado exitosamente" % [i + 1])
+			return save_data.get("game_data", _get_default_game_data())
+
+	print("� Todos los backups fallaron, usando datos por defecto")
+	return get_default_save_data()
 
 
 ## Validar estructura del archivo de guardado
@@ -166,6 +194,58 @@ func _validate_save_data(data: Dictionary) -> bool:
 ## Callback para evento de guardado
 func _on_save_requested() -> void:
 	print("💾 Guardado solicitado por evento")
+	save_game_data_immediate()
+
+## Funciones de encriptación y seguridad
+func _encrypt_data(data: String) -> String:
+	# Encriptación muy simple: solo Base64 con prefijo para identificar archivos encriptados
+	var prefixed_data = "BARSIK_ENC:" + data
+	return Marshalls.utf8_to_base64(prefixed_data)
+
+func _decrypt_data(encrypted_data: String) -> String:
+	# Decodificar base64
+	var decoded = Marshalls.base64_to_utf8(encrypted_data)
+	if decoded == "":
+		return ""  # Error en base64
+
+	# Verificar prefijo
+	if decoded.begins_with("BARSIK_ENC:"):
+		return decoded.substr(11)  # Quitar prefijo "BARSIK_ENC:"
+
+	return ""  # No es un archivo encriptado válido
+
+func _calculate_checksum(data: Dictionary) -> String:
+	var json_string = JSON.stringify(data)
+	return str(json_string.hash())
+
+func _try_load_encrypted(content: String) -> Dictionary:
+	var decrypted = _decrypt_data(content)
+	if decrypted != "":
+		var json = JSON.new()
+		var parse_result = json.parse(decrypted)
+		if parse_result == OK:
+			var data = json.get_data()
+			if _validate_save_data(data):
+				return data
+	return {}
+
+func _try_load_plain_json(content: String) -> Dictionary:
+	var json = JSON.new()
+	var parse_result = json.parse(content)
+	if parse_result == OK:
+		var data = json.get_data()
+		if _validate_save_data(data):
+			return data
+	return {}
+
+func _rotate_backups() -> void:
+	# Rotar: 2→3, 1→2, principal→1
+	if FileAccess.file_exists(BACKUP_FILE_PATH_2):
+		DirAccess.copy_absolute(BACKUP_FILE_PATH_2, BACKUP_FILE_PATH_3)
+	if FileAccess.file_exists(BACKUP_FILE_PATH):
+		DirAccess.copy_absolute(BACKUP_FILE_PATH, BACKUP_FILE_PATH_2)
+	if FileAccess.file_exists(SAVE_FILE_PATH):
+		DirAccess.copy_absolute(SAVE_FILE_PATH, BACKUP_FILE_PATH)
 
 
 ## Guardar al salir del juego
@@ -180,8 +260,8 @@ func _notification(what: int) -> void:
 func reset_to_defaults() -> void:
 	print("🗑️ Reseteando datos a valores por defecto...")
 	var default_data = get_default_save_data()
-	save_game_data(default_data["game_data"])
-	print("✅ Datos reseteados exitosamente")
+	save_game_data_with_encryption(default_data["game_data"])  # MEJORA: Usar sistema encriptado
+	print("✅ Datos reseteados exitosamente con encriptación")
 
 
 ## Obtener datos por defecto para nuevo juego

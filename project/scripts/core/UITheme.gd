@@ -32,44 +32,44 @@ class Colors:
 ## 📝 TIPOGRAFÍA RESPONSIVE
 class Typography:
 	# Headers principales
-	const TITLE_LARGE = 48      # Títulos principales
-	const TITLE_MEDIUM = 32     # Subtítulos
-	const TITLE_SMALL = 24      # Headers de sección
+	const TITLE_LARGE = 56      # Títulos principales (+8)
+	const TITLE_MEDIUM = 40     # Subtítulos (+8)
+	const TITLE_SMALL = 32      # Headers de sección (+8)
 
 	# Contenido
-	const BODY_LARGE = 18       # Texto importante
-	const BODY_MEDIUM = 16      # Texto normal
-	const BODY_SMALL = 14       # Texto secundario
+	const BODY_LARGE = 24       # Texto importante (+6)
+	const BODY_MEDIUM = 20      # Texto normal (+4)
+	const BODY_SMALL = 18       # Texto secundario (+4)
 
 	# UI Elements
-	const BUTTON_LARGE = 18     # Botones principales
-	const BUTTON_MEDIUM = 16    # Botones normales
-	const BUTTON_SMALL = 14     # Botones pequeños
+	const BUTTON_LARGE = 24     # Botones principales (+6)
+	const BUTTON_MEDIUM = 20    # Botones normales (+4)
+	const BUTTON_SMALL = 18     # Botones pequeños (+4)
 
 	# Incremento móvil
-	const MOBILE_SCALE = 1.2    # +20% en móvil
+	const MOBILE_SCALE = 1.4    # +40% en móvil (era 1.2)
 
 ## 📏 MEDIDAS Y ESPACIADO
 class Spacing:
 	# Espaciado básico
-	const TINY = 4
-	const SMALL = 8
-	const MEDIUM = 16
-	const LARGE = 24
-	const EXTRA_LARGE = 32
+	const TINY = 6
+	const SMALL = 12
+	const MEDIUM = 20
+	const LARGE = 32
+	const EXTRA_LARGE = 40
 
-	# Tamaños de botones
-	const BUTTON_HEIGHT_SMALL = 40
-	const BUTTON_HEIGHT_MEDIUM = 50
-	const BUTTON_HEIGHT_LARGE = 60
+	# Tamaños de botones para móvil
+	const BUTTON_HEIGHT_SMALL = 55    # +15
+	const BUTTON_HEIGHT_MEDIUM = 70   # +20
+	const BUTTON_HEIGHT_LARGE = 85    # +25
 
-	# Mínimos para touch
-	const TOUCH_TARGET_MIN = 44
+	# Mínimos para touch (aumentado)
+	const TOUCH_TARGET_MIN = 60       # +16
 
-	# Margins y paddings
-	const MARGIN_SCREEN = 20
-	const PADDING_PANEL = 16
-	const PADDING_BUTTON = 12
+	# Margins y paddings (aumentado)
+	const MARGIN_SCREEN = 24          # +4
+	const PADDING_PANEL = 20          # +4
+	const PADDING_BUTTON = 16         # +4
 
 ## 🎭 ANIMACIONES Y TRANSICIONES
 class Animations:

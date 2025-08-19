@@ -1,9 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://d9p2k6w4z8x1s"]
+[gd_scene load_steps=2 format=3 uid="uid://fb6y40vg13a1"]
 
-[ext_resource type="Script" path="res://scripts/SalesPanel.gd" id="1_sales_panel"]
+[ext_resource type="Script" uid="uid://bunab5ejne4h0" path="res://scripts/SalesPanel.gd" id="1_sales_panel"]
 
 [node name="SalesPanel" type="ScrollContainer"]
-layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,28 +16,28 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SalesSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
 
 [node name="ProductsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VSeparator1" type="VSeparator" parent="MainContainer"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 16)
-
 [node name="IngredientsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VSeparator2" type="VSeparator" parent="MainContainer"]
-layout_mode = 2
+[node name="VSeparator1" type="VSeparator" parent="MainContainer"]
 custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="VSeparator2" type="VSeparator" parent="MainContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 
 [node name="StatisticsSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
 
 [node name="StatsContainer" type="VBoxContainer" parent="MainContainer/StatisticsSection"]
 layout_mode = 2

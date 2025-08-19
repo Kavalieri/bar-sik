@@ -33,8 +33,8 @@ layout_mode = 2
 
 [node name="PauseLabel" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Juego Pausado"
+theme_override_font_sizes/font_size = 40
+text = "⏸️ Juego Pausado"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="CenterContainer/VBoxContainer"]
@@ -42,19 +42,19 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
 [node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(280, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Continuar"
+theme_override_font_sizes/font_size = 22
+text = "▶️ Continuar"
 
 [node name="SettingsButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(280, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Configuración"
+theme_override_font_sizes/font_size = 22
+text = "⚙️ Configuración"
 
 [node name="MainMenuButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(280, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Menú Principal"
+theme_override_font_sizes/font_size = 22
+text = "🏠 Menú Principal"
