@@ -38,11 +38,6 @@ func goto_scene(scene_key: String) -> void:
 func goto_scene_path(scene_path: String) -> void:
 	print("🔄 Cambiando a escena: ", scene_path)
 
-	# Verificar que el archivo existe
-	if not FileAccess.file_exists(scene_path):
-		push_error("❌ Archivo de escena no encontrado: " + scene_path)
-		return
-
 	# Esta función se ejecuta en un hilo diferente para evitar bloqueos
 	call_deferred("_deferred_goto_scene", scene_path)
 
@@ -53,10 +48,21 @@ func _deferred_goto_scene(scene_path: String) -> void:
 	if current_scene:
 		current_scene.queue_free()
 
-	# Cargar la nueva escena
-	var new_scene_resource = load(scene_path)
+	# Cargar la nueva escena usando ResourceLoader (más robusto para builds)
+	var new_scene_resource = null
+
+	# Intentar cargar con ResourceLoader primero (mejor para builds exportados)
+	if ResourceLoader.exists(scene_path):
+		new_scene_resource = ResourceLoader.load(scene_path)
+	else:
+		# Fallback a load() normal
+		new_scene_resource = load(scene_path)
+
 	if not new_scene_resource:
 		push_error("❌ No se pudo cargar la escena: " + scene_path)
+		print("🔍 Rutas disponibles en SCENES:")
+		for key in SCENES:
+			print("  " + key + " -> " + SCENES[key])
 		return
 
 	# Instanciar la nueva escena
