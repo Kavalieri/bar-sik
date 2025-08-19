@@ -1,0 +1,13 @@
+{
+  "name": "bar-sik-web",
+  "version": "0.3.0",
+  "description": "Bar-Sik Web Build - Deploy automático en Vercel",
+  "scripts": {
+    "build": "echo 'Archivos ya están en public/' && ls -la public/",
+    "dev": "cd .. && powershell -ExecutionPolicy Bypass -File release-system/scripts/build-web.ps1 -Serve -Open",
+    "vercel-build": "echo 'Archivos ya están en public/' && ls -la public/"
+  },
+  "keywords": ["godot", "game", "bar-management", "web", "html5"],
+  "author": "Bar-Sik Dev",
+  "license": "MIT"
+}

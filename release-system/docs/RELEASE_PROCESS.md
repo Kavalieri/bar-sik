@@ -20,7 +20,7 @@
 # Android APK
 .\build-android.ps1 -APKOnly
 
-# Web Build  
+# Web Build
 .\build-web.ps1
 
 # Verificar builds generados
