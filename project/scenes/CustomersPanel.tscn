@@ -16,68 +16,46 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Title" type="Label" parent="MainContainer"]
-layout_mode = 2
-text = "👥 GESTIÓN DE CLIENTES"
-horizontal_alignment = 1
-
 [node name="TimerSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="TimerTitle" type="Label" parent="MainContainer/TimerSection"]
-layout_mode = 2
-text = "⏰ PRÓXIMO CLIENTE"
+custom_minimum_size = Vector2(0, 120)
 
 [node name="TimerContainer" type="VBoxContainer" parent="MainContainer/TimerSection"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="CustomerTimerLabel" type="Label" parent="MainContainer/TimerSection/TimerContainer"]
+[node name="VSeparator1" type="VSeparator" parent="MainContainer"]
 layout_mode = 2
-text = "⏰ Próximo cliente en: 8.0s"
-
-[node name="CustomerTimerBar" type="ProgressBar" parent="MainContainer/TimerSection/TimerContainer"]
-layout_mode = 2
-value = 50.0
-
-[node name="CustomerStatusLabel" type="Label" parent="MainContainer/TimerSection/TimerContainer"]
-layout_mode = 2
-text = "🚫 Autoventa desactivada"
-
-[node name="Separator1" type="HSeparator" parent="MainContainer"]
-layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
 
 [node name="UpgradesSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="UpgradesTitle" type="Label" parent="MainContainer/UpgradesSection"]
-layout_mode = 2
-text = "🛒 MEJORAS DE AUTOVENTA"
+custom_minimum_size = Vector2(0, 200)
 
 [node name="UpgradesContainer" type="VBoxContainer" parent="MainContainer/UpgradesSection"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Separator2" type="HSeparator" parent="MainContainer"]
+[node name="VSeparator2" type="VSeparator" parent="MainContainer"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
 
 [node name="AutomationSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="AutomationTitle" type="Label" parent="MainContainer/AutomationSection"]
-layout_mode = 2
-text = "⚙️ AUTOMATIZACIÓN AVANZADA"
+custom_minimum_size = Vector2(0, 150)
 
 [node name="AutomationContainer" type="VBoxContainer" parent="MainContainer/AutomationSection"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Separator3" type="HSeparator" parent="MainContainer"]
+[node name="VSeparator3" type="VSeparator" parent="MainContainer"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
 
 [node name="StatsSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="StatsTitle" type="Label" parent="MainContainer/StatsSection"]
-layout_mode = 2
-text = "📊 ESTADÍSTICAS DE CLIENTES"
+custom_minimum_size = Vector2(0, 120)
 
 [node name="StatsContainer" type="VBoxContainer" parent="MainContainer/StatsSection"]
 layout_mode = 2
+size_flags_horizontal = 3

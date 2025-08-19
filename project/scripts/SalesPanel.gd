@@ -1,162 +1,233 @@
 extends ScrollContainer
-## SalesPanel - Panel de ventas manuales y estadísticas
-## Permite vender productos e ingredientes por cantidades específicas
+## SalesPanel - Panel de ventas limpio y modular
+## Gestiona la venta de productos e ingredientes
 
+# Referencias a contenedores
+@onready var main_container: VBoxContainer = $MainContainer
 @onready var products_container: VBoxContainer = $MainContainer/SalesSection/ProductsContainer
 @onready var ingredients_container: VBoxContainer = $MainContainer/SalesSection/IngredientsContainer
 @onready var stats_container: VBoxContainer = $MainContainer/StatisticsSection/StatsContainer
 
-# Variables de UI
+# Estado del panel
+var is_initialized: bool = false
+var product_buttons: Array[Control] = []
+var ingredient_buttons: Array[Control] = []
 var stats_labels: Array[Label] = []
-var product_sell_buttons: Dictionary = {}
-var ingredient_sell_buttons: Dictionary = {}
 
-# Señales para comunicación con GameScene
+# Señales
 signal item_sell_requested(item_type: String, item_name: String, quantity: int)
-# item_type será "product" o "ingredient"
-
 
 func _ready() -> void:
-	print("💰 SalesPanel inicializado")
-	_setup_ui()
+	print("💰 SalesPanel inicializando...")
+	call_deferred("_initialize_panel")
 
+func _initialize_panel() -> void:
+	"""Inicialización completa del panel"""
+	_create_sections()
+	is_initialized = true
+	print("✅ SalesPanel inicializado correctamente")
 
-func _setup_ui() -> void:
-	# Crear labels para estadísticas
-	_setup_statistics()
+func _create_sections() -> void:
+	"""Crear secciones del panel"""
+	_create_products_section()
+	_create_ingredients_section()
+	_create_statistics_section()
 
+func _create_products_section() -> void:
+	"""Crear sección de productos"""
+	_clear_container(products_container)
+	var header = UIStyleManager.create_section_header(
+		"💰 VENTAS DE PRODUCTOS",
+		"Vende productos fabricados por dinero"
+	)
+	products_container.add_child(header)
 
-func _setup_statistics() -> void:
-	# Crear labels para las estadísticas principales
+func _create_ingredients_section() -> void:
+	"""Crear sección de ingredientes"""
+	_clear_container(ingredients_container)
+	var header = UIStyleManager.create_section_header(
+		"🌾 VENTAS DE INGREDIENTES",
+		"Vende ingredientes sobrantes"
+	)
+	ingredients_container.add_child(header)
+
+func _create_statistics_section() -> void:
+	"""Crear sección de estadísticas"""
+	_clear_container(stats_container)
+	var header = UIStyleManager.create_section_header("📊 ESTADÍSTICAS DE VENTAS")
+	stats_container.add_child(header)
+
+	# Crear panel para estadísticas
+	var stats_panel = UIStyleManager.create_styled_panel()
+	stats_panel.set_custom_minimum_size(Vector2(0, 100))
+	stats_container.add_child(stats_panel)
+
+	var stats_vbox = VBoxContainer.new()
+	stats_vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stats_panel.add_child(stats_vbox)
+
+	# Crear labels de estadísticas
 	var stat_names = [
-		"💰 Dinero total ganado: $0",
-		"🌾 Recursos generados: 0",
-		"🍺 Productos fabricados: 0",
-		"💸 Productos vendidos: 0",
-		"👥 Clientes atendidos: 0"
+		"💰 Dinero total ganado: $0.00",
+		"📦 Productos vendidos: 0",
+		"🌾 Ingredientes vendidos: 0",
+		"👤 Clientes atendidos: 0"
 	]
 
-	for stat_text in stat_names:
+	for stat_name in stat_names:
 		var label = Label.new()
-		label.text = stat_text
-		stats_container.add_child(label)
+		label.text = stat_name
+		label.add_theme_font_size_override("font_size", 12)
+		stats_vbox.add_child(label)
 		stats_labels.append(label)
 
-
-func create_sell_interface_for_item(item_name: String, item_type: String, quantity: int, price: float) -> void:
-	if quantity <= 0:
+func setup_sell_interfaces(game_data: Dictionary) -> void:
+	"""Configura las interfaces de venta"""
+	if not is_initialized:
+		call_deferred("setup_sell_interfaces", game_data)
 		return
 
-	var container = ingredients_container if item_type == "ingredient" else products_container
+	_setup_product_interfaces(game_data.get("products", {}))
+	_setup_ingredient_interfaces(game_data.get("resources", {}))
 
-	# Crear contenedor horizontal para cada ítem
-	var item_container = HBoxContainer.new()
-	container.add_child(item_container)
+func _setup_product_interfaces(products: Dictionary) -> void:
+	"""Configura interfaces de venta de productos"""
+	_clear_product_buttons()
 
-	# Label con información del ítem
-	var info_label = Label.new()
-	var emoji = _get_item_emoji(item_name)
-	info_label.text = "%s %s: %d ($%.2f c/u)" % [emoji, item_name.capitalize(), quantity, price]
-	info_label.custom_minimum_size = Vector2(200, 0)
-	item_container.add_child(info_label)
+	for product_name in products.keys():
+		var amount = products[product_name]
+		if amount > 0:  # Solo mostrar productos disponibles
+			var interface = _create_sell_interface("product", product_name, amount)
+			products_container.add_child(interface)
+			product_buttons.append(interface)
 
-	# Botones de venta por incrementos
-	var increments = [1, 5, 10, "MAX"]
-	for increment in increments:
-		var button = Button.new()
-		var sell_quantity = increment if increment != "MAX" else quantity
+func _setup_ingredient_interfaces(ingredients: Dictionary) -> void:
+	"""Configura interfaces de venta de ingredientes"""
+	_clear_ingredient_buttons()
 
-		if increment == "MAX":
-			button.text = "TODO"
-		else:
-			button.text = str(increment)
+	for ingredient_name in ingredients.keys():
+		var amount = ingredients[ingredient_name]
+		if amount > 0:  # Solo mostrar ingredientes disponibles
+			var interface = _create_sell_interface("ingredient", ingredient_name, amount)
+			ingredients_container.add_child(interface)
+			ingredient_buttons.append(interface)
 
-		# Deshabilitar si no hay suficiente cantidad
-		if increment != "MAX" and increment > quantity:
-			button.disabled = true
+func _create_sell_interface(item_type: String, item_name: String, amount: int) -> Control:
+	"""Crea una interface de venta para un item"""
+	var card = UIStyleManager.create_styled_panel()
+	card.set_custom_minimum_size(Vector2(0, 80))
 
-		button.pressed.connect(func(): _on_sell_button_pressed(item_name, item_type, sell_quantity))
-		item_container.add_child(button)
+	var hbox = HBoxContainer.new()
+	hbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hbox.add_theme_constant_override("separation", 8)
+	card.add_child(hbox)
 
+	# Información del item
+	var info_vbox = VBoxContainer.new()
+	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.add_child(info_vbox)
 
-func _get_item_emoji(item_name: String) -> String:
-	match item_name:
-		"barley": return "🌾"
-		"hops": return "🌿"
-		"water": return "💧"
-		"yeast": return "🦠"
-		"basic_beer": return "🍺"
-		"premium_beer": return "🍻"
-		"cocktail": return "🍹"
-		_: return "📦"
+	var name_label = Label.new()
+	name_label.text = "%s %s" % [GameUtils.get_item_emoji(item_name), item_name.capitalize()]
+	name_label.add_theme_font_size_override("font_size", 14)
+	info_vbox.add_child(name_label)
 
+	var amount_label = Label.new()
+	amount_label.text = "Disponible: %s" % GameUtils.format_large_number(amount)
+	amount_label.add_theme_font_size_override("font_size", 12)
+	amount_label.modulate = Color.GRAY
+	info_vbox.add_child(amount_label)
 
-func _on_sell_button_pressed(item_name: String, item_type: String, quantity: int) -> void:
-	item_sell_requested.emit(item_type, item_name, quantity)
+	var price_label = Label.new()
+	var unit_price = _get_sell_price(item_type, item_name)
+	price_label.text = "Precio: $%.2f cada uno" % unit_price
+	price_label.add_theme_font_size_override("font_size", 12)
+	price_label.modulate = Color.GREEN
+	info_vbox.add_child(price_label)
 
+	# Botones de venta
+	var button_vbox = VBoxContainer.new()
+	button_vbox.add_theme_constant_override("separation", 4)
+	hbox.add_child(button_vbox)
+
+	var quantities = [1, 5, 10, "Todo"]
+	for qty in quantities:
+		var button = UIStyleManager.create_styled_button("")
+		button.set_custom_minimum_size(Vector2(60, 18))
+		button.add_theme_font_size_override("font_size", 10)
+		var sell_amount = amount if qty == "Todo" else min(qty as int, amount)
+		var total_price = unit_price * sell_amount
+
+		button.text = "%s\n$%s" % [str(qty), GameUtils.format_large_number(total_price)]
+		button.disabled = sell_amount <= 0
+		button.pressed.connect(_on_sell_requested.bind(item_type, item_name, sell_amount))
+
+		button_vbox.add_child(button)
+
+	return card
+
+func _get_sell_price(item_type: String, item_name: String) -> float:
+	"""Obtiene el precio de venta de un item"""
+	# Precios base por tipo
+	var base_prices = {
+		"ingredient": {
+			"water": 0.1,
+			"barley": 0.5,
+			"hops": 1.0,
+			"yeast": 2.0
+		},
+		"product": {
+			"basic_beer": 3.0,
+			"premium_beer": 5.0,
+			"cocktail": 7.0
+		}
+	}
+
+	return base_prices.get(item_type, {}).get(item_name, 1.0)
 
 func update_sell_interfaces(game_data: Dictionary) -> void:
-	# Limpiar interfaces existentes
-	_clear_sell_interfaces()
+	"""Actualiza las interfaces de venta"""
+	if not is_initialized:
+		return
 
-	# Crear interfaces para productos
-	for product_name in game_data["products"].keys():
-		var quantity = game_data["products"][product_name]
-		if quantity > 0:
-			var price = _get_product_price(product_name)
-			create_sell_interface_for_item(product_name, "product", quantity, price)
-
-	# Crear interfaces para ingredientes (excepto agua)
-	for ingredient_name in game_data["resources"].keys():
-		var quantity = game_data["resources"][ingredient_name]
-		if quantity > 0 and ingredient_name != "water":
-			var price = _get_ingredient_price(ingredient_name)
-			create_sell_interface_for_item(ingredient_name, "ingredient", quantity, price)
-
-
-func _clear_sell_interfaces() -> void:
-	# Limpiar contenedores (excepto labels)
-	for child in products_container.get_children():
-		if child.name != "ProductsLabel":
-			child.queue_free()
-
-	for child in ingredients_container.get_children():
-		if child.name != "IngredientsLabel":
-			child.queue_free()
-
-
-func _get_product_price(product_type: String) -> float:
-	match product_type:
-		"basic_beer":
-			return 5.0
-		"premium_beer":
-			return 12.0
-		"cocktail":
-			return 20.0
-		_:
-			return 1.0
-
-
-func _get_ingredient_price(ingredient_type: String) -> float:
-	# Precios muy bajos para ingredientes (aproximadamente 10-20% del valor de productos)
-	match ingredient_type:
-		"barley":
-			return 0.5
-		"hops":
-			return 0.8
-		"water":
-			return 0.1
-		"yeast":
-			return 1.0
-		_:
-			return 0.2
-
+	setup_sell_interfaces(game_data)
 
 func update_statistics(game_data: Dictionary) -> void:
-	var stats = game_data["statistics"]
-	if stats_labels.size() >= 5:
-		stats_labels[0].text = "💰 Dinero total ganado: $%.2f" % stats.get("total_money_earned", 0)
-		stats_labels[1].text = "🌾 Recursos generados: %d" % stats.get("resources_generated", 0)
-		stats_labels[2].text = "🍺 Productos fabricados: %d" % stats.get("products_crafted", 0)
-		stats_labels[3].text = "💸 Productos vendidos: %d" % stats.get("products_sold", 0)
-		stats_labels[4].text = "👥 Clientes atendidos: %d" % stats.get("customers_served", 0)
+	"""Actualiza las estadísticas"""
+	if not is_initialized:
+		return
+
+	var stats = game_data.get("statistics", {})
+	if stats_labels.size() >= 4:
+		stats_labels[0].text = "💰 Dinero total ganado: $%s" % GameUtils.format_large_number(stats.get("total_money_earned", 0))
+		stats_labels[1].text = "📦 Productos vendidos: %s" % GameUtils.format_large_number(stats.get("products_sold", 0))
+		stats_labels[2].text = "🌾 Ingredientes vendidos: %s" % GameUtils.format_large_number(stats.get("ingredients_sold", 0))
+		stats_labels[3].text = "👤 Clientes atendidos: %s" % GameUtils.format_large_number(stats.get("customers_served", 0))
+
+# Métodos de eventos
+func _on_sell_requested(item_type: String, item_name: String, amount: int) -> void:
+	"""Maneja la solicitud de venta"""
+	item_sell_requested.emit(item_type, item_name, amount)
+
+# Funciones de utilidad
+func _clear_container(container: Container) -> void:
+	"""Limpia un contenedor de forma segura"""
+	if not container:
+		return
+	for child in container.get_children():
+		container.remove_child(child)
+		child.queue_free()
+
+func _clear_product_buttons() -> void:
+	"""Limpia los botones de productos"""
+	for button in product_buttons:
+		if button:
+			button.queue_free()
+	product_buttons.clear()
+
+func _clear_ingredient_buttons() -> void:
+	"""Limpia los botones de ingredientes"""
+	for button in ingredient_buttons:
+		if button:
+			button.queue_free()
+	ingredient_buttons.clear()

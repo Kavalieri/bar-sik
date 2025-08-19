@@ -16,68 +16,30 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Title" type="Label" parent="MainContainer"]
-layout_mode = 2
-text = "💰 VENTAS Y CLIENTES"
-horizontal_alignment = 1
-
 [node name="SalesSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="SalesTitle" type="Label" parent="MainContainer/SalesSection"]
-layout_mode = 2
-text = "📊 VENTAS DISPONIBLES"
+custom_minimum_size = Vector2(0, 200)
 
 [node name="ProductsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="ProductsLabel" type="Label" parent="MainContainer/SalesSection/ProductsContainer"]
+[node name="VSeparator1" type="VSeparator" parent="MainContainer"]
 layout_mode = 2
-text = "🍺 PRODUCTOS:"
+custom_minimum_size = Vector2(0, 16)
 
 [node name="IngredientsContainer" type="VBoxContainer" parent="MainContainer/SalesSection"]
 layout_mode = 2
-
-[node name="IngredientsLabel" type="Label" parent="MainContainer/SalesSection/IngredientsContainer"]
-layout_mode = 2
-text = "🌾 INGREDIENTES:"
-
-[node name="Separator1" type="HSeparator" parent="MainContainer"]
-layout_mode = 2
-
-[node name="AutoSellSection" type="VBoxContainer" parent="MainContainer"]
-layout_mode = 2
-
-[node name="AutoSellTitle" type="Label" parent="MainContainer/AutoSellSection"]
-layout_mode = 2
-text = "🤖 SISTEMA DE AUTOVENTA"
-
-[node name="AutoSellContainer" type="VBoxContainer" parent="MainContainer/AutoSellSection"]
-layout_mode = 2
-
-[node name="CustomerTimerContainer" type="HBoxContainer" parent="MainContainer/AutoSellSection"]
-layout_mode = 2
-
-[node name="CustomerTimerLabel" type="Label" parent="MainContainer/AutoSellSection/CustomerTimerContainer"]
-layout_mode = 2
-text = "⏰ Próximo cliente:"
-
-[node name="CustomerTimerBar" type="ProgressBar" parent="MainContainer/AutoSellSection/CustomerTimerContainer"]
-layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="UpgradesContainer" type="VBoxContainer" parent="MainContainer/AutoSellSection"]
+[node name="VSeparator2" type="VSeparator" parent="MainContainer"]
 layout_mode = 2
-
-[node name="Separator2" type="HSeparator" parent="MainContainer"]
-layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
 
 [node name="StatisticsSection" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
-
-[node name="StatsTitle" type="Label" parent="MainContainer/StatisticsSection"]
-layout_mode = 2
-text = "📈 ESTADÍSTICAS DEL BAR"
+custom_minimum_size = Vector2(0, 150)
 
 [node name="StatsContainer" type="VBoxContainer" parent="MainContainer/StatisticsSection"]
 layout_mode = 2
+size_flags_horizontal = 3

@@ -1,256 +1,241 @@
 extends ScrollContainer
-## ProductionPanel - Panel de estaciones de producción y crafteo
-## Maneja las estaciones que se pueden comprar y usar para producir
+## ProductionPanel - Panel de producción limpio y modular
+## Maneja estaciones de producción y crafteo de productos
 
-@onready var product_container: VBoxContainer = $MainContainer/ProductsSection/ProductContainer
-@onready var station_container: VBoxContainer = $MainContainer/StationsSection/StationContainer
+# Referencias a contenedores
+@onready var main_container: VBoxContainer = $MainContainer
+@onready var products_container: VBoxContainer = $MainContainer/ProductsSection/ProductContainer
+@onready var stations_container: VBoxContainer = $MainContainer/StationsSection/StationContainer
 
-# Variables de UI
+# Estado del panel
+var is_initialized: bool = false
 var product_labels: Dictionary = {}
 var station_interfaces: Array[Control] = []
 
-# Señales para comunicación con GameScene
+# Señales
 signal station_purchased(station_index: int)
 signal manual_production_requested(station_index: int, quantity: int)
-
+signal offer_toggled(station_index: int, enabled: bool)
+signal offer_price_requested(station_index: int)
 
 func _ready() -> void:
-	print("🍺 ProductionPanel inicializado")
+	print("🍺 ProductionPanel inicializando...")
+	call_deferred("_initialize_panel")
 
+func _initialize_panel() -> void:
+	"""Inicialización completa del panel"""
+	_create_sections()
+	is_initialized = true
+	print("✅ ProductionPanel inicializado correctamente")
+
+func _create_sections() -> void:
+	"""Crear secciones del panel"""
+	_create_products_section()
+	_create_stations_section()
+
+func _create_products_section() -> void:
+	"""Crear sección de productos"""
+	_clear_container(products_container)
+	var header = UIStyleManager.create_section_header("🍺 PRODUCTOS FABRICADOS")
+	products_container.add_child(header)
+
+func _create_stations_section() -> void:
+	"""Crear sección de estaciones"""
+	_clear_container(stations_container)
+	var header = UIStyleManager.create_section_header(
+		"⚙️ ESTACIONES DE PRODUCCIÓN",
+		"Compra estaciones para fabricar productos"
+	)
+	stations_container.add_child(header)
 
 func setup_products(game_data: Dictionary) -> void:
-	# Limpiar contenido existente
-	_clear_product_labels()
+	"""Configura los productos del juego"""
+	if not is_initialized:
+		call_deferred("setup_products", game_data)
+		return
 
-	# Crear labels para productos
-	for product_name in game_data["products"].keys():
-		var label = Label.new()
-		product_labels[product_name] = label
-		product_container.add_child(label)
-
-
-func setup_stations(production_stations: Array[Dictionary]) -> void:
-	# Limpiar interfaces existentes
-	_clear_station_interfaces()
-
-	# Crear interfaces combinadas para cada estación (compra + producción)
-	for i in range(production_stations.size()):
-		_create_station_interface(production_stations[i], i)
-
-
-func _create_station_interface(station: Dictionary, station_index: int) -> void:
-	# Contenedor principal para esta estación
-	var station_group = VBoxContainer.new()
-	station_group.add_theme_constant_override("separation", 5)
-
-	# Título de la estación
-	var title_label = Label.new()
-	title_label.text = station.name
-	title_label.add_theme_font_size_override("font_size", 16)
-	station_group.add_child(title_label)
-
-	# Botón de compra de estación
-	var purchase_button = Button.new()
-	purchase_button.pressed.connect(_on_station_purchased.bind(station_index))
-	station_group.add_child(purchase_button)
-
-	# Separador
-	var separator1 = HSeparator.new()
-	station_group.add_child(separator1)
-
-	# Interfaz de producción (botones de cantidad)
-	var production_label = Label.new()
-	production_label.text = "🔨 Producción Manual:"
-	station_group.add_child(production_label)
-
-	var production_buttons = HBoxContainer.new()
-	var quantities = [1, 5, 10, 50]
-	for quantity in quantities:
-		var prod_button = Button.new()
-		prod_button.text = "x%d" % quantity
-		prod_button.pressed.connect(_on_manual_production_requested.bind(station_index, quantity))
-		production_buttons.add_child(prod_button)
-
-	station_group.add_child(production_buttons)
-
-	# Separador final
-	var separator2 = HSeparator.new()
-	station_group.add_child(separator2)
-
-	# Agregar al contenedor principal
-	station_container.add_child(station_group)
-	station_interfaces.append(station_group)
-
-
-func _format_recipe(recipe: Dictionary) -> String:
-	var recipe_parts = []
-	for ingredient in recipe.keys():
-		recipe_parts.append("%dx %s" % [recipe[ingredient], ingredient])
-	return " + ".join(recipe_parts)
-
-
-func update_product_displays(game_data: Dictionary) -> void:
-	for product_name in product_labels.keys():
-		var label = product_labels[product_name]
-		var amount = game_data["products"].get(product_name, 0)
-		var icon = _get_product_icon(product_name)
-		var price = _get_product_price(product_name)
-		label.text = (
-			"%s %s: %d ($%.1f c/u)"
-			% [icon, product_name.replace("_", " ").capitalize(), amount, price]
-		)
-
-
-func _can_afford_production(station: Dictionary, game_data: Dictionary, quantity: int) -> bool:
-	# Verificar si hay suficientes ingredientes para la receta
-	for ingredient in station.recipe.keys():
-		var needed = station.recipe[ingredient] * quantity
-		var available = game_data["resources"].get(ingredient, 0)
-		if available < needed:
-			return false
-	return true
-
-
-func update_station_interfaces(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
-	for i in range(min(station_interfaces.size(), production_stations.size())):
-		var station = production_stations[i]
-		var station_group = station_interfaces[i]
-		var owned = game_data["stations"].get(station.id, 0)
-		var cost = _calculate_station_cost(station, game_data)
-		var can_afford = game_data["money"] >= cost
-		var is_unlocked = station.get("unlocked", true)  # Default true para compatibilidad
-
-		# Actualizar botón de compra (segundo hijo después del título)
-		var purchase_button = station_group.get_child(1) as Button
-
-		if not is_unlocked:
-			# Estación bloqueada - mostrar requisitos de desbloqueo
-			purchase_button.text = "🔒 BLOQUEADO\n%s\nRequisitos: Experimenta con ingredientes..." % station.name
-			purchase_button.disabled = true
-			purchase_button.visible = true
-
-			# Ocultar interfaz de producción
-			var production_label = station_group.get_child(3)
-			var production_buttons = station_group.get_child(4)
-			production_label.visible = false
-			production_buttons.visible = false
-
-		elif owned == 0:
-			# No tiene la estación pero está desbloqueada, mostrar botón de compra
-			var recipe_text = ""
-			for ingredient in station.recipe.keys():
-				recipe_text += "%dx %s " % [station.recipe[ingredient], ingredient]
-
-			purchase_button.text = "🏗️ Construir %s\nCosto: $%s\nReceta: %s\n%s" % [
-				station.name,
-				_format_large_number(cost),
-				recipe_text,
-				station.description
-			]
-			purchase_button.disabled = not can_afford
-			purchase_button.visible = true
-
-			# Ocultar interfaz de producción
-			var production_label = station_group.get_child(3)
-			var production_buttons = station_group.get_child(4)
-			production_label.visible = false
-			production_buttons.visible = false
-		else:
-			# Ya tiene la estación, ocultar compra y mostrar producción
-			purchase_button.visible = false
-
-			# Mostrar interfaz de producción
-			var production_label = station_group.get_child(3)
-			var production_buttons = station_group.get_child(4)
-			production_label.visible = true
-			production_buttons.visible = true
-
-			# Actualizar botones de producción
-			production_label.text = "🔨 Producción Manual (Tienes: %d):" % owned
-
-			var buttons = production_buttons.get_children()
-			for j in range(buttons.size()):
-				var button = buttons[j] as Button
-				var quantity = int(button.text.substr(1))  # Quitar la 'x'
-				var can_produce = _can_produce(station, game_data, quantity)
-				button.disabled = not can_produce
-
-				if can_produce:
-					button.text = "x%d ✅" % quantity
-				else:
-					button.text = "x%d ❌" % quantity
-
-
-func _can_produce(station: Dictionary, game_data: Dictionary, quantity: int) -> bool:
-	# Verificar si tiene suficientes ingredientes para producir
-	for ingredient in station.recipe.keys():
-		var required = station.recipe[ingredient] * quantity
-		var available = game_data["resources"].get(ingredient, 0)
-		if available < required:
-			return false
-	return true
-
-
-func _calculate_station_cost(station: Dictionary, game_data: Dictionary) -> float:
-	var owned = game_data["stations"].get(station.id, 0)
-	# Factor de escalado reducido de 1.2 a 1.15 para evitar overflow
-	return station.base_cost * pow(1.15, owned)
-
-
-func _get_product_icon(product_name: String) -> String:
-	match product_name:
-		"basic_beer":
-			return "🍺"
-		"premium_beer":
-			return "🍻"
-		"cocktail":
-			return "🍹"
-		_:
-			return "🥤"
-
-
-func _get_product_price(product_type: String) -> float:
-	match product_type:
-		"basic_beer":
-			return 5.0
-		"premium_beer":
-			return 12.0
-		"cocktail":
-			return 20.0
-		_:
-			return 1.0
-
-
-func _clear_product_labels() -> void:
-	for child in product_container.get_children():
-		child.queue_free()
 	product_labels.clear()
 
+	# Crear cards para productos
+	for product_name in game_data["products"].keys():
+		var product_card = UIStyleManager.create_styled_panel()
+		product_card.set_custom_minimum_size(Vector2(0, 50))
 
-func _clear_station_interfaces() -> void:
-	for child in station_container.get_children():
-		child.queue_free()
-	station_interfaces.clear()
+		var label = Label.new()
+		label.text = "%s: 0" % product_name.capitalize()
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.add_theme_font_size_override("font_size", 14)
 
+		product_card.add_child(label)
+		products_container.add_child(product_card)
+		product_labels[product_name] = label
 
-func _on_station_purchased(station_index: int) -> void:
+func setup_stations(production_stations: Array[Dictionary]) -> void:
+	"""Configura las estaciones de producción"""
+	if not is_initialized:
+		call_deferred("setup_stations", production_stations)
+		return
+
+	_clear_station_interfaces()
+
+	# Crear interface para cada estación
+	for i in range(production_stations.size()):
+		var station = production_stations[i]
+		var interface = _create_station_interface(station, i)
+		stations_container.add_child(interface)
+		station_interfaces.append(interface)
+
+func _create_station_interface(station: Dictionary, index: int) -> Control:
+	"""Crea una interface limpia para una estación"""
+	var card = UIStyleManager.create_styled_panel()
+	card.set_custom_minimum_size(Vector2(0, 140))
+
+	var vbox = VBoxContainer.new()
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vbox.add_theme_constant_override("separation", 8)
+	card.add_child(vbox)
+
+	# Título
+	var title_label = Label.new()
+	title_label.text = station.get("name", "Estación")
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 15)
+	vbox.add_child(title_label)
+
+	# Información
+	var info_label = Label.new()
+	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_label.add_theme_font_size_override("font_size", 12)
+	info_label.text = _format_station_info(station, 0, false)
+	vbox.add_child(info_label)
+
+	# Botón de compra
+	var purchase_button = UIStyleManager.create_styled_button("Comprar Estación\n$0")
+	purchase_button.set_custom_minimum_size(Vector2(0, 35))
+	purchase_button.pressed.connect(_on_station_purchase_requested.bind(index))
+	vbox.add_child(purchase_button)
+
+	# Separador
+	_add_separator_to_container(vbox, 4)
+
+	# Botones de producción manual
+	var production_label = Label.new()
+	production_label.text = "🔨 Producción:"
+	production_label.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(production_label)
+
+	var button_container = HBoxContainer.new()
+	button_container.add_theme_constant_override("separation", 4)
+	var quantities = [1, 5, 10, 25]
+
+	for quantity in quantities:
+		var button = UIStyleManager.create_styled_button("×%d" % quantity)
+		button.set_custom_minimum_size(Vector2(50, 25))
+		button.add_theme_font_size_override("font_size", 11)
+		button.pressed.connect(_on_manual_production_requested.bind(index, quantity))
+		button_container.add_child(button)
+
+	vbox.add_child(button_container)
+
+	return card
+
+func _format_station_info(station: Dictionary, owned: int, unlocked: bool) -> String:
+	"""Formatea la información de estación"""
+	var cost = station.get("cost", 100.0)
+	var description = station.get("description", "")
+	var status = "🔓 Disponible" if unlocked else "🔒 Bloqueada"
+
+	if owned > 0:
+		status = "✅ Poseída (×%d)" % owned
+
+	return "%s • $%.0f\n%s" % [status, cost, description]
+
+func update_product_displays(game_data: Dictionary) -> void:
+	"""Actualiza las visualizaciones de productos"""
+	if not is_initialized:
+		return
+
+	for product_name in product_labels.keys():
+		if product_name in game_data["products"]:
+			var amount = game_data["products"][product_name]
+			var label = product_labels[product_name]
+			if label:
+				label.text = "%s: %s" % [
+					product_name.capitalize(),
+					GameUtils.format_large_number(amount)
+				]
+
+func update_station_interfaces(production_stations: Array[Dictionary], game_data: Dictionary) -> void:
+	"""Actualiza las interfaces de estaciones"""
+	if not is_initialized:
+		return
+
+	var stations_owned = game_data.get("stations", {})
+	var money = game_data.get("money", 0.0)
+
+	for i in range(min(station_interfaces.size(), production_stations.size())):
+		var interface = station_interfaces[i]
+		var station = production_stations[i]
+		var station_id = station.get("id", "")
+		var owned_count = stations_owned.get(station_id, 0)
+		var is_unlocked = station.get("unlocked", true)
+
+		_update_station_interface(interface, station, owned_count, is_unlocked, money)
+
+func _update_station_interface(interface: Control, station: Dictionary, owned: int, unlocked: bool, money: float) -> void:
+	"""Actualiza una interface específica de estación"""
+	var vbox = interface.get_child(0) as VBoxContainer
+	if not vbox or vbox.get_child_count() < 3:
+		return
+
+	# Actualizar información (segundo elemento)
+	var info_label = vbox.get_child(1) as Label
+	if info_label:
+		info_label.text = _format_station_info(station, owned, unlocked)
+
+	# Actualizar botón de compra (tercer elemento)
+	var purchase_button = vbox.get_child(2) as Button
+	if purchase_button:
+		var cost = station.get("cost", 100.0)
+		var can_afford = money >= cost
+		var can_buy = unlocked and can_afford
+
+		purchase_button.text = "Comprar Estación\n$%s" % GameUtils.format_large_number(cost)
+		purchase_button.disabled = not can_buy
+		purchase_button.modulate = Color.WHITE if can_buy else Color.GRAY
+
+		if not unlocked:
+			purchase_button.text = "🔒 BLOQUEADA\nRequisitos no cumplidos"
+
+# Métodos de eventos
+func _on_station_purchase_requested(station_index: int) -> void:
+	"""Maneja la solicitud de compra de estación"""
 	station_purchased.emit(station_index)
 
-
 func _on_manual_production_requested(station_index: int, quantity: int) -> void:
+	"""Maneja la solicitud de producción manual"""
 	manual_production_requested.emit(station_index, quantity)
 
+# Funciones de utilidad
+func _clear_container(container: Container) -> void:
+	"""Limpia un contenedor de forma segura"""
+	if not container:
+		return
+	for child in container.get_children():
+		container.remove_child(child)
+		child.queue_free()
 
-func _format_large_number(number: float) -> String:
-	if number < 1000:
-		return "%.0f" % number
-	elif number < 1000000:
-		return "%.1fK" % (number / 1000.0)
-	elif number < 1000000000:
-		return "%.1fM" % (number / 1000000.0)
-	elif number < 1000000000000:
-		return "%.1fB" % (number / 1000000000.0)
-	elif number < 1000000000000000:
-		return "%.1fT" % (number / 1000000000000.0)
-	else:
-		return "%.2e" % number
+func _clear_station_interfaces() -> void:
+	"""Limpia las interfaces de estaciones"""
+	for interface in station_interfaces:
+		if interface:
+			interface.queue_free()
+	station_interfaces.clear()
+
+func _add_separator_to_container(container: Container, height: int = 16) -> void:
+	"""Agrega un separador a un contenedor"""
+	var separator = VSeparator.new()
+	separator.set_custom_minimum_size(Vector2(0, height))
+	separator.modulate = Color.TRANSPARENT
+	container.add_child(separator)
