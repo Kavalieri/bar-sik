@@ -132,6 +132,8 @@ const STATION_DATA = {
 		"description": "Produce cerveza",
 		"emoji": "🏭",
 		"base_price": 50.0,
+		"recipe": {"barley": 2, "hops": 1, "water": 3},
+		"produces": "basic_beer",
 		"products": ["basic_beer", "premium_beer"]
 	},
 	"bar_station":
@@ -140,6 +142,8 @@ const STATION_DATA = {
 		"description": "Prepara cócteles",
 		"emoji": "🍸",
 		"base_price": 75.0,
+		"recipe": {"water": 1, "yeast": 1},
+		"produces": "cocktail",
 		"products": ["cocktail"]
 	}
 }

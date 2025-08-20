@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5xzv3n7qr8p2"]
+
+[ext_resource type="Script" path="res://scripts/ProductionPanelBasic.gd" id="1_mjr4p"]
+
+[node name="ProductionPanelBasic" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_mjr4p")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_scroll_policy = 0
+
+[node name="MainVBox" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

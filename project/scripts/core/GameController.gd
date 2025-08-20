@@ -309,13 +309,11 @@ func _update_all_displays() -> void:
 
 	if production_panel.has_method("update_product_displays"):
 		production_panel.update_product_displays(game_dict)
-		production_panel.update_station_interfaces(
-			production_manager.get_station_definitions(), game_dict
-		)
+		if production_panel.has_method("update_station_displays"):
+			production_panel.update_station_displays(game_dict)
 
-	if sales_panel.has_method("update_statistics"):
-		sales_panel.update_statistics(game_dict)
-		sales_panel.update_sell_interfaces(game_dict)
+	if sales_panel.has_method("update_inventory_displays"):
+		sales_panel.update_inventory_displays(game_dict)
 
 	if customers_panel.has_method("update_customer_display"):
 		customers_panel.update_customer_display(game_dict, customer_manager.get_timer_progress())
@@ -324,8 +322,7 @@ func _update_all_displays() -> void:
 	if customers_panel.has_method("update_offer_interfaces"):
 		customers_panel.update_offer_interfaces(game_dict)
 
-	# Verificar desbloqueos automáticamente después de cada actualización
-	production_manager.check_unlock_stations()
+	# NOTA: check_unlock_stations() se llama desde otros lugares para evitar recursión infinita
 
 
 ## Actualizar solo el panel de generadores (para recursos generados)
@@ -415,13 +412,14 @@ func _on_ui_generator_purchase_requested(generator_id: String, quantity: int) ->
 		print("❌ No se pudo completar la compra: %s x%d" % [generator_id, quantity])
 
 
-func _on_ui_station_purchase_requested(station_index: int) -> void:
-	var station_defs = production_manager.get_station_definitions()
-	if station_index < station_defs.size():
-		var station_id = station_defs[station_index].id
-		var success = production_manager.purchase_station(station_id)
-		if success:
-			_save_game_immediate()  # MEJORA: Guardar inmediatamente después de compra crítica
+func _on_ui_station_purchase_requested(station_id: String, multiplier: int = 1) -> void:
+	print("🏭 Procesando compra de estación: %s x%d" % [station_id, multiplier])
+	var success = production_manager.purchase_station(station_id)
+	if success:
+		print("✅ Estación comprada: %s" % station_id)
+		_save_game_immediate()  # MEJORA: Guardar inmediatamente después de compra crítica
+	else:
+		print("❌ No se pudo completar la compra de estación: %s" % station_id)
 
 
 func _on_ui_manual_production_requested(station_index: int, quantity: int) -> void:
@@ -622,11 +620,12 @@ func _on_generators_changed(generators: Dictionary) -> void:
 
 func _on_stations_changed(stations: Dictionary) -> void:
 	"""Reacciona a cambios de estaciones"""
-	if production_panel and production_panel.has_method("update_station_interfaces"):
-		production_panel.update_station_interfaces(
-			production_manager.get_station_definitions(),
-			{"stations": stations, "money": cached_money}
-		)
+	if production_panel and production_panel.has_method("update_station_displays"):
+		production_panel.update_station_displays({
+			"stations": stations,
+			"money": cached_money,
+			"resources": game_data.resources if game_data else {}
+		})
 
 
 func _on_ui_offer_price_requested_customers(station_id: String) -> void:
@@ -674,7 +673,11 @@ func _on_stock_updated(item_type: String, item_name: String, new_quantity: int) 
 
 	# Si es un producto, actualizar SalesPanel
 	elif item_type == "product":
-		if sales_panel and sales_panel.has_method("update_sell_interfaces"):
-			var minimal_data = {"products": game_data.products, "money": game_data.money}
-			sales_panel.update_sell_interfaces(minimal_data)
-			print("✅ SalesPanel actualizado con nuevo stock de %s" % item_name)
+		if sales_panel and sales_panel.has_method("update_inventory_displays"):
+			var minimal_data = {
+				"products": game_data.products,
+				"resources": game_data.resources,
+				"money": game_data.money
+			}
+			sales_panel.update_inventory_displays(minimal_data)
+			print("✅ SalesPanelBasic actualizado con nuevo stock de %s" % item_name)
