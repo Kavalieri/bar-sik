@@ -1,5 +1,5 @@
 extends Panel
-class_name ItemListCard
+# class_name ItemListCard  # Comentado temporalmente para evitar conflictos RefCounted
 ## Componente genérico de lista con botón contextual
 ## Reutilizable para cualquier tipo de elemento con acción personalizable
 

@@ -1,5 +1,5 @@
 extends Panel
-class_name BuyCard
+# class_name BuyCard  # Comentado temporalmente para evitar conflictos RefCounted
 ## Componente reutilizable de tarjeta de compra/venta
 ## Completamente autónomo y configurable
 

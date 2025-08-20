@@ -1,5 +1,5 @@
 extends VBoxContainer
-class_name ShopContainer
+# class_name ShopContainer  # Comentado temporalmente para evitar conflictos RefCounted
 ## Contenedor modular para tiendas con controles de cantidad globales
 ## Gestiona múltiples BuyCards con cantidad sincronizada
 
@@ -13,7 +13,7 @@ var current_quantity: int = 1
 var player_money: float = 0.0
 
 # Estado
-var buy_cards: Array[BuyCard] = []
+var buy_cards: Array[Panel] = []  # Cambiado de BuyCard a Panel temporalmente
 var is_initialized: bool = false
 
 # Recursos precargados
@@ -107,12 +107,12 @@ func setup(title: String, mode: String = "buy") -> void:
 
 
 ## Agregar un item a la tienda
-func add_item(item_data: Dictionary) -> BuyCard:
+func add_item(item_data: Dictionary) -> Panel:
 	"""
 	Agrega un item a la tienda
 	item_data debe contener: id, name, description, base_price, cost_calculator (opcional)
 	"""
-	var buy_card = BuyCardScene.instantiate() as BuyCard
+	var buy_card = BuyCardScene.instantiate() as Panel
 
 	# Configurar la tarjeta
 	buy_card.setup(item_data, shop_type)
@@ -169,7 +169,7 @@ func update_item_availability(item_id: String, is_available: bool) -> void:
 
 
 ## Obtener tarjeta por ID
-func get_card_by_id(item_id: String) -> BuyCard:
+func get_card_by_id(item_id: String) -> Panel:
 	"""Retorna la tarjeta con el ID especificado"""
 	for card in buy_cards:
 		if card and is_instance_valid(card) and card.item_id == item_id:

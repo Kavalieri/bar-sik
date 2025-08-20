@@ -213,17 +213,18 @@ func _setup_panels() -> void:
 	print("🔧 _setup_panels iniciado")
 
 	# Setup GenerationPanel (nueva arquitectura modular)
-	if generation_panel.has_method("set_generator_manager"):
+	if generation_panel and generation_panel.has_method("set_generator_manager"):
 		print("📦 Conectando GenerationPanel con GeneratorManager...")
 		generation_panel.set_generator_manager(generator_manager)
 		print("✅ GeneratorManager conectado a GenerationPanel")
 
-		# Reconectar señal si no está conectada
-		if not generation_panel.generator_purchased.is_connected(
-			_on_ui_generator_purchase_requested
-		):
+		# Reconectar señal si no está conectada y existe
+		if (generation_panel.has_signal("generator_purchased") and
+			not generation_panel.generator_purchased.is_connected(_on_ui_generator_purchase_requested)):
 			generation_panel.generator_purchased.connect(_on_ui_generator_purchase_requested)
 			print("✅ Señal generator_purchased reconectada")
+	else:
+		print("⚠️ GenerationPanel no tiene método set_generator_manager o es null")
 
 	# Setup ProductionPanel (nueva arquitectura modular)
 	if production_panel.has_method("set_production_manager"):
@@ -303,9 +304,8 @@ func _update_all_displays() -> void:
 	# Actualizar paneles
 	if generation_panel.has_method("update_resource_displays"):
 		generation_panel.update_resource_displays(game_dict)
-		generation_panel.update_generator_displays(
-			generator_manager.get_generator_definitions(), game_dict
-		)
+		if generation_panel.has_method("update_generator_displays"):
+			generation_panel.update_generator_displays(game_dict)
 
 	if production_panel.has_method("update_product_displays"):
 		production_panel.update_product_displays(game_dict)
@@ -401,17 +401,18 @@ func _on_customer_upgrade_purchased(upgrade_id: String, cost: float) -> void:
 ## === EVENTOS DE UI ===
 
 
-func _on_ui_generator_purchase_requested(generator_index: int, quantity: int) -> void:
-	var generator_defs = generator_manager.get_generator_definitions()
-	if generator_index < generator_defs.size():
-		var generator_id = generator_defs[generator_index].id
-		var success = generator_manager.purchase_generator(generator_id, quantity)
+func _on_ui_generator_purchase_requested(generator_id: String, quantity: int) -> void:
+	"""Manejar solicitud de compra de generador desde UI (usando ID directamente)"""
+	print("🛒 UI solicitó compra de generador: %s x%d" % [generator_id, quantity])
+	var success = generator_manager.purchase_generator(generator_id, quantity)
 
-		# Actualizar UI inmediatamente después de compra exitosa
-		if success:
-			print("🔄 Actualizando UI después de compra de generador")
-			_update_all_displays()
-			_save_game_immediate()  # MEJORA: Guardar inmediatamente después de compra crítica
+	# Actualizar UI inmediatamente después de compra exitosa
+	if success:
+		print("🔄 Actualizando UI después de compra de generador")
+		_update_all_displays()
+		_save_game_immediate()  # MEJORA: Guardar inmediatamente después de compra crítica
+	else:
+		print("❌ No se pudo completar la compra: %s x%d" % [generator_id, quantity])
 
 
 func _on_ui_station_purchase_requested(station_index: int) -> void:
@@ -615,7 +616,6 @@ func _on_generators_changed(generators: Dictionary) -> void:
 	"""Reacciona a cambios de generadores"""
 	if generation_panel and generation_panel.has_method("update_generator_displays"):
 		generation_panel.update_generator_displays(
-			generator_manager.get_generator_definitions(),
 			{"generators": generators, "money": cached_money}
 		)
 

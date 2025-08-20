@@ -2,6 +2,9 @@ extends BasePanel
 ## GenerationPanel - Panel de generación usando componentes modulares
 ## Implementa Scene Composition con BuyCard y ItemListCard
 
+# Helpers
+const LayoutFixHelper = preload("res://scripts/ui/LayoutFixHelper.gd")
+
 # Señales específicas del panel
 signal generator_purchased(generator_index: int, quantity: int)
 
@@ -66,13 +69,19 @@ func _setup_modular_resources() -> void:
 		child.queue_free()
 	resources_cards.clear()
 
-	# Definir recursos disponibles usando GameConfig centralizado
+	# Configurar contenedor padre para layout mobile (horizontal)
+	LayoutFixHelper.configure_parent_container(resources_container)
+
+	# Usar datos reales de GameConfig en lugar de hardcoded
 	var resource_configs = []
 	for resource_id in GameConfig.RESOURCE_DATA.keys():
 		var data = GameConfig.RESOURCE_DATA[resource_id]
-		resource_configs.append(
-			{id = resource_id, name = data.name, icon = data.emoji, action = "view_details"}
-		)
+		resource_configs.append({
+			id = resource_id,
+			name = data.name,
+			icon = data.emoji,
+			action = "view_details"
+		})
 
 	# Crear tarjeta para cada recurso
 	for config in resource_configs:
@@ -81,8 +90,15 @@ func _setup_modular_resources() -> void:
 
 		card.setup_item(config, button_config)
 		card.action_requested.connect(_on_resource_action)
+
+		# Aplicar fix de layout
+		LayoutFixHelper.configure_dynamic_component(card)
+
 		resources_container.add_child(card)
 		resources_cards.append(card)
+
+	# Forzar actualización de layout
+	LayoutFixHelper.force_layout_update(resources_container)
 
 
 func _setup_modular_generators() -> void:
@@ -91,43 +107,35 @@ func _setup_modular_generators() -> void:
 	for child in generators_container.get_children():
 		child.queue_free()
 
+	# Configurar contenedor padre como VERTICAL para mobile
+	LayoutFixHelper.configure_parent_container(generators_container)
+	# Forzar orientación vertical para mobile
+	if generators_container is VBoxContainer:
+		generators_container.add_theme_constant_override("separation", 12)
+
 	# Crear ShopContainer para generadores
 	generators_shop = ComponentsPreloader.create_shop_container()
 	generators_shop.setup("Generadores Disponibles", "buy")
 
-	# Definir generadores disponibles
-	var generator_configs = [
-		{
-			id = "barley_farm",
-			name = "Granja de Cebada",
-			description = "Genera cebada automáticamente",
-			base_price = 10.0,
-			icon = "🚜"
-		},
-		{
-			id = "hops_farm",
-			name = "Granja de Lúpulo",
-			description = "Genera lúpulo para cerveza",
-			base_price = 15.0,
-			icon = "🌿"
-		},
-		{
-			id = "water_collector",
-			name = "Recolector de Agua",
-			description = "Recolecta agua pura",
-			base_price = 8.0,
-			icon = "💧"
-		}
-	]
+	# Aplicar fix de layout para ShopContainer
+	LayoutFixHelper.configure_dynamic_component(generators_shop)
 
-	# Agregar cada generador a la tienda
-	for i in range(generator_configs.size()):
-		var config = generator_configs[i]
+	# Usar datos reales de GameConfig en lugar de hardcoded
+	for generator_id in GameConfig.GENERATOR_DATA.keys():
+		var generator_data = GameConfig.GENERATOR_DATA[generator_id]
+		var config = {
+			id = generator_id,
+			name = generator_data.name,
+			description = generator_data.description,
+			base_price = generator_data.base_price,
+			icon = generator_data.emoji
+		}
+
 		var card = generators_shop.add_item(config)
 
 		# Configurar calculadora de costo específica usando GameUtils
 		var cost_calculator = GameUtils.create_cost_calculator(
-			generator_manager_ref, config.id, "get_generator_cost"
+			generator_manager_ref, generator_id, "get_generator_cost"
 		)
 
 		card.set_cost_calculator(cost_calculator)
@@ -137,6 +145,9 @@ func _setup_modular_generators() -> void:
 
 	# Agregar tienda al contenedor
 	generators_container.add_child(generators_shop)
+
+	# Forzar actualización de layout
+	LayoutFixHelper.force_layout_update(generators_container)
 
 
 func update_resource_displays(game_data: Dictionary) -> void:

@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+    ],
+    "settings": {
+        "godotTools.editorPath.godot4": "e:\\2- Descargas\\Godot_v4.4.1-stable_win64.exe\\Godot_v4.4.1-stable_win64.exe",
+        "godotTools.lsp.headless": false,
+        "terminal.integrated.defaultProfile.windows": "PowerShell",
+        "git.confirmSync": false,
+        "workbench.colorTheme": "Default Dark+"
+    }
+}

@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsgp7jwhr5g5q"]
+
+[ext_resource type="Script" path="res://scripts/GenerationPanelBasic.gd" id="1_basic"]
+
+[node name="GenerationPanelBasic" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_basic")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="MainVBox" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1

@@ -6,43 +6,34 @@ class_name GeneratorManager
 signal generator_purchased(generator_id: String, quantity: int)
 signal resource_generated(resource_type: String, amount: int)
 
-## Definición de generadores disponibles
-var generator_definitions: Array[Dictionary] = [
-	{
-		"id": "water_collector",
-		"name": "💧 Recolector de Agua",
-		"base_cost": 1.0,
-		"produces": "water",
-		"production_rate": 2.0,
-		"scale_factor": 1.10,
-		"description": "Recolecta agua cada 2 segundos"
-	},
-	{
-		"id": "barley_farm",
-		"name": "🌾 Granja de Cebada",
-		"base_cost": 10.0,
-		"produces": "barley",
-		"production_rate": 1.0,
-		"scale_factor": 1.10,
-		"description": "Genera cebada cada 3 segundos"
-	},
-	{
-		"id": "hops_farm",
-		"name": "🌿 Granja de Lúpulo",
-		"base_cost": 100.0,
-		"produces": "hops",
-		"production_rate": 1.0,
-		"scale_factor": 1.10,
-		"description": "Genera lúpulo cada 5 segundos"
-	}
-]
+## Usar GameConfig como única fuente de definiciones de generadores
+var generator_definitions: Array[Dictionary] = []
 
 var game_data: GameData
 var generation_timer: Timer
 
 
 func _ready() -> void:
+	_initialize_generator_definitions()
 	_setup_generation_timer()
+
+
+## Inicializar definiciones de generadores desde GameConfig
+func _initialize_generator_definitions() -> void:
+	generator_definitions.clear()
+
+	for generator_id in GameConfig.GENERATOR_DATA.keys():
+		var config_data = GameConfig.GENERATOR_DATA[generator_id]
+		var definition = {
+			"id": generator_id,
+			"name": config_data.name,
+			"base_price": config_data.base_price,  # Usar base_price consistentemente
+			"produces": config_data.resource_type,  # Mapear resource_type a produces
+			"production_rate": 1.0,  # Valor por defecto ya que no está en GameConfig
+			"scale_factor": GameConfig.GENERATOR_SCALE_FACTOR,
+			"description": config_data.get("description", "Generador de recursos")
+		}
+		generator_definitions.append(definition)
 
 
 ## Configurar timer de generación de recursos
@@ -183,7 +174,7 @@ func get_generator_cost(generator_id: String, quantity: int = 1) -> float:
 
 	var owned = game_data.generators.get(generator_id, 0)
 	# Usar costo escalado exponencial como los edificios
-	return GameUtils.calculate_exponential_cost(generator_def.base_cost, owned, quantity)
+	return GameUtils.calculate_exponential_cost(generator_def.base_price, owned, quantity)
 
 
 ## Obtener definición de generador por ID
@@ -197,3 +188,19 @@ func _find_generator_by_id(generator_id: String) -> Dictionary:
 ## Obtener todas las definiciones
 func get_generator_definitions() -> Array[Dictionary]:
 	return generator_definitions
+
+## Obtener datos actuales del juego
+func get_game_data() -> Dictionary:
+	"""Obtener datos actuales del juego para GenerationPanel"""
+	if not game_data:
+		return {
+			"money": 0.0,
+			"generators": {},
+			"resources": {}
+		}
+
+	return {
+		"money": game_data.money,
+		"generators": game_data.generators.duplicate(),
+		"resources": game_data.resources.duplicate()
+	}
