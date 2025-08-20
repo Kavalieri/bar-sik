@@ -28,14 +28,14 @@ func setup_basic_layout():
 	# === TÍTULO PRINCIPAL ===
 	var main_title = Label.new()
 	main_title.text = "🏭 PANEL DE GENERACIÓN"
-	main_title.add_theme_font_size_override("font_size", 24)
+	main_title.add_theme_font_size_override("font_size", 36)  # 24→36 mucho más grande
 	main_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	main_title.add_theme_color_override("font_color", Color.GOLD)
 	main_vbox.add_child(main_title)
 
 	# Separador
 	var separator1 = HSeparator.new()
-	separator1.custom_minimum_size = Vector2(0, 20)
+	separator1.custom_minimum_size = Vector2(0, 30)  # 20→30 más espacio
 	main_vbox.add_child(separator1)
 
 	# === SECCIÓN DE RECURSOS ===
@@ -53,7 +53,7 @@ func setup_resources_section():
 	"""Crear sección de recursos con GridContainer"""
 	var resources_title = Label.new()
 	resources_title.text = "📦 RECURSOS DISPONIBLES"
-	resources_title.add_theme_font_size_override("font_size", 18)
+	resources_title.add_theme_font_size_override("font_size", 24)  # 18→24 más grande
 	resources_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	main_vbox.add_child(resources_title)
 
@@ -74,7 +74,7 @@ func setup_generators_section():
 	"""Crear sección de generadores con VBoxContainer para mobile"""
 	var generators_title = Label.new()
 	generators_title.text = "🚜 GENERADORES DISPONIBLES"
-	generators_title.add_theme_font_size_override("font_size", 18)
+	generators_title.add_theme_font_size_override("font_size", 24)  # 18→24 más grande
 	generators_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	main_vbox.add_child(generators_title)
 
@@ -92,7 +92,7 @@ func setup_generators_section():
 func create_resource_panel(resource_id: String, data: Dictionary) -> Panel:
 	"""Crear panel individual para un recurso"""
 	var panel = Panel.new()
-	panel.custom_minimum_size = Vector2(180, 80)
+	panel.custom_minimum_size = Vector2(200, 100)  # 180x80→200x100 más grande para fuentes
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	# Contenedor interno
@@ -107,12 +107,13 @@ func create_resource_panel(resource_id: String, data: Dictionary) -> Panel:
 	# Título del recurso
 	var title_label = Label.new()
 	title_label.text = "%s %s" % [data.emoji, data.name]
-	title_label.add_theme_font_size_override("font_size", 14)
+	title_label.add_theme_font_size_override("font_size", 18)  # 14→18 más grande
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	# Cantidad del recurso
 	var amount_label = Label.new()
 	amount_label.text = "Cantidad: 0"
+	amount_label.add_theme_font_size_override("font_size", 16)  # Agregar tamaño
 	amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	amount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	amount_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -131,7 +132,7 @@ func create_generator_button(generator_id: String, data: Dictionary) -> Control:
 
 	# Panel principal del generador
 	var main_panel = Panel.new()
-	main_panel.custom_minimum_size = Vector2(0, 80)
+	main_panel.custom_minimum_size = Vector2(0, 100)  # 80→100 más alto para fuentes grandes
 	main_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	# Layout del panel
@@ -146,12 +147,13 @@ func create_generator_button(generator_id: String, data: Dictionary) -> Control:
 	# Título del generador
 	var title_label = Label.new()
 	title_label.text = "%s %s" % [data.emoji, data.name]
-	title_label.add_theme_font_size_override("font_size", 14)
+	title_label.add_theme_font_size_override("font_size", 18)  # 14→18 más grande
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	# Info del generador (cantidad poseída y costo)
 	var info_label = Label.new()
 	info_label.text = "Poseído: 0 | Costo: $%.0f" % data.base_price
+	info_label.add_theme_font_size_override("font_size", 16)  # Agregar tamaño
 	info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info_label.name = "info_label_" + generator_id
 
@@ -168,12 +170,14 @@ func create_generator_button(generator_id: String, data: Dictionary) -> Control:
 	buy_button.text = "COMPRAR"
 	buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	buy_button.custom_minimum_size = Vector2(0, 40)
+	buy_button.add_theme_font_size_override("font_size", 16)  # Botones más legibles
 	buy_button.name = "buy_button_" + generator_id
 
 	# Botón multiplicador
 	var multiplier_button = Button.new()
 	multiplier_button.text = "x1"
 	multiplier_button.custom_minimum_size = Vector2(60, 40)
+	multiplier_button.add_theme_font_size_override("font_size", 14)  # Botón multiplicador legible
 	multiplier_button.name = "multiplier_button_" + generator_id
 
 	# Conectar señales

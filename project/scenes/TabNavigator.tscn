@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dbr8mlkmbumjc" path="res://scripts/TabNavigator.gd" id="1_tab_nav"]
 [ext_resource type="PackedScene" uid="uid://bsgp7jwhr5g5q" path="res://scenes/GenerationPanelSimple.tscn" id="2_gen_panel"]
-[ext_resource type="PackedScene" uid="uid://b8n7q3xar5k1d" path="res://scenes/ProductionPanel.tscn" id="3_prod_panel"]
-[ext_resource type="PackedScene" uid="uid://fb6y40vg13a1" path="res://scenes/SalesPanel.tscn" id="4_sales_panel"]
+[ext_resource type="PackedScene" uid="uid://b5xzv3n7qr8p2" path="res://scenes/ProductionPanelBasic.tscn" id="3_prod_panel"]
+[ext_resource type="PackedScene" uid="uid://b2kxd8n6fq7p1" path="res://scenes/SalesPanelBasic.tscn" id="4_sales_panel"]
 [ext_resource type="PackedScene" uid="uid://c1m7r8y4v6n2s" path="res://scenes/CustomersPanel.tscn" id="5_customers_panel"]
 
 [node name="TabNavigator" type="Control"]

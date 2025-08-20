@@ -71,7 +71,7 @@ func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 func get_item_price(item_type: String, item_name: String) -> float:
 	if item_type == "product":
 		return GameUtils.get_product_price(item_name)
-	if item_type == "ingredient":
+	if item_type == "ingredient" or item_type == "resource":
 		return GameUtils.get_ingredient_price(item_name)
 	return 0.0
 
@@ -89,3 +89,19 @@ func get_sellable_inventory() -> Dictionary:
 		return {"products": {}, "ingredients": {}}
 
 	return StockManager.get_sellable_stock()
+
+## Obtener datos actuales del juego (compatibilidad con SalesPanelBasic)
+func get_game_data() -> Dictionary:
+	"""Obtener datos actuales del juego para SalesPanelBasic"""
+	if not game_data:
+		return {
+			"money": 0.0,
+			"resources": {},
+			"products": {}
+		}
+
+	return {
+		"money": game_data.money,
+		"resources": game_data.resources.duplicate(),
+		"products": game_data.products.duplicate()
+	}
