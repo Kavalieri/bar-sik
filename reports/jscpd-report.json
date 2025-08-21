@@ -1,0 +1,3013 @@
+{
+  "statistics": {
+    "detectionDate": "2025-08-21T18:16:33.390Z",
+    "formats": {
+      "python": {
+        "sources": {
+          "project/scripts/ui/components/ShopContainer.gd": {
+            "lines": 280,
+            "tokens": 1922,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/components/ItemListCard.gd": {
+            "lines": 145,
+            "tokens": 963,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/components/BuyCard.gd": {
+            "lines": 163,
+            "tokens": 1013,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/UIStyleManager.gd": {
+            "lines": 173,
+            "tokens": 1478,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 11,
+            "duplicatedTokens": 163,
+            "percentage": 6.36,
+            "percentageTokens": 11.03,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/SimpleGridLayout.gd": {
+            "lines": 156,
+            "tokens": 1139,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 8,
+            "duplicatedTokens": 79,
+            "percentage": 5.13,
+            "percentageTokens": 6.94,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/ResourceButton.gd": {
+            "lines": 136,
+            "tokens": 1105,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/LayoutFixHelper.gd": {
+            "lines": 120,
+            "tokens": 756,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/IdleBuyButton.gd": {
+            "lines": 129,
+            "tokens": 983,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/CurrencyDisplay.gd": {
+            "lines": 97,
+            "tokens": 726,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/BeverageButton.gd": {
+            "lines": 85,
+            "tokens": 623,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ui/BasePanel.gd": {
+            "lines": 119,
+            "tokens": 624,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 55,
+            "percentage": 5.88,
+            "percentageTokens": 8.81,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/UpgradeManager.gd": {
+            "lines": 429,
+            "tokens": 3241,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/UITheme.gd": {
+            "lines": 174,
+            "tokens": 1064,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 3,
+            "duplicatedTokens": 38,
+            "percentage": 1.72,
+            "percentageTokens": 3.57,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/UIComponentsFactory.gd": {
+            "lines": 262,
+            "tokens": 2263,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 6,
+            "duplicatedTokens": 80,
+            "percentage": 2.29,
+            "percentageTokens": 3.54,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/SalesManager.gd": {
+            "lines": 106,
+            "tokens": 732,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 4,
+            "duplicatedTokens": 39,
+            "percentage": 3.77,
+            "percentageTokens": 5.33,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/ResourceManager.gd": {
+            "lines": 291,
+            "tokens": 2228,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 20,
+            "duplicatedTokens": 216,
+            "percentage": 6.87,
+            "percentageTokens": 9.69,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/ProductionManager.gd": {
+            "lines": 168,
+            "tokens": 1167,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/GeneratorManager.gd": {
+            "lines": 205,
+            "tokens": 1375,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/GameUtils.gd": {
+            "lines": 105,
+            "tokens": 909,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 55,
+            "percentage": 6.67,
+            "percentageTokens": 6.05,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/GameStateManager.gd": {
+            "lines": 145,
+            "tokens": 1049,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/GameManager.gd": {
+            "lines": 317,
+            "tokens": 2181,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/GameData.gd": {
+            "lines": 88,
+            "tokens": 706,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/GameController.gd": {
+            "lines": 682,
+            "tokens": 4239,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 12,
+            "duplicatedTokens": 164,
+            "percentage": 1.76,
+            "percentageTokens": 3.87,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/GameConfig.gd": {
+            "lines": 194,
+            "tokens": 1122,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/CustomerManager.gd": {
+            "lines": 295,
+            "tokens": 2323,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 16,
+            "duplicatedTokens": 124,
+            "percentage": 5.42,
+            "percentageTokens": 5.34,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/core/CurrencyManager.gd": {
+            "lines": 223,
+            "tokens": 1877,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 16,
+            "duplicatedTokens": 192,
+            "percentage": 7.17,
+            "percentageTokens": 10.23,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/components/StockDisplayComponent.gd": {
+            "lines": 460,
+            "tokens": 4185,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 8,
+            "duplicatedTokens": 125,
+            "percentage": 1.74,
+            "percentageTokens": 2.99,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/components/OffersComponent.gd": {
+            "lines": 318,
+            "tokens": 2742,
+            "sources": 1,
+            "clones": 6,
+            "duplicatedLines": 38,
+            "duplicatedTokens": 492,
+            "percentage": 11.95,
+            "percentageTokens": 17.94,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/tests/TestGeneratorPricing.gd": {
+            "lines": 90,
+            "tokens": 745,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 43,
+            "duplicatedTokens": 318,
+            "percentage": 47.78,
+            "percentageTokens": 42.68,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/tests/TestGeneratorPersistence.gd": {
+            "lines": 109,
+            "tokens": 747,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 50,
+            "percentage": 6.42,
+            "percentageTokens": 6.69,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/tests/FinalSystemTest.gd": {
+            "lines": 121,
+            "tokens": 920,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 24,
+            "duplicatedTokens": 208,
+            "percentage": 19.83,
+            "percentageTokens": 22.61,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/tests/DebugGeneratorTest.gd": {
+            "lines": 65,
+            "tokens": 451,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 52,
+            "percentage": 10.77,
+            "percentageTokens": 11.53,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/StockManager.gd": {
+            "lines": 208,
+            "tokens": 1607,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 240,
+            "percentage": 15.38,
+            "percentageTokens": 14.93,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/SaveSystem.gd": {
+            "lines": 285,
+            "tokens": 2050,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 19,
+            "duplicatedTokens": 152,
+            "percentage": 6.67,
+            "percentageTokens": 7.41,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/Router.gd": {
+            "lines": 129,
+            "tokens": 718,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/Locale.gd": {
+            "lines": 78,
+            "tokens": 450,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/GameManager.gd": {
+            "lines": 131,
+            "tokens": 1047,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/GameEvents.gd": {
+            "lines": 51,
+            "tokens": 441,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/DebugConfig.gd": {
+            "lines": 34,
+            "tokens": 226,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/ComponentsPreloader.gd": {
+            "lines": 36,
+            "tokens": 173,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/singletons/AppConfig.gd": {
+            "lines": 63,
+            "tokens": 399,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/TabNavigator.gd": {
+            "lines": 201,
+            "tokens": 1434,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/SplashScreen.gd": {
+            "lines": 126,
+            "tokens": 921,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ShopScene.gd": {
+            "lines": 216,
+            "tokens": 1440,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 5,
+            "duplicatedTokens": 47,
+            "percentage": 2.31,
+            "percentageTokens": 3.26,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/SettingsMenu.gd": {
+            "lines": 114,
+            "tokens": 665,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/SalesPanelBasic.gd": {
+            "lines": 379,
+            "tokens": 2908,
+            "sources": 1,
+            "clones": 13,
+            "duplicatedLines": 106,
+            "duplicatedTokens": 850,
+            "percentage": 27.97,
+            "percentageTokens": 29.23,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/SalesPanel.gd": {
+            "lines": 264,
+            "tokens": 1757,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ProductionPanelBasic.gd": {
+            "lines": 456,
+            "tokens": 3646,
+            "sources": 1,
+            "clones": 27,
+            "duplicatedLines": 771,
+            "duplicatedTokens": 6165,
+            "percentage": 169.08,
+            "percentageTokens": 169.09,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/ProductionPanel.gd": {
+            "lines": 292,
+            "tokens": 2113,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/PauseMenu.gd": {
+            "lines": 57,
+            "tokens": 325,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/OffersScene.gd": {
+            "lines": 173,
+            "tokens": 1352,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 5,
+            "duplicatedTokens": 47,
+            "percentage": 2.89,
+            "percentageTokens": 3.48,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/MainMenu.gd": {
+            "lines": 83,
+            "tokens": 570,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/GenerationPanelSimple.gd": {
+            "lines": 165,
+            "tokens": 1303,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/GenerationPanelBasic.gd": {
+            "lines": 374,
+            "tokens": 2951,
+            "sources": 1,
+            "clones": 13,
+            "duplicatedLines": 112,
+            "duplicatedTokens": 1007,
+            "percentage": 29.95,
+            "percentageTokens": 34.12,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/GenerationPanel.gd": {
+            "lines": 222,
+            "tokens": 1378,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/GameScene.gd": {
+            "lines": 10,
+            "tokens": 49,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/CustomersPanel.gd": {
+            "lines": 302,
+            "tokens": 1752,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/scripts/Credits.gd": {
+            "lines": 26,
+            "tokens": 132,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/debug/SystemRepairSummary.gd": {
+            "lines": 69,
+            "tokens": 480,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 52,
+            "percentage": 10.14,
+            "percentageTokens": 10.83,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/debug/ProductionPanelBasic_NEW.gd": {
+            "lines": 440,
+            "tokens": 3491,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 434,
+            "duplicatedTokens": 3439,
+            "percentage": 98.64,
+            "percentageTokens": 98.51,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/debug/ProductionPanelBasic_fixed.gd": {
+            "lines": 471,
+            "tokens": 3867,
+            "sources": 1,
+            "clones": 11,
+            "duplicatedLines": 233,
+            "duplicatedTokens": 1725,
+            "percentage": 49.47,
+            "percentageTokens": 44.61,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project/debug/DebugPersistence.gd": {
+            "lines": 82,
+            "tokens": 652,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 29,
+            "duplicatedTokens": 264,
+            "percentage": 35.37,
+            "percentageTokens": 40.49,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 11987,
+          "tokens": 87895,
+          "sources": 62,
+          "clones": 62,
+          "duplicatedLines": 995,
+          "duplicatedTokens": 8219,
+          "percentage": 8.3,
+          "percentageTokens": 9.35,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 11987,
+      "tokens": 87895,
+      "sources": 62,
+      "clones": 62,
+      "duplicatedLines": 995,
+      "duplicatedTokens": 8219,
+      "percentage": 8.3,
+      "percentageTokens": 9.35,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "button.add_theme_stylebox_override(\"normal\", style_normal)\r\n\tbutton.add_theme_stylebox_override(\"hover\", style_hover)\r\n\tbutton.add_theme_stylebox_override(\"pressed\", style_pressed)\r\n\tbutton.add_theme_font_size_override",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\UITheme.gd",
+        "start": 137,
+        "end": 140,
+        "startLoc": {
+          "line": 137,
+          "column": 2,
+          "position": 725
+        },
+        "endLoc": {
+          "line": 140,
+          "column": 29,
+          "position": 763
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ui\\UIStyleManager.gd",
+        "start": 115,
+        "end": 118,
+        "startLoc": {
+          "line": 115,
+          "column": 2,
+          "position": 973
+        },
+        "endLoc": {
+          "line": 118,
+          "column": 25,
+          "position": 1008
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "var title_label = Label.new()\r\n\ttitle_label.text = title\r\n\ttitle_label.add_theme_font_size_override(\r\n\t\t\"font_size\", int(UITheme.Typography.BODY_SMALL",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\UIComponentsFactory.gd",
+        "start": 159,
+        "end": 162,
+        "startLoc": {
+          "line": 159,
+          "column": 2,
+          "position": 1340
+        },
+        "endLoc": {
+          "line": 162,
+          "column": 11,
+          "position": 1380
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\UIComponentsFactory.gd",
+        "start": 14,
+        "end": 17,
+        "startLoc": {
+          "line": 14,
+          "column": 2,
+          "position": 89
+        },
+        "endLoc": {
+          "line": 17,
+          "column": 12,
+          "position": 129
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "(resource_id: String, amount: int) -> bool:\r\n\tif not resources.has(resource_id):\r\n\t\tpush_error(\"❌ Recurso no válido: \" + resource_id)\r\n\t\treturn false\r\n\r\n\tvar",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\ResourceManager.gd",
+        "start": 162,
+        "end": 167,
+        "startLoc": {
+          "line": 162,
+          "column": 16,
+          "position": 1204
+        },
+        "endLoc": {
+          "line": 167,
+          "column": 4,
+          "position": 1258
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\ResourceManager.gd",
+        "start": 132,
+        "end": 137,
+        "startLoc": {
+          "line": 132,
+          "column": 13,
+          "position": 936
+        },
+        "endLoc": {
+          "line": 137,
+          "column": 3,
+          "position": 990
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "resource_changed.emit(resource_id, old_amount, new_amount)\r\n\r\n\tif AppConfig.is_debug:\r\n\t\tprint(\"📦 \", RESOURCE_DATA[resource_id].name, \": \", old_amount, \" → \", new_amount)\r\n\r\n\treturn",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\ResourceManager.gd",
+        "start": 174,
+        "end": 179,
+        "startLoc": {
+          "line": 174,
+          "column": 2,
+          "position": 1323
+        },
+        "endLoc": {
+          "line": 179,
+          "column": 7,
+          "position": 1377
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\ResourceManager.gd",
+        "start": 149,
+        "end": 154,
+        "startLoc": {
+          "line": 149,
+          "column": 3,
+          "position": 1105
+        },
+        "endLoc": {
+          "line": 154,
+          "column": 34,
+          "position": 1159
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": ":\r\n\t\"\"\"Limpiar todos los hijos de un contenedor de forma segura\"\"\"\r\n\tif not is_instance_valid(container):\r\n\t\treturn\r\n\r\n\tfor child in container.get_children():\r\n\t\tif is_instance_valid(child):\r\n\t\t\tchild.queue_free()",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\GameUtils.gd",
+        "start": 99,
+        "end": 106,
+        "startLoc": {
+          "line": 99,
+          "column": 5,
+          "position": 854
+        },
+        "endLoc": {
+          "line": 106,
+          "column": 2,
+          "position": 909
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ui\\BasePanel.gd",
+        "start": 90,
+        "end": 97,
+        "startLoc": {
+          "line": 90,
+          "column": 2,
+          "position": 420
+        },
+        "endLoc": {
+          "line": 97,
+          "column": 2,
+          "position": 475
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "var station_defs = production_manager.get_station_definitions()\n\tif station_index < station_defs.size():\n\t\tvar station_id = station_defs[station_index].id\n\t\tprint(",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\GameController.gd",
+        "start": 537,
+        "end": 540,
+        "startLoc": {
+          "line": 537,
+          "column": 2,
+          "position": 3180
+        },
+        "endLoc": {
+          "line": 540,
+          "column": 7,
+          "position": 3221
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\GameController.gd",
+        "start": 426,
+        "end": 429,
+        "startLoc": {
+          "line": 426,
+          "column": 2,
+          "position": 2536
+        },
+        "endLoc": {
+          "line": 429,
+          "column": 19,
+          "position": 2577
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "var station_defs = production_manager.get_station_definitions()\n\tif station_index < station_defs.size():\n\t\tvar station_id = station_defs[station_index].id\n\t\tvar",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\GameController.gd",
+        "start": 557,
+        "end": 560,
+        "startLoc": {
+          "line": 557,
+          "column": 2,
+          "position": 3333
+        },
+        "endLoc": {
+          "line": 560,
+          "column": 4,
+          "position": 3374
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\GameController.gd",
+        "start": 426,
+        "end": 429,
+        "startLoc": {
+          "line": 426,
+          "column": 2,
+          "position": 2536
+        },
+        "endLoc": {
+          "line": 429,
+          "column": 19,
+          "position": 2577
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 9,
+      "fragment": "(upgrade_id: String) -> bool:\r\n\tif not game_data:\r\n\t\treturn false\r\n\r\n\tvar upgrade_def = _find_upgrade_by_id(upgrade_id)\r\n\tif not upgrade_def:\r\n\t\treturn false\r\n\r\n\tvar",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\CustomerManager.gd",
+        "start": 250,
+        "end": 258,
+        "startLoc": {
+          "line": 250,
+          "column": 21,
+          "position": 1952
+        },
+        "endLoc": {
+          "line": 258,
+          "column": 4,
+          "position": 2014
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\CustomerManager.gd",
+        "start": 203,
+        "end": 211,
+        "startLoc": {
+          "line": 203,
+          "column": 17,
+          "position": 1609
+        },
+        "endLoc": {
+          "line": 211,
+          "column": 38,
+          "position": 1671
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "(currency_type: String, amount: int) -> bool:\r\n\tif not currencies.has(currency_type):\r\n\t\tpush_error(\"❌ Tipo de moneda no válido: \" + currency_type)\r\n\t\treturn false\r\n\r\n\tvar",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\CurrencyManager.gd",
+        "start": 57,
+        "end": 62,
+        "startLoc": {
+          "line": 57,
+          "column": 15,
+          "position": 500
+        },
+        "endLoc": {
+          "line": 62,
+          "column": 4,
+          "position": 554
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\CurrencyManager.gd",
+        "start": 34,
+        "end": 39,
+        "startLoc": {
+          "line": 34,
+          "column": 13,
+          "position": 299
+        },
+        "endLoc": {
+          "line": 39,
+          "column": 3,
+          "position": 353
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "(currency_type: String) -> int:\r\n\tif not currencies.has(currency_type):\r\n\t\treturn 0\r\n\treturn currencies[currency_type].total_earned",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\core\\CurrencyManager.gd",
+        "start": 119,
+        "end": 122,
+        "startLoc": {
+          "line": 119,
+          "column": 17,
+          "position": 1009
+        },
+        "endLoc": {
+          "line": 122,
+          "column": 13,
+          "position": 1051
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\CurrencyManager.gd",
+        "start": 112,
+        "end": 115,
+        "startLoc": {
+          "line": 112,
+          "column": 20,
+          "position": 954
+        },
+        "endLoc": {
+          "line": 115,
+          "column": 7,
+          "position": 996
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "= {\r\n\t\"primary\": Color(0.2, 0.6, 1.0),  # Azul primario\r\n\t\"secondary\": Color(0.7, 0.7, 0.7),  # Gris secundario\r\n\t\"success\": Color(0.2, 0.8, 0.2),  # Verde éxito\r\n\t\"warning\": Color(1.0, 0.8, 0.0),  # Amarillo advertencia\r\n\t\"background\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\components\\StockDisplayComponent.gd",
+        "start": 22,
+        "end": 27,
+        "startLoc": {
+          "line": 22,
+          "column": 2,
+          "position": 174
+        },
+        "endLoc": {
+          "line": 27,
+          "column": 13,
+          "position": 256
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ui\\UIStyleManager.gd",
+        "start": 28,
+        "end": 33,
+        "startLoc": {
+          "line": 28,
+          "column": 2,
+          "position": 237
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 9,
+          "position": 314
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "button.add_theme_stylebox_override(\"normal\", style_normal)\r\n\tbutton.add_theme_stylebox_override(\"hover\", style_hover)\r\n\tbutton.add_theme_stylebox_override(\"pressed\", style_pressed)\r\n\tbutton.add_theme_color_override(\"font_color\", Color",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\components\\StockDisplayComponent.gd",
+        "start": 342,
+        "end": 345,
+        "startLoc": {
+          "line": 342,
+          "column": 2,
+          "position": 3085
+        },
+        "endLoc": {
+          "line": 345,
+          "column": 6,
+          "position": 3128
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ui\\UIStyleManager.gd",
+        "start": 115,
+        "end": 118,
+        "startLoc": {
+          "line": 115,
+          "column": 2,
+          "position": 973
+        },
+        "endLoc": {
+          "line": 118,
+          "column": 7,
+          "position": 1013
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 5,
+      "fragment": "var recipes = station_def.get(\"recipes\", [])\r\n\r\n\tfor recipe in recipes:\r\n\t\tvar output = recipe.get(\"output\", {})\r\n\t\tfor product_name",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\components\\OffersComponent.gd",
+        "start": 216,
+        "end": 220,
+        "startLoc": {
+          "line": 216,
+          "column": 2,
+          "position": 1772
+        },
+        "endLoc": {
+          "line": 220,
+          "column": 13,
+          "position": 1825
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\components\\OffersComponent.gd",
+        "start": 202,
+        "end": 205,
+        "startLoc": {
+          "line": 202,
+          "column": 2,
+          "position": 1622
+        },
+        "endLoc": {
+          "line": 205,
+          "column": 12,
+          "position": 1673
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 5,
+      "fragment": "var recipes = station_def.get(\"recipes\", [])\r\n\tfor recipe in recipes:\r\n\t\tvar output = recipe.get(\"output\", {})\r\n\t\tfor product_name in output.keys():\r\n\t\t\tif game_data",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\components\\OffersComponent.gd",
+        "start": 247,
+        "end": 251,
+        "startLoc": {
+          "line": 247,
+          "column": 2,
+          "position": 2084
+        },
+        "endLoc": {
+          "line": 251,
+          "column": 10,
+          "position": 2150
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\components\\OffersComponent.gd",
+        "start": 202,
+        "end": 221,
+        "startLoc": {
+          "line": 202,
+          "column": 2,
+          "position": 1622
+        },
+        "endLoc": {
+          "line": 221,
+          "column": 13,
+          "position": 1840
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 12,
+      "fragment": "var has_stock = false\r\n\tvar recipes = station_def.get(\"recipes\", [])\r\n\tfor recipe in recipes:\r\n\t\tvar output = recipe.get(\"output\", {})\r\n\t\tfor product_name in output.keys():\r\n\t\t\tif game_data.get(\"products\", {}).get(product_name, 0) > 0:\r\n\t\t\t\thas_stock = true\r\n\t\t\t\tbreak\r\n\t\tif has_stock:\r\n\t\t\tbreak\r\n\r\n\treturn",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\components\\OffersComponent.gd",
+        "start": 270,
+        "end": 281,
+        "startLoc": {
+          "line": 270,
+          "column": 2,
+          "position": 2293
+        },
+        "endLoc": {
+          "line": 281,
+          "column": 7,
+          "position": 2420
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\components\\OffersComponent.gd",
+        "start": 246,
+        "end": 257,
+        "startLoc": {
+          "line": 246,
+          "column": 2,
+          "position": 2074
+        },
+        "endLoc": {
+          "line": 257,
+          "column": 3,
+          "position": 2201
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 9,
+      "fragment": "var game_controller = get_tree().get_first_node_in_group(\"game_controller\")\r\n\tif not game_controller:\r\n\t\tprint(\"❌ No se encontró GameController\")\r\n\t\treturn\r\n\r\n\tvar gen_manager = game_controller.generator_manager\r\n\tvar game_data = game_controller.game_data\r\n\r\n\tprint(\"\\n🛒 COMPRA REAL: %dx %s\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\tests\\TestGeneratorPricing.gd",
+        "start": 69,
+        "end": 77,
+        "startLoc": {
+          "line": 69,
+          "column": 2,
+          "position": 530
+        },
+        "endLoc": {
+          "line": 77,
+          "column": 27,
+          "position": 595
+        }
+      },
+      "secondFile": {
+        "name": "project\\tests\\TestGeneratorPricing.gd",
+        "start": 13,
+        "end": 21,
+        "startLoc": {
+          "line": 13,
+          "column": 2,
+          "position": 68
+        },
+        "endLoc": {
+          "line": 21,
+          "column": 35,
+          "position": 133
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": "await get_tree().process_frame\r\n\r\n\tvar game_controller = get_tree().get_first_node_in_group(\"game_controller\")\r\n\tif not game_controller:\r\n\t\tprint(\"❌ No se encontró GameController\")\r\n\t\treturn\r\n\r\n\tprint(",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\tests\\TestGeneratorPersistence.gd",
+        "start": 15,
+        "end": 22,
+        "startLoc": {
+          "line": 15,
+          "column": 2,
+          "position": 78
+        },
+        "endLoc": {
+          "line": 22,
+          "column": 7,
+          "position": 128
+        }
+      },
+      "secondFile": {
+        "name": "project\\tests\\TestGeneratorPricing.gd",
+        "start": 11,
+        "end": 18,
+        "startLoc": {
+          "line": 11,
+          "column": 2,
+          "position": 56
+        },
+        "endLoc": {
+          "line": 18,
+          "column": 4,
+          "position": 106
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": "() -> void:\r\n\tawait get_tree().process_frame\r\n\r\n\tvar game_controller = get_tree().get_first_node_in_group(\"game_controller\")\r\n\tif not game_controller:\r\n\t\tprint(\"❌ No se encontró GameController\")\r\n\t\treturn\r\n\r\n\tprint(\"✅ GameController encontrado\")\r\n\r\n\t# Test 1: Verificar sistema de precios escalados",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\tests\\FinalSystemTest.gd",
+        "start": 10,
+        "end": 20,
+        "startLoc": {
+          "line": 10,
+          "column": 19,
+          "position": 45
+        },
+        "endLoc": {
+          "line": 20,
+          "column": 49,
+          "position": 114
+        }
+      },
+      "secondFile": {
+        "name": "project\\tests\\TestGeneratorPricing.gd",
+        "start": 10,
+        "end": 24,
+        "startLoc": {
+          "line": 10,
+          "column": 14,
+          "position": 45
+        },
+        "endLoc": {
+          "line": 24,
+          "column": 25,
+          "position": 136
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 5,
+      "fragment": "(item_type: String, item_name: String, quantity: int) -> bool:\n\tif not game_data or quantity <= 0:\n\t\treturn false\n\n\tvar current_stock",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\singletons\\StockManager.gd",
+        "start": 101,
+        "end": 105,
+        "startLoc": {
+          "line": 101,
+          "column": 13,
+          "position": 715
+        },
+        "endLoc": {
+          "line": 105,
+          "column": 14,
+          "position": 765
+        }
+      },
+      "secondFile": {
+        "name": "project\\singletons\\StockManager.gd",
+        "start": 82,
+        "end": 86,
+        "startLoc": {
+          "line": 82,
+          "column": 10,
+          "position": 563
+        },
+        "endLoc": {
+          "line": 86,
+          "column": 13,
+          "position": 613
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 13,
+      "fragment": "quantity\n\n\tmatch item_type:\n\t\t\"ingredient\", \"resource\":\n\t\t\tgame_data.resources[item_name] = new_quantity\n\t\t\"product\":\n\t\t\tgame_data.products[item_name] = new_quantity\n\t\t_:\n\t\t\treturn false\n\n\tstock_updated.emit(item_type, item_name, new_quantity)\n\n\tif",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\singletons\\StockManager.gd",
+        "start": 110,
+        "end": 122,
+        "startLoc": {
+          "line": 110,
+          "column": 2,
+          "position": 821
+        },
+        "endLoc": {
+          "line": 122,
+          "column": 3,
+          "position": 891
+        }
+      },
+      "secondFile": {
+        "name": "project\\singletons\\StockManager.gd",
+        "start": 87,
+        "end": 98,
+        "startLoc": {
+          "line": 87,
+          "column": 2,
+          "position": 636
+        },
+        "endLoc": {
+          "line": 98,
+          "column": 7,
+          "position": 705
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": ")\n\tif parse_result == OK:\n\t\tvar data = json.get_data()\n\t\tif _validate_save_data(data):\n\t\t\treturn data\n\treturn {}\n\nfunc _rotate_backups",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\singletons\\SaveSystem.gd",
+        "start": 234,
+        "end": 241,
+        "startLoc": {
+          "line": 234,
+          "column": 8,
+          "position": 1702
+        },
+        "endLoc": {
+          "line": 241,
+          "column": 16,
+          "position": 1750
+        }
+      },
+      "secondFile": {
+        "name": "project\\singletons\\SaveSystem.gd",
+        "start": 225,
+        "end": 232,
+        "startLoc": {
+          "line": 225,
+          "column": 10,
+          "position": 1615
+        },
+        "endLoc": {
+          "line": 232,
+          "column": 21,
+          "position": 1663
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 5,
+      "fragment": "return {\n\t\t\t\"money\": game_data.money,\n\t\t\t\"resources\": game_data.resources.duplicate(),\n\t\t\t\"products\": game_data.products.duplicate()\n\t\t}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 359,
+        "end": 363,
+        "startLoc": {
+          "line": 359,
+          "column": 3,
+          "position": 2753
+        },
+        "endLoc": {
+          "line": 363,
+          "column": 2,
+          "position": 2792
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\core\\SalesManager.gd",
+        "start": 103,
+        "end": 107,
+        "startLoc": {
+          "line": 103,
+          "column": 2,
+          "position": 693
+        },
+        "endLoc": {
+          "line": 107,
+          "column": 2,
+          "position": 732
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": ")\n\nfunc setup_basic_layout():\n\t\"\"\"Configurar layout básico con elementos nativos de Godot\"\"\"\n\t# Limpiar contenido existente\n\tfor child in main_vbox.get_children():\n\t\tchild.queue_free()\n\n\t# === TÍTULO PRINCIPAL ===\n\tvar main_title = Label.new()\n\tmain_title.text = \"🏭 PANEL DE PRODUCCIÓN\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 22,
+        "end": 32,
+        "startLoc": {
+          "line": 22,
+          "column": 38,
+          "position": 110
+        },
+        "endLoc": {
+          "line": 32,
+          "column": 25,
+          "position": 171
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 23,
+        "end": 33,
+        "startLoc": {
+          "line": 23,
+          "column": 33,
+          "position": 116
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 21,
+          "position": 177
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": "main_title.add_theme_font_size_override(\"font_size\", 36)  # 24→36 mucho más grande\n\tmain_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\tmain_title.add_theme_color_override(\"font_color\", Color.GOLD)\n\tmain_vbox.add_child(main_title)\n\n\t# Separador\n\tvar separator1 = HSeparator.new()\n\tseparator1.custom_minimum_size = Vector2(0, 30)  # 20→30 más espacio\n\tmain_vbox.add_child(separator1)\n\n\t# === SECCIÓN DE PRODUCTOS ===",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 33,
+        "end": 43,
+        "startLoc": {
+          "line": 33,
+          "column": 2,
+          "position": 174
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 31,
+          "position": 260
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 34,
+        "end": 44,
+        "startLoc": {
+          "line": 34,
+          "column": 2,
+          "position": 180
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 32,
+          "position": 266
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 9,
+      "fragment": "var vbox = VBoxContainer.new()\n\tvbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)\n\tvbox.add_theme_constant_override(\"separation\", 4)\n\tvbox.add_theme_constant_override(\"margin_left\", 8)\n\tvbox.add_theme_constant_override(\"margin_right\", 8)\n\tvbox.add_theme_constant_override(\"margin_top\", 8)\n\tvbox.add_theme_constant_override(\"margin_bottom\", 8)\n\n\t# Título del producto",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 106,
+        "end": 114,
+        "startLoc": {
+          "line": 106,
+          "column": 2,
+          "position": 747
+        },
+        "endLoc": {
+          "line": 114,
+          "column": 22,
+          "position": 826
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ui\\SimpleGridLayout.gd",
+        "start": 86,
+        "end": 94,
+        "startLoc": {
+          "line": 86,
+          "column": 2,
+          "position": 616
+        },
+        "endLoc": {
+          "line": 94,
+          "column": 19,
+          "position": 695
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "var title_label = Label.new()\n\ttitle_label.text = \"%s %s\" % [data.emoji, data.name]\n\ttitle_label.add_theme_font_size_override(\"font_size\", 18)  # 14→18 más grande\n\ttitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\n\t# Info de la estación con ingredientes en formato cantidad/total",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 155,
+        "end": 160,
+        "startLoc": {
+          "line": 155,
+          "column": 2,
+          "position": 1179
+        },
+        "endLoc": {
+          "line": 160,
+          "column": 65,
+          "position": 1237
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 146,
+        "end": 120,
+        "startLoc": {
+          "line": 146,
+          "column": 2,
+          "position": 1104
+        },
+        "endLoc": {
+          "line": 120,
+          "column": 24,
+          "position": 887
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": "]\n\tvar current_multiplier = state.multiplier\n\tvar next_multiplier = _get_next_multiplier(current_multiplier)\n\n\tstate.multiplier = next_multiplier\n\tstate.multiplier_button.text = \"x%d\" % next_multiplier\n\n\tprint(\"🔢 Multiplicador cambiado para %s: x%d\" % [station_id",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 285,
+        "end": 292,
+        "startLoc": {
+          "line": 285,
+          "column": 11,
+          "position": 2203
+        },
+        "endLoc": {
+          "line": 292,
+          "column": 11,
+          "position": 2261
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 226,
+        "end": 233,
+        "startLoc": {
+          "line": 226,
+          "column": 8,
+          "position": 1745
+        },
+        "endLoc": {
+          "line": 233,
+          "column": 8,
+          "position": 1803
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 13,
+      "fragment": ")\n\tprint(\"✅ Botón actualizado inmediatamente después del cambio de multiplicador\")\n\nfunc _get_next_multiplier(current: int) -> int:\n\t\"\"\"Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1\"\"\"\n\tmatch current:\n\t\t1: return 5\n\t\t5: return 10\n\t\t10: return 25\n\t\t25: return 1\n\t\t_: return 1\n\n## ===== MÉTODOS PÚBLICOS PARA INTERFAZ EXTERNA =====",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 298,
+        "end": 310,
+        "startLoc": {
+          "line": 298,
+          "column": 11,
+          "position": 2291
+        },
+        "endLoc": {
+          "line": 310,
+          "column": 54,
+          "position": 2365
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 239,
+        "end": 251,
+        "startLoc": {
+          "line": 239,
+          "column": 8,
+          "position": 1833
+        },
+        "endLoc": {
+          "line": 251,
+          "column": 48,
+          "position": 1907
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 9,
+      "fragment": ".get_game_data()\n\n\t# Fallback usando singleton GameManager\n\tif GameManager and GameManager.has_method(\"get_game_data\"):\n\t\tvar game_data = GameManager.get_game_data()\n\t\treturn {\n\t\t\t\"money\": game_data.money,\n\t\t\t\"resources\": game_data.resources.duplicate(),\n\t\t\t\"products\": game_data.products.duplicate(),",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 445,
+        "end": 453,
+        "startLoc": {
+          "line": 445,
+          "column": 23,
+          "position": 3524
+        },
+        "endLoc": {
+          "line": 453,
+          "column": 2,
+          "position": 3599
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 354,
+        "end": 107,
+        "startLoc": {
+          "line": 354,
+          "column": 18,
+          "position": 2715
+        },
+        "endLoc": {
+          "line": 107,
+          "column": 2,
+          "position": 732
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "title\r\n\tUITheme.apply_label_style(title_label, \"body_large\")\r\n\tinfo_container.add_child(title_label)\r\n\r\n\tvar desc_label = Label.new()\r\n\tdesc_label.text = offer",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\OffersScene.gd",
+        "start": 147,
+        "end": 152,
+        "startLoc": {
+          "line": 147,
+          "column": 2,
+          "position": 1087
+        },
+        "endLoc": {
+          "line": 152,
+          "column": 6,
+          "position": 1134
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ShopScene.gd",
+        "start": 184,
+        "end": 189,
+        "startLoc": {
+          "line": 184,
+          "column": 2,
+          "position": 1100
+        },
+        "endLoc": {
+          "line": 189,
+          "column": 12,
+          "position": 1147
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": ")\n\nfunc setup_basic_layout():\n\t\"\"\"Configurar layout básico con elementos nativos de Godot\"\"\"\n\t# Limpiar contenido existente\n\tfor child in main_vbox.get_children():\n\t\tchild.queue_free()\n\n\t# === TÍTULO PRINCIPAL ===\n\tvar main_title = Label.new()\n\tmain_title.text = \"🏭 PANEL DE GENERACIÓN\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 20,
+        "end": 30,
+        "startLoc": {
+          "line": 20,
+          "column": 38,
+          "position": 92
+        },
+        "endLoc": {
+          "line": 30,
+          "column": 25,
+          "position": 153
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 23,
+        "end": 33,
+        "startLoc": {
+          "line": 23,
+          "column": 33,
+          "position": 116
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 21,
+          "position": 177
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": "main_title.add_theme_font_size_override(\"font_size\", 36)  # 24→36 mucho más grande\n\tmain_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\tmain_title.add_theme_color_override(\"font_color\", Color.GOLD)\n\tmain_vbox.add_child(main_title)\n\n\t# Separador\n\tvar separator1 = HSeparator.new()\n\tseparator1.custom_minimum_size = Vector2(0, 30)  # 20→30 más espacio\n\tmain_vbox.add_child(separator1)\n\n\t# === SECCIÓN DE RECURSOS ===",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 31,
+        "end": 41,
+        "startLoc": {
+          "line": 31,
+          "column": 2,
+          "position": 156
+        },
+        "endLoc": {
+          "line": 41,
+          "column": 30,
+          "position": 242
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 34,
+        "end": 44,
+        "startLoc": {
+          "line": 34,
+          "column": 2,
+          "position": 180
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 32,
+          "position": 266
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": "()\n\n\t# Separador\n\tvar separator2 = HSeparator.new()\n\tseparator2.custom_minimum_size = Vector2(0, 30)\n\tmain_vbox.add_child(separator2)\n\n\t# === SECCIÓN DE GENERADORES ===",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 42,
+        "end": 49,
+        "startLoc": {
+          "line": 42,
+          "column": 24,
+          "position": 246
+        },
+        "endLoc": {
+          "line": 49,
+          "column": 33,
+          "position": 291
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 44,
+        "end": 51,
+        "startLoc": {
+          "line": 44,
+          "column": 23,
+          "position": 264
+        },
+        "endLoc": {
+          "line": 51,
+          "column": 46,
+          "position": 309
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 14,
+      "fragment": "var panel = Panel.new()\n\tpanel.custom_minimum_size = Vector2(200, 100)  # 180x80→200x100 más grande para fuentes\n\tpanel.size_flags_horizontal = Control.SIZE_EXPAND_FILL\n\n\t# Contenedor interno\n\tvar vbox = VBoxContainer.new()\n\tvbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)\n\tvbox.add_theme_constant_override(\"separation\", 4)\n\tvbox.add_theme_constant_override(\"margin_left\", 8)\n\tvbox.add_theme_constant_override(\"margin_right\", 8)\n\tvbox.add_theme_constant_override(\"margin_top\", 8)\n\tvbox.add_theme_constant_override(\"margin_bottom\", 8)\n\n\t# Título del recurso",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 94,
+        "end": 107,
+        "startLoc": {
+          "line": 94,
+          "column": 2,
+          "position": 657
+        },
+        "endLoc": {
+          "line": 107,
+          "column": 21,
+          "position": 781
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 101,
+        "end": 94,
+        "startLoc": {
+          "line": 101,
+          "column": 2,
+          "position": 702
+        },
+        "endLoc": {
+          "line": 94,
+          "column": 19,
+          "position": 695
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "var title_label = Label.new()\n\ttitle_label.text = \"%s %s\" % [data.emoji, data.name]\n\ttitle_label.add_theme_font_size_override(\"font_size\", 18)  # 14→18 más grande\n\ttitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\n\t# Cantidad del recurso",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 108,
+        "end": 113,
+        "startLoc": {
+          "line": 108,
+          "column": 2,
+          "position": 784
+        },
+        "endLoc": {
+          "line": 113,
+          "column": 23,
+          "position": 842
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 146,
+        "end": 120,
+        "startLoc": {
+          "line": 146,
+          "column": 2,
+          "position": 1104
+        },
+        "endLoc": {
+          "line": 120,
+          "column": 24,
+          "position": 887
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 7,
+      "fragment": "var amount_label = Label.new()\n\tamount_label.text = \"Cantidad: 0\"\n\tamount_label.add_theme_font_size_override(\"font_size\", 16)  # Agregar tamaño\n\tamount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\tamount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER\n\tamount_label.size_flags_vertical = Control.SIZE_EXPAND_FILL\n\tamount_label.name = \"amount_label_\" + resource_id",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 114,
+        "end": 120,
+        "startLoc": {
+          "line": 114,
+          "column": 2,
+          "position": 845
+        },
+        "endLoc": {
+          "line": 120,
+          "column": 12,
+          "position": 919
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 121,
+        "end": 127,
+        "startLoc": {
+          "line": 121,
+          "column": 2,
+          "position": 890
+        },
+        "endLoc": {
+          "line": 127,
+          "column": 11,
+          "position": 964
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 14,
+      "fragment": "var main_panel = Panel.new()\n\tmain_panel.custom_minimum_size = Vector2(0, 100)  # 80→100 más alto para fuentes grandes\n\tmain_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL\n\n\t# Layout del panel\n\tvar panel_vbox = VBoxContainer.new()\n\tpanel_vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)\n\tpanel_vbox.add_theme_constant_override(\"margin_left\", 8)\n\tpanel_vbox.add_theme_constant_override(\"margin_right\", 8)\n\tpanel_vbox.add_theme_constant_override(\"margin_top\", 8)\n\tpanel_vbox.add_theme_constant_override(\"margin_bottom\", 8)\n\tpanel_vbox.add_theme_constant_override(\"separation\", 4)\n\n\t# Título del generador",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 134,
+        "end": 147,
+        "startLoc": {
+          "line": 134,
+          "column": 2,
+          "position": 1007
+        },
+        "endLoc": {
+          "line": 147,
+          "column": 23,
+          "position": 1131
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 141,
+        "end": 154,
+        "startLoc": {
+          "line": 141,
+          "column": 2,
+          "position": 1052
+        },
+        "endLoc": {
+          "line": 154,
+          "column": 24,
+          "position": 1176
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "var title_label = Label.new()\n\ttitle_label.text = \"%s %s\" % [data.emoji, data.name]\n\ttitle_label.add_theme_font_size_override(\"font_size\", 18)  # 14→18 más grande\n\ttitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\n\t# Info del generador (cantidad poseída y costo)",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 148,
+        "end": 153,
+        "startLoc": {
+          "line": 148,
+          "column": 2,
+          "position": 1134
+        },
+        "endLoc": {
+          "line": 153,
+          "column": 48,
+          "position": 1192
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 146,
+        "end": 120,
+        "startLoc": {
+          "line": 146,
+          "column": 2,
+          "position": 1104
+        },
+        "endLoc": {
+          "line": 120,
+          "column": 24,
+          "position": 887
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 15,
+      "fragment": "panel_vbox.add_child(title_label)\n\tpanel_vbox.add_child(info_label)\n\tmain_panel.add_child(panel_vbox)\n\n\t# Contenedor de botones (horizontal)\n\tvar buttons_hbox = HBoxContainer.new()\n\tbuttons_hbox.add_theme_constant_override(\"separation\", 8)\n\n\t# Botón principal de compra\n\tvar buy_button = Button.new()\n\tbuy_button.text = \"COMPRAR\"\n\tbuy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL\n\tbuy_button.custom_minimum_size = Vector2(0, 40)\n\tbuy_button.add_theme_font_size_override(\"font_size\", 16)  # Botones más legibles\n\tbuy_button.name = \"buy_button_\" + generator_id",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 160,
+        "end": 174,
+        "startLoc": {
+          "line": 160,
+          "column": 2,
+          "position": 1259
+        },
+        "endLoc": {
+          "line": 174,
+          "column": 13,
+          "position": 1386
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 168,
+        "end": 182,
+        "startLoc": {
+          "line": 168,
+          "column": 2,
+          "position": 1314
+        },
+        "endLoc": {
+          "line": 182,
+          "column": 11,
+          "position": 1441
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "# Botón multiplicador\n\tvar multiplier_button = Button.new()\n\tmultiplier_button.text = \"x1\"\n\tmultiplier_button.custom_minimum_size = Vector2(60, 40)\n\tmultiplier_button.add_theme_font_size_override(\"font_size\", 14)  # Botón multiplicador legible\n\tmultiplier_button.name = \"multiplier_button_\" + generator_id",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 176,
+        "end": 181,
+        "startLoc": {
+          "line": 176,
+          "column": 2,
+          "position": 1390
+        },
+        "endLoc": {
+          "line": 181,
+          "column": 13,
+          "position": 1453
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 184,
+        "end": 189,
+        "startLoc": {
+          "line": 184,
+          "column": 2,
+          "position": 1445
+        },
+        "endLoc": {
+          "line": 189,
+          "column": 11,
+          "position": 1508
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": "]\n\tvar current_multiplier = state.multiplier\n\tvar next_multiplier = _get_next_multiplier(current_multiplier)\n\n\tstate.multiplier = next_multiplier\n\tstate.multiplier_button.text = \"x%d\" % next_multiplier\n\n\tprint(\"🔢 Multiplicador cambiado para %s: x%d\" % [generator_id",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 225,
+        "end": 232,
+        "startLoc": {
+          "line": 225,
+          "column": 13,
+          "position": 1731
+        },
+        "endLoc": {
+          "line": 232,
+          "column": 13,
+          "position": 1789
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 226,
+        "end": 233,
+        "startLoc": {
+          "line": 226,
+          "column": 8,
+          "position": 1745
+        },
+        "endLoc": {
+          "line": 233,
+          "column": 8,
+          "position": 1803
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 14,
+      "fragment": ")\n\tprint(\"✅ Botón actualizado inmediatamente después del cambio de multiplicador\")\n\nfunc _get_next_multiplier(current: int) -> int:\n\t\"\"\"Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1\"\"\"\n\tmatch current:\n\t\t1: return 5\n\t\t5: return 10\n\t\t10: return 25\n\t\t25: return 1\n\t\t_: return 1\n\n# Método para compatibilidad con GameController\nfunc set_generator_manager",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 238,
+        "end": 251,
+        "startLoc": {
+          "line": 238,
+          "column": 13,
+          "position": 1819
+        },
+        "endLoc": {
+          "line": 251,
+          "column": 22,
+          "position": 1897
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\SalesPanelBasic.gd",
+        "start": 239,
+        "end": 252,
+        "startLoc": {
+          "line": 239,
+          "column": 8,
+          "position": 1833
+        },
+        "endLoc": {
+          "line": 252,
+          "column": 18,
+          "position": 1911
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 5,
+      "fragment": "state.buy_button.disabled = not can_afford\n\tstate.buy_button.modulate = Color.WHITE if can_afford else Color.GRAY\n\n\tif can_afford:\n\t\tstate.buy_button.text = \"COMPRAR x%d\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\scripts\\GenerationPanelBasic.gd",
+        "start": 337,
+        "end": 341,
+        "startLoc": {
+          "line": 337,
+          "column": 2,
+          "position": 2585
+        },
+        "endLoc": {
+          "line": 341,
+          "column": 14,
+          "position": 2636
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 404,
+        "end": 408,
+        "startLoc": {
+          "line": 404,
+          "column": 3,
+          "position": 3106
+        },
+        "endLoc": {
+          "line": 408,
+          "column": 20,
+          "position": 3157
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": "var game_controller = get_tree().get_first_node_in_group(\"game_controller\")\r\n\tif not game_controller:\r\n\t\tprint(\"❌ No se encontró GameController\")\r\n\t\treturn\r\n\r\n\tvar game_data = game_controller.game_data\r\n\r\n\t# Test 1: Verificar límites máximos",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\SystemRepairSummary.gd",
+        "start": 41,
+        "end": 48,
+        "startLoc": {
+          "line": 41,
+          "column": 2,
+          "position": 228
+        },
+        "endLoc": {
+          "line": 48,
+          "column": 36,
+          "position": 280
+        }
+      },
+      "secondFile": {
+        "name": "project\\tests\\DebugGeneratorTest.gd",
+        "start": 25,
+        "end": 31,
+        "startLoc": {
+          "line": 25,
+          "column": 2,
+          "position": 147
+        },
+        "endLoc": {
+          "line": 31,
+          "column": 3,
+          "position": 197
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 382,
+      "fragment": "extends Control\n## ProductionPanelBasic - Panel de producción simple sin herencias complejas\n## Arquitectura idéntica a GenerationPanelBasic para consistencia\n\n# Señales\nsignal station_purchased(station_id: String, quantity: int)\nsignal production_requested(station_id: String, quantity: int)\nsignal multiplier_changed(station_id: String, new_multiplier: int)\n\n# Estado del panel\nvar production_manager_ref: Node = null\nvar button_states: Dictionary = {}  # Estados centralizados de botones\nvar update_in_progress: bool = false  # Prevenir updates recursivos\n\n# Referencias\n@onready var scroll_container: ScrollContainer = $ScrollContainer\n@onready var main_vbox: VBoxContainer = $ScrollContainer/MainVBox\n\nfunc _ready():\n\tprint(\"🏭 ProductionPanelBasic _ready() iniciado\")\n\tsetup_basic_layout()\n\tprint(\"✅ ProductionPanelBasic inicializado\")\n\nfunc setup_basic_layout():\n\t\"\"\"Configurar layout básico con elementos nativos de Godot\"\"\"\n\t# Limpiar contenido existente\n\tfor child in main_vbox.get_children():\n\t\tchild.queue_free()\n\n\t# === TÍTULO PRINCIPAL ===\n\tvar main_title = Label.new()\n\tmain_title.text = \"🏭 PANEL DE PRODUCCIÓN\"\n\tmain_title.add_theme_font_size_override(\"font_size\", 36)  # 24→36 mucho más grande\n\tmain_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\tmain_title.add_theme_color_override(\"font_color\", Color.GOLD)\n\tmain_vbox.add_child(main_title)\n\n\t# Separador\n\tvar separator1 = HSeparator.new()\n\tseparator1.custom_minimum_size = Vector2(0, 30)  # 20→30 más espacio\n\tmain_vbox.add_child(separator1)\n\n\t# === SECCIÓN DE PRODUCTOS ===\n\tsetup_products_section()\n\n\t# Separador\n\tvar separator2 = HSeparator.new()\n\tseparator2.custom_minimum_size = Vector2(0, 30)\n\tmain_vbox.add_child(separator2)\n\n\t# === SECCIÓN DE ESTACIONES DE PRODUCCIÓN ===\n\tsetup_stations_section()\n\nfunc setup_products_section():\n\t\"\"\"Configurar sección de productos disponibles\"\"\"\n\t# Título de sección\n\tvar section_title = Label.new()\n\tsection_title.text = \"🍺 PRODUCTOS DISPONIBLES\"\n\tsection_title.add_theme_font_size_override(\"font_size\", 24)  # 18→24 más grande\n\tsection_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT\n\tsection_title.add_theme_color_override(\"font_color\", Color.CYAN)\n\tmain_vbox.add_child(section_title)\n\n\t# Contenedor horizontal para productos\n\tvar products_hbox = HBoxContainer.new()\n\tproducts_hbox.add_theme_constant_override(\"separation\", 10)\n\tproducts_hbox.alignment = BoxContainer.ALIGNMENT_CENTER\n\n\t# Crear paneles de productos desde GameConfig\n\tfor product_id in GameConfig.PRODUCT_DATA.keys():\n\t\tvar data = GameConfig.PRODUCT_DATA[product_id]\n\t\tvar product_panel = create_product_display_panel(product_id, data)\n\t\tproducts_hbox.add_child(product_panel)\n\n\tmain_vbox.add_child(products_hbox)\n\nfunc setup_stations_section():\n\t\"\"\"Configurar sección de estaciones de producción con VBoxContainer\"\"\"\n\t# Título de sección\n\tvar section_title = Label.new()\n\tsection_title.text = \"🏭 ESTACIONES DE PRODUCCIÓN\"\n\tsection_title.add_theme_font_size_override(\"font_size\", 24)  # 18→24 más grande\n\tsection_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT\n\tsection_title.add_theme_color_override(\"font_color\", Color.ORANGE)\n\tmain_vbox.add_child(section_title)\n\n\t# Crear VBox para estaciones (layout vertical)\n\tvar stations_vbox = VBoxContainer.new()\n\tstations_vbox.add_theme_constant_override(\"separation\", 12)\n\tmain_vbox.add_child(stations_vbox)\n\n\t# Crear estaciones desde GameConfig.STATION_DATA\n\tfor station_id in GameConfig.STATION_DATA.keys():\n\t\tvar data = GameConfig.STATION_DATA[station_id]\n\t\tvar station_button = create_station_button(station_id, data)\n\t\tstations_vbox.add_child(station_button)\n\nfunc create_product_display_panel(product_id: String, data: Dictionary) -> Panel:\n\t\"\"\"Crear panel individual para mostrar un producto (solo información)\"\"\"\n\t# Panel compacto para producto\n\tvar panel = Panel.new()\n\tpanel.custom_minimum_size = Vector2(200, 100)  # 180x80→200x100 más grande para fuentes\n\tpanel.size_flags_horizontal = Control.SIZE_EXPAND_FILL\n\n\t# Contenedor interno\n\tvar vbox = VBoxContainer.new()\n\tvbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)\n\tvbox.add_theme_constant_override(\"separation\", 4)\n\tvbox.add_theme_constant_override(\"margin_left\", 8)\n\tvbox.add_theme_constant_override(\"margin_right\", 8)\n\tvbox.add_theme_constant_override(\"margin_top\", 8)\n\tvbox.add_theme_constant_override(\"margin_bottom\", 8)\n\n\t# Título del producto\n\tvar title_label = Label.new()\n\ttitle_label.text = \"%s %s\" % [data.emoji, data.name]\n\ttitle_label.add_theme_font_size_override(\"font_size\", 18)  # 14→18 más grande\n\ttitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\n\t# Cantidad del producto\n\tvar amount_label = Label.new()\n\tamount_label.text = \"Cantidad: 0\"\n\tamount_label.add_theme_font_size_override(\"font_size\", 16)  # Agregar tamaño\n\tamount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\tamount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER\n\tamount_label.size_flags_vertical = Control.SIZE_EXPAND_FILL\n\tamount_label.name = \"amount_label_\" + product_id\n\n\tvbox.add_child(title_label)\n\tvbox.add_child(amount_label)\n\tpanel.add_child(vbox)\n\n\treturn panel\n\nfunc create_station_button(station_id: String, data: Dictionary) -> VBoxContainer:\n\t\"\"\"Crear botón individual para una estación de producción\"\"\"\n\tvar container = VBoxContainer.new()\n\tcontainer.add_theme_constant_override(\"separation\", 8)\n\n\t# Panel principal de la estación\n\tvar main_panel = Panel.new()\n\tmain_panel.custom_minimum_size = Vector2(0, 100)  # 80→100 más alto para fuentes grandes\n\tmain_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL\n\n\t# Layout del panel\n\tvar panel_vbox = VBoxContainer.new()\n\tpanel_vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)\n\tpanel_vbox.add_theme_constant_override(\"margin_left\", 8)\n\tpanel_vbox.add_theme_constant_override(\"margin_right\", 8)\n\tpanel_vbox.add_theme_constant_override(\"margin_top\", 8)\n\tpanel_vbox.add_theme_constant_override(\"margin_bottom\", 8)\n\tpanel_vbox.add_theme_constant_override(\"separation\", 4)\n\n\t# Título de la estación\n\tvar title_label = Label.new()\n\ttitle_label.text = \"%s %s\" % [data.emoji, data.name]\n\ttitle_label.add_theme_font_size_override(\"font_size\", 18)  # 14→18 más grande\n\ttitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\n\t# Info de la estación con ingredientes en formato cantidad/total\n\tvar info_label = Label.new()\n\tvar recipe_text = _format_recipe_with_availability(station_id)\n\tinfo_label.text = \"Poseído: 0 | %s\" % recipe_text\n\tinfo_label.add_theme_font_size_override(\"font_size\", 14)  # Agregar tamaño\n\tinfo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\tinfo_label.name = \"info_label_\" + station_id\n\n\tpanel_vbox.add_child(title_label)\n\tpanel_vbox.add_child(info_label)\n\tmain_panel.add_child(panel_vbox)\n\n\t# Contenedor de botones (horizontal)\n\tvar buttons_hbox = HBoxContainer.new()\n\tbuttons_hbox.add_theme_constant_override(\"separation\", 8)\n\n\t# Botón principal de compra\n\tvar buy_button = Button.new()\n\tbuy_button.text = \"COMPRAR\"\n\tbuy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL\n\tbuy_button.custom_minimum_size = Vector2(0, 40)\n\tbuy_button.add_theme_font_size_override(\"font_size\", 16)  # Botones más legibles\n\tbuy_button.name = \"buy_button_\" + station_id\n\n\t# Botón multiplicador\n\tvar multiplier_button = Button.new()\n\tmultiplier_button.text = \"x1\"\n\tmultiplier_button.custom_minimum_size = Vector2(60, 40)\n\tmultiplier_button.add_theme_font_size_override(\"font_size\", 14)  # Botón multiplicador legible\n\tmultiplier_button.name = \"multiplier_button_\" + station_id\n\n\t# Conectar señales\n\tbuy_button.pressed.connect(_on_station_buy_pressed.bind(station_id))\n\tmultiplier_button.pressed.connect(_on_multiplier_button_pressed.bind(station_id))\n\n\tbuttons_hbox.add_child(buy_button)\n\tbuttons_hbox.add_child(multiplier_button)\n\n\t# Guardar estado del botón\n\tbutton_states[station_id] = {\n\t\t\"buy_button\": buy_button,\n\t\t\"multiplier_button\": multiplier_button,\n\t\t\"info_label\": info_label,\n\t\t\"multiplier\": 1,\n\t\t\"station_id\": station_id\n\t}\n\n\tcontainer.add_child(main_panel)\n\tcontainer.add_child(buttons_hbox)\n\n\treturn container\n\nfunc _format_recipe_with_availability(station_id: String) -> String:\n\t\"\"\"Formatear receta mostrando ingredientes en formato cantidad_a_usar/total_disponible\"\"\"\n\tvar station_data = GameConfig.STATION_DATA.get(station_id, {})\n\tvar recipe = station_data.get(\"recipe\", {})\n\n\tif recipe.is_empty():\n\t\treturn \"Sin receta\"\n\n\tvar recipe_parts = []\n\tfor ingredient_id in recipe.keys():\n\t\tvar needed_amount = recipe[ingredient_id]\n\t\tvar available_amount = get_ingredient_available_amount(ingredient_id)\n\t\tvar ingredient_data = GameConfig.RESOURCE_DATA.get(ingredient_id, {\"emoji\": \"❓\", \"name\": ingredient_id})\n\n\t\t# Formato: emoji cantidad_necesaria/disponible nombre\n\t\trecipe_parts.append(\"%s %d/%d %s\" % [\n\t\t\tingredient_data.emoji,\n\t\t\tneeded_amount,\n\t\t\tavailable_amount,\n\t\t\tingredient_data.name\n\t\t])\n\n\treturn \" + \".join(recipe_parts)\n\nfunc get_ingredient_available_amount(ingredient_id: String) -> int:\n\t\"\"\"Obtener cantidad disponible de un ingrediente\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"get_game_data\"):\n\t\tvar game_data = production_manager_ref.get_game_data()\n\t\tvar resources = game_data.get(\"resources\", {})\n\t\treturn int(resources.get(ingredient_id, 0))\n\n\t# Fallback usando singleton GameManager\n\tif GameManager and GameManager.has_method(\"get_game_data\"):\n\t\tvar game_data = GameManager.get_game_data()\n\t\treturn int(game_data.resources.get(ingredient_id, 0))\n\n\treturn 0\n\n## ===== MANEJADORES DE EVENTOS =====\n\nfunc _on_station_buy_pressed(station_id: String):\n\t\"\"\"Manejar click en botón de compra/producción de estación\"\"\"\n\tif update_in_progress:\n\t\tprint(\"⚠️ Update en progreso, ignorando click\")\n\t\treturn\n\n\tif not button_states.has(station_id):\n\t\tprint(\"❌ Estado del botón no encontrado para: %s\" % station_id)\n\t\treturn\n\n\tvar state = button_states[station_id]\n\tvar multiplier = state.multiplier\n\n\tprint(\"🏭 Botón de estación presionado: %s (x%d)\" % [station_id, multiplier])\n\n\t# Emitir señales apropiadas según el estado de la estación\n\tif is_station_unlocked_from_manager(station_id):\n\t\tproduction_requested.emit(station_id, multiplier)\n\t\tprint(\"⚙️ Señal production_requested emitida: %s x%d\" % [station_id, multiplier])\n\telse:\n\t\tstation_purchased.emit(station_id, multiplier)\n\t\tprint(\"🛒 Señal station_purchased emitida: %s x%d\" % [station_id, multiplier])\n\nfunc _on_multiplier_button_pressed(station_id: String):\n\t\"\"\"Manejar click en botón multiplicador\"\"\"\n\tif update_in_progress:\n\t\treturn\n\n\tif not button_states.has(station_id):\n\t\tprint(\"❌ Estado del botón no encontrado para: %s\" % station_id)\n\t\treturn\n\n\t# Actualizar estado centralizado\n\tvar state = button_states[station_id]\n\tvar current_multiplier = state.multiplier\n\tvar next_multiplier = _get_next_multiplier(current_multiplier)\n\n\tstate.multiplier = next_multiplier\n\tstate.multiplier_button.text = \"x%d\" % next_multiplier\n\n\tprint(\"🔢 Multiplicador cambiado para %s: x%d\" % [station_id, next_multiplier])\n\n\t# Emitir señal para notificar cambio\n\tmultiplier_changed.emit(station_id, next_multiplier)\n\n\t# Actualizar solo esta estación específica INMEDIATAMENTE\n\t_update_single_station_state(station_id)\n\tprint(\"✅ Botón actualizado inmediatamente después del cambio de multiplicador\")\n\nfunc _get_next_multiplier(current: int) -> int:\n\t\"\"\"Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1\"\"\"\n\tmatch current:\n\t\t1: return 5\n\t\t5: return 10\n\t\t10: return 25\n\t\t25: return 1\n\t\t_: return 1\n\n## ===== MÉTODOS PÚBLICOS PARA INTERFAZ EXTERNA =====\n\n# Método para compatibilidad con GameController\nfunc set_production_manager(manager: Node):\n\t\"\"\"Establecer referencia al ProductionManager\"\"\"\n\tproduction_manager_ref = manager\n\tprint(\"🔗 ProductionPanelBasic conectado con ProductionManager\")\n\nfunc refresh_station_displays():\n\t\"\"\"Refrescar displays de todas las estaciones - método público para GameController\"\"\"\n\tif production_manager_ref:\n\t\tvar game_data = get_current_game_data()\n\t\tupdate_station_displays(game_data)\n\nfunc refresh_product_displays():\n\t\"\"\"Refrescar displays de productos - método público para GameController\"\"\"\n\tif production_manager_ref:\n\t\tvar game_data = get_current_game_data()\n\t\tupdate_product_displays(game_data)\n\nfunc update_station_displays(game_data: Dictionary):\n\t\"\"\"Actualizar todos los displays de estaciones\"\"\"\n\tif update_in_progress:\n\t\treturn\n\n\tupdate_in_progress = true\n\n\tfor station_id in button_states.keys():\n\t\t_update_single_station_state(station_id, game_data)\n\n\tupdate_in_progress = false\n\nfunc update_product_displays(game_data: Dictionary):\n\t\"\"\"Actualizar displays de productos disponibles\"\"\"\n\t# Obtener datos del juego si no se proporcionan\n\tif game_data.is_empty():\n\t\tgame_data = get_current_game_data()\n\n\tvar products = game_data.get(\"products\", {})\n\n\t# Actualizar cada producto\n\tfor product_id in GameConfig.PRODUCT_DATA.keys():\n\t\tvar amount_label = main_vbox.find_child(\"amount_label_\" + product_id, true, false)\n\t\tif amount_label:\n\t\t\tvar amount = products.get(product_id, 0)\n\t\t\tamount_label.text = \"Cantidad: %d\" % amount\n\nfunc _update_single_station_state(station_id: String, game_data: Dictionary = {}):\n\t\"\"\"Actualizar estado de una estación específica\"\"\"\n\tif not button_states.has(station_id):\n\t\tprint(\"❌ Estado no encontrado para estación: %s\" % station_id)\n\t\treturn\n\n\t# Obtener datos del juego si no se proporcionan\n\tif game_data.is_empty():\n\t\tgame_data = get_current_game_data()\n\n\tvar state = button_states[station_id]\n\tvar multiplier = state.multiplier\n\n\t# Obtener información actualizada\n\tvar stations_owned = game_data.get(\"stations\", {})\n\tvar owned_count = stations_owned.get(station_id, 0)\n\n\t# Actualizar información con ingredientes disponibles\n\tvar recipe_text = _format_recipe_with_availability(station_id)\n\tstate.info_label.text = \"Poseído: %d | %s\" % [owned_count, recipe_text]\n\n\t# Determinar estado de la estación\n\tvar is_unlocked = is_station_unlocked_from_manager(station_id)\n\n\tif is_unlocked:\n\t\t# Modo producción - verificar ingredientes disponibles",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_NEW.gd",
+        "start": 1,
+        "end": 382,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 382,
+          "column": 55,
+          "position": 2861
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 1,
+        "end": 382,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 382,
+          "column": 48,
+          "position": 2861
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "var can_produce = can_afford_production(station_id, multiplier, game_data)\n\t\tstate.buy_button.disabled = not can_produce\n\t\tstate.buy_button.modulate = Color.WHITE if can_produce else Color.GRAY\n\t\tstate",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_NEW.gd",
+        "start": 383,
+        "end": 386,
+        "startLoc": {
+          "line": 383,
+          "column": 3,
+          "position": 2864
+        },
+        "endLoc": {
+          "line": 386,
+          "column": 6,
+          "position": 2918
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 383,
+        "end": 387,
+        "startLoc": {
+          "line": 383,
+          "column": 3,
+          "position": 2864
+        },
+        "endLoc": {
+          "line": 387,
+          "column": 44,
+          "position": 2919
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 7,
+      "fragment": "var unlock_cost = get_unlock_cost(station_id)\n\t\tvar money = game_data.get(\"money\", 0)\n\t\tvar can_afford = money >= unlock_cost\n\n\t\tstate.buy_button.disabled = not can_afford\n\t\tstate.buy_button.modulate = Color.WHITE if can_afford else Color.GRAY\n\t\tstate",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_NEW.gd",
+        "start": 389,
+        "end": 395,
+        "startLoc": {
+          "line": 389,
+          "column": 3,
+          "position": 2948
+        },
+        "endLoc": {
+          "line": 395,
+          "column": 6,
+          "position": 3027
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 400,
+        "end": 407,
+        "startLoc": {
+          "line": 400,
+          "column": 3,
+          "position": 3063
+        },
+        "endLoc": {
+          "line": 407,
+          "column": 3,
+          "position": 3143
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 45,
+      "fragment": "func is_station_unlocked_from_manager(station_id: String) -> bool:\n\t\"\"\"Verificar si una estación está desbloqueada usando el manager\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"is_station_unlocked\"):\n\t\treturn production_manager_ref.is_station_unlocked(station_id)\n\treturn false\n\nfunc can_afford_production(station_id: String, quantity: int, game_data: Dictionary) -> bool:\n\t\"\"\"Verificar si se puede costear la producción con ingredientes\"\"\"\n\tvar station_data = GameConfig.STATION_DATA.get(station_id, {})\n\tvar recipe = station_data.get(\"recipe\", {})\n\tvar resources = game_data.get(\"resources\", {})\n\n\tfor ingredient_id in recipe.keys():\n\t\tvar needed = recipe[ingredient_id] * quantity\n\t\tvar available = resources.get(ingredient_id, 0)\n\t\tif available < needed:\n\t\t\treturn false\n\n\treturn true\n\nfunc get_unlock_cost(station_id: String) -> float:\n\t\"\"\"Obtener costo de desbloqueo de una estación\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"get_unlock_cost\"):\n\t\treturn production_manager_ref.get_unlock_cost(station_id)\n\n\t# Fallback al costo base\n\tvar station_data = GameConfig.STATION_DATA.get(station_id, {})\n\treturn station_data.get(\"unlock_cost\", 100.0)\n\nfunc get_current_game_data() -> Dictionary:\n\t\"\"\"Obtener datos actuales del juego\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"get_game_data\"):\n\t\treturn production_manager_ref.get_game_data()\n\n\t# Fallback usando singleton GameManager\n\tif GameManager and GameManager.has_method(\"get_game_data\"):\n\t\tvar game_data = GameManager.get_game_data()\n\t\treturn {\n\t\t\t\"money\": game_data.money,\n\t\t\t\"resources\": game_data.resources.duplicate(),\n\t\t\t\"products\": game_data.products.duplicate(),\n\t\t\t\"stations\": game_data.stations.duplicate()\n\t\t}\n\n\treturn {\"money\": 0, \"resources\": {}, \"products\": {}, \"stations\": {}}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_NEW.gd",
+        "start": 397,
+        "end": 441,
+        "startLoc": {
+          "line": 397,
+          "column": 1,
+          "position": 3046
+        },
+        "endLoc": {
+          "line": 441,
+          "column": 2,
+          "position": 3491
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 413,
+        "end": 457,
+        "startLoc": {
+          "line": 413,
+          "column": 1,
+          "position": 3201
+        },
+        "endLoc": {
+          "line": 457,
+          "column": 2,
+          "position": 3646
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 101,
+      "fragment": "extends Control\n## ProductionPanelBasic - Panel de producción simple sin herencias complejas\n## Arquitectura idéntica a GenerationPanelBasic para consistencia\n\n# Señales\nsignal station_purchased(station_id: String, quantity: int)\nsignal production_requested(station_id: String, quantity: int)\nsignal multiplier_changed(station_id: String, new_multiplier: int)\n\n# Estado del panel\nvar production_manager_ref: Node = null\nvar button_states: Dictionary = {}  # Estados centralizados de botones\nvar update_in_progress: bool = false  # Prevenir updates recursivos\n\n# Referencias\n@onready var scroll_container: ScrollContainer = $ScrollContainer\n@onready var main_vbox: VBoxContainer = $ScrollContainer/MainVBox\n\nfunc _ready():\n\tprint(\"🏭 ProductionPanelBasic _ready() iniciado\")\n\tsetup_basic_layout()\n\tprint(\"✅ ProductionPanelBasic inicializado\")\n\nfunc setup_basic_layout():\n\t\"\"\"Configurar layout básico con elementos nativos de Godot\"\"\"\n\t# Limpiar contenido existente\n\tfor child in main_vbox.get_children():\n\t\tchild.queue_free()\n\n\t# === TÍTULO PRINCIPAL ===\n\tvar main_title = Label.new()\n\tmain_title.text = \"🏭 PANEL DE PRODUCCIÓN\"\n\tmain_title.add_theme_font_size_override(\"font_size\", 36)  # 24→36 mucho más grande\n\tmain_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER\n\tmain_title.add_theme_color_override(\"font_color\", Color.GOLD)\n\tmain_vbox.add_child(main_title)\n\n\t# Separador\n\tvar separator1 = HSeparator.new()\n\tseparator1.custom_minimum_size = Vector2(0, 30)  # 20→30 más espacio\n\tmain_vbox.add_child(separator1)\n\n\t# === SECCIÓN DE PRODUCTOS ===\n\tsetup_products_section()\n\n\t# Separador\n\tvar separator2 = HSeparator.new()\n\tseparator2.custom_minimum_size = Vector2(0, 30)\n\tmain_vbox.add_child(separator2)\n\n\t# === SECCIÓN DE ESTACIONES DE PRODUCCIÓN ===\n\tsetup_stations_section()\n\nfunc setup_products_section():\n\t\"\"\"Configurar sección de productos disponibles\"\"\"\n\t# Título de sección\n\tvar section_title = Label.new()\n\tsection_title.text = \"🍺 PRODUCTOS DISPONIBLES\"\n\tsection_title.add_theme_font_size_override(\"font_size\", 24)  # 18→24 más grande\n\tsection_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT\n\tsection_title.add_theme_color_override(\"font_color\", Color.CYAN)\n\tmain_vbox.add_child(section_title)\n\n\t# Contenedor horizontal para productos\n\tvar products_hbox = HBoxContainer.new()\n\tproducts_hbox.add_theme_constant_override(\"separation\", 10)\n\tproducts_hbox.alignment = BoxContainer.ALIGNMENT_CENTER\n\n\t# Crear paneles de productos desde GameConfig\n\tfor product_id in GameConfig.PRODUCT_DATA.keys():\n\t\tvar data = GameConfig.PRODUCT_DATA[product_id]\n\t\tvar product_panel = create_product_display_panel(product_id, data)\n\t\tproducts_hbox.add_child(product_panel)\n\n\tmain_vbox.add_child(products_hbox)\n\nfunc setup_stations_section():\n\t\"\"\"Configurar sección de estaciones de producción con VBoxContainer\"\"\"\n\t# Título de sección\n\tvar section_title = Label.new()\n\tsection_title.text = \"🏭 ESTACIONES DE PRODUCCIÓN\"\n\tsection_title.add_theme_font_size_override(\"font_size\", 24)  # 18→24 más grande\n\tsection_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT\n\tsection_title.add_theme_color_override(\"font_color\", Color.ORANGE)\n\tmain_vbox.add_child(section_title)\n\n\t# Crear VBox para estaciones (layout vertical)\n\tvar stations_vbox = VBoxContainer.new()\n\tstations_vbox.add_theme_constant_override(\"separation\", 12)\n\tmain_vbox.add_child(stations_vbox)\n\n\t# Crear estaciones desde GameConfig.STATION_DATA\n\tfor station_id in GameConfig.STATION_DATA.keys():\n\t\tvar data = GameConfig.STATION_DATA[station_id]\n\t\tvar station_button = create_station_button(station_id, data)\n\t\tstations_vbox.add_child(station_button)\n\nfunc create_product_display_panel(product_id: String, data: Dictionary) -> Panel:\n\t\"\"\"Crear panel individual para mostrar un producto (solo información)\"\"\"\n\t# Panel compacto para producto\n\tvar product_panel",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 1,
+        "end": 101,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 14,
+          "position": 704
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 1,
+        "end": 101,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 6,
+          "position": 704
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 4,
+      "fragment": "buy_button.pressed.connect(_on_station_buy_pressed.bind(station_id))\n\tmultiplier_button.pressed.connect(_on_multiplier_button_pressed.bind(station_id))\n\n\t# Guardar estado del botón",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 204,
+        "end": 207,
+        "startLoc": {
+          "line": 204,
+          "column": 2,
+          "position": 1696
+        },
+        "endLoc": {
+          "line": 207,
+          "column": 27,
+          "position": 1727
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 192,
+        "end": 195,
+        "startLoc": {
+          "line": 192,
+          "column": 2,
+          "position": 1515
+        },
+        "endLoc": {
+          "line": 195,
+          "column": 13,
+          "position": 1546
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 26,
+      "fragment": "func _update_single_station_state(station_id: String, game_data: Dictionary = {}):\n\t\"\"\"Actualizar estado de una estación específica\"\"\"\n\tif not button_states.has(station_id):\n\t\tprint(\"❌ Estado no encontrado para estación: %s\" % station_id)\n\t\treturn\n\n\t# Obtener datos del juego si no se proporcionan\n\tif game_data.is_empty():\n\t\tgame_data = get_current_game_data()\n\n\tvar state = button_states[station_id]\n\tvar multiplier = state.multiplier\n\n\t# Obtener información actualizada\n\tvar stations_owned = game_data.get(\"stations\", {})\n\tvar owned_count = stations_owned.get(station_id, 0)\n\n\t# Actualizar información con ingredientes disponibles\n\tvar recipe_text = _format_recipe_with_availability(station_id)\n\tstate.info_label.text = \"Poseído: %d | %s\" % [owned_count, recipe_text]\n\n\t# Determinar estado de la estación\n\tvar is_unlocked = is_station_unlocked_from_manager(station_id)\n\n\tif is_unlocked:\n\t\t# Modo producción - verificar ingredientes disponibles y mostrar qué produce",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 287,
+        "end": 312,
+        "startLoc": {
+          "line": 287,
+          "column": 1,
+          "position": 2216
+        },
+        "endLoc": {
+          "line": 312,
+          "column": 77,
+          "position": 2412
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 357,
+        "end": 382,
+        "startLoc": {
+          "line": 357,
+          "column": 1,
+          "position": 2665
+        },
+        "endLoc": {
+          "line": 382,
+          "column": 48,
+          "position": 2861
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 13,
+      "fragment": "func is_station_unlocked_from_manager(station_id: String) -> bool:\n\t\"\"\"Verificar si una estación está desbloqueada usando el manager\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"is_station_unlocked\"):\n\t\treturn production_manager_ref.is_station_unlocked(station_id)\n\treturn false\n\nfunc can_afford_production(station_id: String, quantity: int, game_data: Dictionary) -> bool:\n\t\"\"\"Verificar si se puede costear la producción con ingredientes\"\"\"\n\tvar station_data = GameConfig.STATION_DATA.get(station_id, {})\n\tvar recipe = station_data.get(\"recipe\", {})\n\tvar resources = game_data.get(\"resources\", {})\n\n\tfor ingredient",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 348,
+        "end": 360,
+        "startLoc": {
+          "line": 348,
+          "column": 1,
+          "position": 2807
+        },
+        "endLoc": {
+          "line": 360,
+          "column": 11,
+          "position": 2948
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 413,
+        "end": 425,
+        "startLoc": {
+          "line": 413,
+          "column": 1,
+          "position": 3201
+        },
+        "endLoc": {
+          "line": 425,
+          "column": 14,
+          "position": 3342
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 12,
+      "fragment": ", 0)\n\t\tif available < needed:\n\t\t\treturn false\n\n\treturn true\n\nfunc get_unlock_cost(station_id: String) -> float:\n\t\"\"\"Obtener costo de desbloqueo de una estación\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"get_unlock_cost\"):\n\t\treturn production_manager_ref.get_unlock_cost(station_id)\n\n\t# Fallback al costo base desde GameConfig",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 362,
+        "end": 373,
+        "startLoc": {
+          "line": 362,
+          "column": 11,
+          "position": 2987
+        },
+        "endLoc": {
+          "line": 373,
+          "column": 42,
+          "position": 3060
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 427,
+        "end": 438,
+        "startLoc": {
+          "line": 427,
+          "column": 14,
+          "position": 3381
+        },
+        "endLoc": {
+          "line": 438,
+          "column": 25,
+          "position": 3454
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 8,
+      "fragment": ", 100.0)\n\nfunc get_current_game_data() -> Dictionary:\n\t\"\"\"Obtener datos actuales del juego\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"get_game_data\"):\n\t\treturn production_manager_ref.get_game_data()\n\n\t# Fallback a datos básicos",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 375,
+        "end": 382,
+        "startLoc": {
+          "line": 375,
+          "column": 13,
+          "position": 3090
+        },
+        "endLoc": {
+          "line": 382,
+          "column": 27,
+          "position": 3137
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 440,
+        "end": 447,
+        "startLoc": {
+          "line": 440,
+          "column": 14,
+          "position": 3484
+        },
+        "endLoc": {
+          "line": 447,
+          "column": 40,
+          "position": 3531
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 9,
+      "fragment": "var station_data = GameConfig.STATION_DATA.get(station_id, {})\n\tvar recipe = station_data.get(\"recipe\", {})\n\n\tif recipe.is_empty():\n\t\treturn \"Sin receta\"\n\n\tvar recipe_parts = []\n\tfor ingredient_id in recipe.keys():\n\t\tvar needed",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 387,
+        "end": 395,
+        "startLoc": {
+          "line": 387,
+          "column": 2,
+          "position": 3191
+        },
+        "endLoc": {
+          "line": 395,
+          "column": 7,
+          "position": 3272
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 214,
+        "end": 222,
+        "startLoc": {
+          "line": 214,
+          "column": 2,
+          "position": 1656
+        },
+        "endLoc": {
+          "line": 222,
+          "column": 14,
+          "position": 1737
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 22,
+      "fragment": "])\n\n\treturn \" + \".join(recipe_parts)\n\nfunc get_ingredient_available_amount(ingredient_id: String) -> int:\n\t\"\"\"Obtener cantidad disponible de un ingrediente\"\"\"\n\tif production_manager_ref and production_manager_ref.has_method(\"get_game_data\"):\n\t\tvar game_data = production_manager_ref.get_game_data()\n\t\tvar resources = game_data.get(\"resources\", {})\n\t\treturn int(resources.get(ingredient_id, 0))\n\n\t# Fallback usando singleton GameManager\n\tif GameManager and GameManager.has_method(\"get_game_data\"):\n\t\tvar game_data = GameManager.get_game_data()\n\t\treturn int(game_data.resources.get(ingredient_id, 0))\n\n\treturn 0\n\n## ===== MANEJADORES DE EVENTOS =====\n\nfunc _on_station_buy_pressed(station_id: String):\n\t\"\"\"Manejar click en botón principal de estación\"\"\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 403,
+        "end": 424,
+        "startLoc": {
+          "line": 403,
+          "column": 10,
+          "position": 3359
+        },
+        "endLoc": {
+          "line": 424,
+          "column": 51,
+          "position": 3527
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 232,
+        "end": 253,
+        "startLoc": {
+          "line": 232,
+          "column": 3,
+          "position": 1823
+        },
+        "endLoc": {
+          "line": 253,
+          "column": 62,
+          "position": 1991
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 29,
+      "fragment": "return\n\n\tif not button_states.has(station_id):\n\t\tprint(\"❌ Estado del botón no encontrado para: %s\" % station_id)\n\t\treturn\n\n\tvar state = button_states[station_id]\n\tvar multiplier = state.multiplier\n\n\tprint(\"🏭 Botón de estación presionado: %s (x%d)\" % [station_id, multiplier])\n\n\t# Emitir señales apropiadas según el estado de la estación\n\tif is_station_unlocked_from_manager(station_id):\n\t\tproduction_requested.emit(station_id, multiplier)\n\t\tprint(\"⚙️ Señal production_requested emitida: %s x%d\" % [station_id, multiplier])\n\telse:\n\t\tstation_purchased.emit(station_id, multiplier)\n\t\tprint(\"🛒 Señal station_purchased emitida: %s x%d\" % [station_id, multiplier])\n\nfunc _on_multiplier_button_pressed(station_id: String):\n\t\"\"\"Manejar click en botón multiplicador\"\"\"\n\tif update_in_progress:\n\t\treturn\n\n\tif not button_states.has(station_id):\n\t\tprint(\"❌ Estado del botón no encontrado para: %s\" % station_id)\n\t\treturn\n\n\tvar",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 426,
+        "end": 454,
+        "startLoc": {
+          "line": 426,
+          "column": 3,
+          "position": 3536
+        },
+        "endLoc": {
+          "line": 454,
+          "column": 4,
+          "position": 3722
+        }
+      },
+      "secondFile": {
+        "name": "project\\scripts\\ProductionPanelBasic.gd",
+        "start": 256,
+        "end": 284,
+        "startLoc": {
+          "line": 256,
+          "column": 3,
+          "position": 2005
+        },
+        "endLoc": {
+          "line": 284,
+          "column": 33,
+          "position": 2191
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 10,
+      "fragment": "if update_in_progress:\n\t\treturn\n\n\tif not button_states.has(station_id):\n\t\tprint(\"❌ Estado del botón no encontrado para: %s\" % station_id)\n\t\treturn\n\n\tvar state = button_states[station_id]\n\n\t# Ciclar multiplicadores: 1 → 5 → 10 → 25 → 1",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 447,
+        "end": 456,
+        "startLoc": {
+          "line": 447,
+          "column": 2,
+          "position": 3686
+        },
+        "endLoc": {
+          "line": 456,
+          "column": 46,
+          "position": 3735
+        }
+      },
+      "secondFile": {
+        "name": "project\\debug\\ProductionPanelBasic_fixed.gd",
+        "start": 425,
+        "end": 433,
+        "startLoc": {
+          "line": 425,
+          "column": 2,
+          "position": 3530
+        },
+        "endLoc": {
+          "line": 433,
+          "column": 4,
+          "position": 3578
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": "() -> void:\r\n\tawait get_tree().process_frame\r\n\r\n\tvar game_controller = get_tree().get_first_node_in_group(\"game_controller\")\r\n\tif not game_controller:\r\n\t\tprint(\"❌ No se encontró GameController\")\r\n\t\treturn\r\n\r\n\tprint(\"✅ GameController encontrado\")\r\n\r\n\t# Mostrar estado actual",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\DebugPersistence.gd",
+        "start": 10,
+        "end": 20,
+        "startLoc": {
+          "line": 10,
+          "column": 17,
+          "position": 45
+        },
+        "endLoc": {
+          "line": 20,
+          "column": 24,
+          "position": 114
+        }
+      },
+      "secondFile": {
+        "name": "project\\tests\\TestGeneratorPricing.gd",
+        "start": 10,
+        "end": 24,
+        "startLoc": {
+          "line": 10,
+          "column": 14,
+          "position": 45
+        },
+        "endLoc": {
+          "line": 24,
+          "column": 25,
+          "position": 136
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": "var save_path = \"user://barsik_save.dat\"\r\n\tif FileAccess.file_exists(save_path):\r\n\t\tprint(\"✅ Archivo de guardado existe\")\r\n\r\n\t\tvar file = FileAccess.open(save_path, FileAccess.READ)\r\n\t\tif file:\r\n\t\t\tvar content = file.get_as_text()\r\n\t\t\tfile.close()\r\n\r\n\t\t\tvar json = JSON.new()\r\n\t\t\tvar",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\DebugPersistence.gd",
+        "start": 39,
+        "end": 49,
+        "startLoc": {
+          "line": 39,
+          "column": 2,
+          "position": 246
+        },
+        "endLoc": {
+          "line": 49,
+          "column": 4,
+          "position": 341
+        }
+      },
+      "secondFile": {
+        "name": "project\\tests\\FinalSystemTest.gd",
+        "start": 67,
+        "end": 77,
+        "startLoc": {
+          "line": 67,
+          "column": 2,
+          "position": 457
+        },
+        "endLoc": {
+          "line": 77,
+          "column": 3,
+          "position": 552
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 6,
+      "fragment": "var json = JSON.new()\r\n\t\t\tvar parse_result = json.parse(content)\r\n\r\n\t\t\tif parse_result == OK:\r\n\t\t\t\tvar data = json.get_data()\r\n\t\t\t\tprint(",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\DebugPersistence.gd",
+        "start": 48,
+        "end": 53,
+        "startLoc": {
+          "line": 48,
+          "column": 4,
+          "position": 327
+        },
+        "endLoc": {
+          "line": 53,
+          "column": 7,
+          "position": 383
+        }
+      },
+      "secondFile": {
+        "name": "project\\singletons\\SaveSystem.gd",
+        "start": 233,
+        "end": 237,
+        "startLoc": {
+          "line": 233,
+          "column": 2,
+          "position": 1678
+        },
+        "endLoc": {
+          "line": 237,
+          "column": 3,
+          "position": 1728
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 5,
+      "fragment": ")\r\n\r\n\t\t\t\tvar game_data = data.get(\"game_data\", {})\r\n\t\t\t\tprint(\"💰 Dinero guardado: %.2f\" % game_data.get(\"money\", 0))\r\n\t\t\t\tprint(\"📦 Recursos guardados: %s\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "project\\debug\\DebugPersistence.gd",
+        "start": 55,
+        "end": 59,
+        "startLoc": {
+          "line": 55,
+          "column": 2,
+          "position": 421
+        },
+        "endLoc": {
+          "line": 59,
+          "column": 28,
+          "position": 465
+        }
+      },
+      "secondFile": {
+        "name": "project\\tests\\FinalSystemTest.gd",
+        "start": 78,
+        "end": 81,
+        "startLoc": {
+          "line": 78,
+          "column": 2,
+          "position": 578
+        },
+        "endLoc": {
+          "line": 81,
+          "column": 31,
+          "position": 620
+        }
+      }
+    }
+  ]
+}
