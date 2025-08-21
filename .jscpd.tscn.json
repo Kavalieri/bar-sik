@@ -1,0 +1,22 @@
+{
+  "pattern": ["**/*.tscn", "**/*.tres"],
+  "format": ["text"],
+  "formatsExts": {
+    ".tscn": "text",
+    ".tres": "text"
+  },
+  "minTokens": 20,
+  "minLines": 3,
+  "threshold": 8,
+  "reporters": ["console", "html", "json"],
+  "output": "reports/tscn/",
+  "ignore": [
+    "**/.godot/**",
+    "**/.import/**",
+    "**/*.import",
+    "**/*.translation",
+    "**/*.remap",
+    "**/addons/**",
+    "**/build/**"
+  ]
+}

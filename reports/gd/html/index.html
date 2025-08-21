@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Copy/Paste Detector Report</title><link href="styles/tailwind.css" rel="stylesheet"><link href="styles/prism.css" rel="stylesheet"></head><body class="bg-gray-100"><header class="bg-white shadow py-4"><div class="container mx-auto px-4"><h1 class="text-3xl font-semibold text-gray-800">jscpd - copy/paste report</h1></div></header><main class="container mx-auto my-8 p-4 bg-white shadow rounded"><section class="mb-8" id="dashboard"><h2 class="text-2xl font-semibold text-gray-700 mb-4">Dashboard</h2><div class="grid grid-cols-4 gap-4"><div class="bg-blue-200 p-4 rounded text-center"><h3 class="text-lg font-semibold text-blue-800 mb-2">Total Files</h3><span class="text-4xl font-bold text-blue-800">62</span></div><div class="bg-green-200 p-4 rounded text-center"><h3 class="text-lg font-semibold text-green-800 mb-2">Total Lines of Code</h3><span class="text-4xl font-bold text-green-800">11394</span></div><div class="bg-yellow-200 p-4 rounded text-center"><h3 class="text-lg font-semibold text-yellow-800 mb-2">Number of Clones</h3><span class="text-4xl font-bold text-yellow-800">22</span></div><div class="bg-red-200 p-4 rounded text-center"><h3 class="text-lg font-semibold text-red-800 mb-2">Duplicated Lines</h3><span class="text-4xl font-bold text-red-800">199 (1.75%)</span></div></div></section><section class="mb-8" id="formats"><h2 class="text-2xl font-semibold text-gray-700 mb-4">Formats with Duplications</h2><table class="w-full table-auto"><thead><tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal"><th class="py-3 px-6 text-left">Format</th><th class="py-3 px-6 text-left">Files</th><th class="py-3 px-6 text-left">Lines</th><th class="py-3 px-6 text-left">Clones</th><th class="py-3 px-6 text-left">Duplicated Lines</th><th class="py-3 px-6 text-left">Duplicated Tokens</th></tr></thead><tbody><tr class="bg-white border-b border-gray-200 text-gray-800 text-sm"><td class="py-3 px-6"><a class="text-blue-600 hover:underline" href="#python-clones">python</a></td><td class="py-3 px-6">62</td><td class="py-3 px-6">11394</td><td class="py-3 px-6">22</td><td class="py-3 px-6">199</td><td class="py-3 px-6">1840</td></tr></tbody></table></section><section class="mb-8" id="txt-clones"><a name="python-clones"></a><h2 class="text-2xl font-semibold text-gray-700 mb-4">python</h2><div class="divide-y divide-gray-200 border-b-2"><div class="py-4"><p class="text-gray-600">project\scripts\components\StockDisplayComponent.gd (Line 22:2 - Line 27:13), project\scripts\ui\UIStyleManager.gd (Line 28:2 - Line 33:9)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn0" onclick="toggleCodeBlock('cloneGroup0', 'expandBtn0', 'collapseBtn0')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn0" onclick="toggleCodeBlock('cloneGroup0', 'expandBtn0', 'collapseBtn0')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup0"><code class="language-python text-sm text-gray-800">= {
+	&quot;primary&quot;: Color(0.2, 0.6, 1.0),  # Azul primario
+	&quot;secondary&quot;: Color(0.7, 0.7, 0.7),  # Gris secundario
+	&quot;success&quot;: Color(0.2, 0.8, 0.2),  # Verde éxito
+	&quot;warning&quot;: Color(1.0, 0.8, 0.0),  # Amarillo advertencia
+	&quot;background&quot;</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\components\OffersComponent.gd (Line 247:2 - Line 251:10), project\scripts\components\OffersComponent.gd (Line 216:2 - Line 221:13)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn1" onclick="toggleCodeBlock('cloneGroup1', 'expandBtn1', 'collapseBtn1')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn1" onclick="toggleCodeBlock('cloneGroup1', 'expandBtn1', 'collapseBtn1')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup1"><code class="language-python text-sm text-gray-800">var recipes = station_def.get(&quot;recipes&quot;, [])
+	for recipe in recipes:
+		var output = recipe.get(&quot;output&quot;, {})
+		for product_name in output.keys():
+			if game_data</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\components\OffersComponent.gd (Line 270:2 - Line 281:7), project\scripts\components\OffersComponent.gd (Line 246:2 - Line 257:3)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn2" onclick="toggleCodeBlock('cloneGroup2', 'expandBtn2', 'collapseBtn2')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn2" onclick="toggleCodeBlock('cloneGroup2', 'expandBtn2', 'collapseBtn2')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup2"><code class="language-python text-sm text-gray-800">var has_stock = false
+	var recipes = station_def.get(&quot;recipes&quot;, [])
+	for recipe in recipes:
+		var output = recipe.get(&quot;output&quot;, {})
+		for product_name in output.keys():
+			if game_data.get(&quot;products&quot;, {}).get(product_name, 0) &gt; 0:
+				has_stock = true
+				break
+		if has_stock:
+			break
+
+	return</code></pre></div><div class="py-4"><p class="text-gray-600">project\singletons\StockManager.gd (Line 110:2 - Line 122:3), project\singletons\StockManager.gd (Line 87:2 - Line 98:7)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn3" onclick="toggleCodeBlock('cloneGroup3', 'expandBtn3', 'collapseBtn3')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn3" onclick="toggleCodeBlock('cloneGroup3', 'expandBtn3', 'collapseBtn3')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup3"><code class="language-python text-sm text-gray-800">quantity
+
+	match item_type:
+		&quot;ingredient&quot;, &quot;resource&quot;:
+			game_data.resources[item_name] = new_quantity
+		&quot;product&quot;:
+			game_data.products[item_name] = new_quantity
+		_:
+			return false
+
+	stock_updated.emit(item_type, item_name, new_quantity)
+
+	if</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\SalesPanelBasic.gd (Line 357:2 - Line 363:2), project\scripts\ui\BasePanel.gd (Line 123:5 - Line 128:2)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn4" onclick="toggleCodeBlock('cloneGroup4', 'expandBtn4', 'collapseBtn4')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn4" onclick="toggleCodeBlock('cloneGroup4', 'expandBtn4', 'collapseBtn4')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup4"><code class="language-python text-sm text-gray-800">if GameManager and GameManager.has_method(&quot;get_game_data&quot;):
+		var game_data = GameManager.get_game_data()
+		return {
+			&quot;money&quot;: game_data.money,
+			&quot;resources&quot;: game_data.resources.duplicate(),
+			&quot;products&quot;: game_data.products.duplicate()
+		}</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\ProductionPanelBasic.gd (Line 22:38 - Line 32:25), project\scripts\SalesPanelBasic.gd (Line 23:33 - Line 33:21)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn5" onclick="toggleCodeBlock('cloneGroup5', 'expandBtn5', 'collapseBtn5')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn5" onclick="toggleCodeBlock('cloneGroup5', 'expandBtn5', 'collapseBtn5')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup5"><code class="language-python text-sm text-gray-800">)
+
+func setup_basic_layout():
+	&quot;&quot;&quot;Configurar layout básico con elementos nativos de Godot&quot;&quot;&quot;
+	# Limpiar contenido existente
+	for child in main_vbox.get_children():
+		child.queue_free()
+
+	# === TÍTULO PRINCIPAL ===
+	var main_title = Label.new()
+	main_title.text = &quot;🏭 PANEL DE PRODUCCIÓN&quot;</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\ProductionPanelBasic.gd (Line 33:2 - Line 43:31), project\scripts\SalesPanelBasic.gd (Line 34:2 - Line 44:32)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn6" onclick="toggleCodeBlock('cloneGroup6', 'expandBtn6', 'collapseBtn6')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn6" onclick="toggleCodeBlock('cloneGroup6', 'expandBtn6', 'collapseBtn6')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup6"><code class="language-python text-sm text-gray-800">main_title.add_theme_font_size_override(&quot;font_size&quot;, 36)  # 24→36 mucho más grande
+	main_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	main_title.add_theme_color_override(&quot;font_color&quot;, Color.GOLD)
+	main_vbox.add_child(main_title)
+
+	# Separador
+	var separator1 = HSeparator.new()
+	separator1.custom_minimum_size = Vector2(0, 30)  # 20→30 más espacio
+	main_vbox.add_child(separator1)
+
+	# === SECCIÓN DE PRODUCTOS ===</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\ProductionPanelBasic.gd (Line 106:2 - Line 114:22), project\scripts\ui\SimpleGridLayout.gd (Line 86:2 - Line 94:19)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn7" onclick="toggleCodeBlock('cloneGroup7', 'expandBtn7', 'collapseBtn7')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn7" onclick="toggleCodeBlock('cloneGroup7', 'expandBtn7', 'collapseBtn7')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup7"><code class="language-python text-sm text-gray-800">var vbox = VBoxContainer.new()
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vbox.add_theme_constant_override(&quot;separation&quot;, 4)
+	vbox.add_theme_constant_override(&quot;margin_left&quot;, 8)
+	vbox.add_theme_constant_override(&quot;margin_right&quot;, 8)
+	vbox.add_theme_constant_override(&quot;margin_top&quot;, 8)
+	vbox.add_theme_constant_override(&quot;margin_bottom&quot;, 8)
+
+	# Título del producto</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\ProductionPanelBasic.gd (Line 155:2 - Line 160:65), project\scripts\ProductionPanelBasic.gd (Line 115:2 - Line 120:24)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn8" onclick="toggleCodeBlock('cloneGroup8', 'expandBtn8', 'collapseBtn8')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn8" onclick="toggleCodeBlock('cloneGroup8', 'expandBtn8', 'collapseBtn8')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup8"><code class="language-python text-sm text-gray-800">var title_label = Label.new()
+	title_label.text = &quot;%s %s&quot; % [data.emoji, data.name]
+	title_label.add_theme_font_size_override(&quot;font_size&quot;, 18)  # 14→18 más grande
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	# Info de la estación con ingredientes en formato cantidad/total</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\ProductionPanelBasic.gd (Line 298:11 - Line 310:54), project\scripts\SalesPanelBasic.gd (Line 239:8 - Line 251:48)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn9" onclick="toggleCodeBlock('cloneGroup9', 'expandBtn9', 'collapseBtn9')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn9" onclick="toggleCodeBlock('cloneGroup9', 'expandBtn9', 'collapseBtn9')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup9"><code class="language-python text-sm text-gray-800">)
+	print(&quot;✅ Botón actualizado inmediatamente después del cambio de multiplicador&quot;)
+
+func _get_next_multiplier(current: int) -&gt; int:
+	&quot;&quot;&quot;Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1&quot;&quot;&quot;
+	match current:
+		1: return 5
+		5: return 10
+		10: return 25
+		25: return 1
+		_: return 1
+
+## ===== MÉTODOS PÚBLICOS PARA INTERFAZ EXTERNA =====</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\ProductionPanelBasic.gd (Line 445:23 - Line 457:2), project\scripts\SalesPanelBasic.gd (Line 354:18 - Line 132:2)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn10" onclick="toggleCodeBlock('cloneGroup10', 'expandBtn10', 'collapseBtn10')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn10" onclick="toggleCodeBlock('cloneGroup10', 'expandBtn10', 'collapseBtn10')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup10"><code class="language-python text-sm text-gray-800">.get_game_data()
+
+	# Fallback usando singleton GameManager
+	if GameManager and GameManager.has_method(&quot;get_game_data&quot;):
+		var game_data = GameManager.get_game_data()
+		return {
+			&quot;money&quot;: game_data.money,
+			&quot;resources&quot;: game_data.resources.duplicate(),
+			&quot;products&quot;: game_data.products.duplicate(),
+			&quot;stations&quot;: game_data.stations.duplicate()
+		}
+
+	return {&quot;money&quot;: 0, &quot;resources&quot;: {}, &quot;products&quot;: {}, &quot;stations&quot;: {}}</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 20:38 - Line 30:25), project\scripts\SalesPanelBasic.gd (Line 23:33 - Line 33:21)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn11" onclick="toggleCodeBlock('cloneGroup11', 'expandBtn11', 'collapseBtn11')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn11" onclick="toggleCodeBlock('cloneGroup11', 'expandBtn11', 'collapseBtn11')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup11"><code class="language-python text-sm text-gray-800">)
+
+func setup_basic_layout():
+	&quot;&quot;&quot;Configurar layout básico con elementos nativos de Godot&quot;&quot;&quot;
+	# Limpiar contenido existente
+	for child in main_vbox.get_children():
+		child.queue_free()
+
+	# === TÍTULO PRINCIPAL ===
+	var main_title = Label.new()
+	main_title.text = &quot;🏭 PANEL DE GENERACIÓN&quot;</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 31:2 - Line 41:30), project\scripts\SalesPanelBasic.gd (Line 34:2 - Line 44:32)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn12" onclick="toggleCodeBlock('cloneGroup12', 'expandBtn12', 'collapseBtn12')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn12" onclick="toggleCodeBlock('cloneGroup12', 'expandBtn12', 'collapseBtn12')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup12"><code class="language-python text-sm text-gray-800">main_title.add_theme_font_size_override(&quot;font_size&quot;, 36)  # 24→36 mucho más grande
+	main_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	main_title.add_theme_color_override(&quot;font_color&quot;, Color.GOLD)
+	main_vbox.add_child(main_title)
+
+	# Separador
+	var separator1 = HSeparator.new()
+	separator1.custom_minimum_size = Vector2(0, 30)  # 20→30 más espacio
+	main_vbox.add_child(separator1)
+
+	# === SECCIÓN DE RECURSOS ===</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 94:2 - Line 107:21), project\scripts\ProductionPanelBasic.gd (Line 101:2 - Line 94:19)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn13" onclick="toggleCodeBlock('cloneGroup13', 'expandBtn13', 'collapseBtn13')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn13" onclick="toggleCodeBlock('cloneGroup13', 'expandBtn13', 'collapseBtn13')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup13"><code class="language-python text-sm text-gray-800">var panel = Panel.new()
+	panel.custom_minimum_size = Vector2(200, 100)  # 180x80→200x100 más grande para fuentes
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# Contenedor interno
+	var vbox = VBoxContainer.new()
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vbox.add_theme_constant_override(&quot;separation&quot;, 4)
+	vbox.add_theme_constant_override(&quot;margin_left&quot;, 8)
+	vbox.add_theme_constant_override(&quot;margin_right&quot;, 8)
+	vbox.add_theme_constant_override(&quot;margin_top&quot;, 8)
+	vbox.add_theme_constant_override(&quot;margin_bottom&quot;, 8)
+
+	# Título del recurso</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 108:2 - Line 113:23), project\scripts\ProductionPanelBasic.gd (Line 115:2 - Line 120:24)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn14" onclick="toggleCodeBlock('cloneGroup14', 'expandBtn14', 'collapseBtn14')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn14" onclick="toggleCodeBlock('cloneGroup14', 'expandBtn14', 'collapseBtn14')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup14"><code class="language-python text-sm text-gray-800">var title_label = Label.new()
+	title_label.text = &quot;%s %s&quot; % [data.emoji, data.name]
+	title_label.add_theme_font_size_override(&quot;font_size&quot;, 18)  # 14→18 más grande
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	# Cantidad del recurso</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 114:2 - Line 120:12), project\scripts\ProductionPanelBasic.gd (Line 121:2 - Line 127:11)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn15" onclick="toggleCodeBlock('cloneGroup15', 'expandBtn15', 'collapseBtn15')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn15" onclick="toggleCodeBlock('cloneGroup15', 'expandBtn15', 'collapseBtn15')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup15"><code class="language-python text-sm text-gray-800">var amount_label = Label.new()
+	amount_label.text = &quot;Cantidad: 0&quot;
+	amount_label.add_theme_font_size_override(&quot;font_size&quot;, 16)  # Agregar tamaño
+	amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	amount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	amount_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	amount_label.name = &quot;amount_label_&quot; + resource_id</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 134:2 - Line 147:23), project\scripts\ProductionPanelBasic.gd (Line 141:2 - Line 154:24)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn16" onclick="toggleCodeBlock('cloneGroup16', 'expandBtn16', 'collapseBtn16')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn16" onclick="toggleCodeBlock('cloneGroup16', 'expandBtn16', 'collapseBtn16')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup16"><code class="language-python text-sm text-gray-800">var main_panel = Panel.new()
+	main_panel.custom_minimum_size = Vector2(0, 100)  # 80→100 más alto para fuentes grandes
+	main_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# Layout del panel
+	var panel_vbox = VBoxContainer.new()
+	panel_vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	panel_vbox.add_theme_constant_override(&quot;margin_left&quot;, 8)
+	panel_vbox.add_theme_constant_override(&quot;margin_right&quot;, 8)
+	panel_vbox.add_theme_constant_override(&quot;margin_top&quot;, 8)
+	panel_vbox.add_theme_constant_override(&quot;margin_bottom&quot;, 8)
+	panel_vbox.add_theme_constant_override(&quot;separation&quot;, 4)
+
+	# Título del generador</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 148:2 - Line 153:48), project\scripts\ProductionPanelBasic.gd (Line 115:2 - Line 120:24)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn17" onclick="toggleCodeBlock('cloneGroup17', 'expandBtn17', 'collapseBtn17')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn17" onclick="toggleCodeBlock('cloneGroup17', 'expandBtn17', 'collapseBtn17')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup17"><code class="language-python text-sm text-gray-800">var title_label = Label.new()
+	title_label.text = &quot;%s %s&quot; % [data.emoji, data.name]
+	title_label.add_theme_font_size_override(&quot;font_size&quot;, 18)  # 14→18 más grande
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	# Info del generador (cantidad poseída y costo)</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 160:2 - Line 174:13), project\scripts\ProductionPanelBasic.gd (Line 168:2 - Line 182:11)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn18" onclick="toggleCodeBlock('cloneGroup18', 'expandBtn18', 'collapseBtn18')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn18" onclick="toggleCodeBlock('cloneGroup18', 'expandBtn18', 'collapseBtn18')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup18"><code class="language-python text-sm text-gray-800">panel_vbox.add_child(title_label)
+	panel_vbox.add_child(info_label)
+	main_panel.add_child(panel_vbox)
+
+	# Contenedor de botones (horizontal)
+	var buttons_hbox = HBoxContainer.new()
+	buttons_hbox.add_theme_constant_override(&quot;separation&quot;, 8)
+
+	# Botón principal de compra
+	var buy_button = Button.new()
+	buy_button.text = &quot;COMPRAR&quot;
+	buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	buy_button.custom_minimum_size = Vector2(0, 40)
+	buy_button.add_theme_font_size_override(&quot;font_size&quot;, 16)  # Botones más legibles
+	buy_button.name = &quot;buy_button_&quot; + generator_id</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 176:2 - Line 181:13), project\scripts\ProductionPanelBasic.gd (Line 184:2 - Line 189:11)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn19" onclick="toggleCodeBlock('cloneGroup19', 'expandBtn19', 'collapseBtn19')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn19" onclick="toggleCodeBlock('cloneGroup19', 'expandBtn19', 'collapseBtn19')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup19"><code class="language-python text-sm text-gray-800"># Botón multiplicador
+	var multiplier_button = Button.new()
+	multiplier_button.text = &quot;x1&quot;
+	multiplier_button.custom_minimum_size = Vector2(60, 40)
+	multiplier_button.add_theme_font_size_override(&quot;font_size&quot;, 14)  # Botón multiplicador legible
+	multiplier_button.name = &quot;multiplier_button_&quot; + generator_id</code></pre></div><div class="py-4"><p class="text-gray-600">project\scripts\GenerationPanelBasic.gd (Line 238:13 - Line 251:22), project\scripts\SalesPanelBasic.gd (Line 239:8 - Line 252:18)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn20" onclick="toggleCodeBlock('cloneGroup20', 'expandBtn20', 'collapseBtn20')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn20" onclick="toggleCodeBlock('cloneGroup20', 'expandBtn20', 'collapseBtn20')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup20"><code class="language-python text-sm text-gray-800">)
+	print(&quot;✅ Botón actualizado inmediatamente después del cambio de multiplicador&quot;)
+
+func _get_next_multiplier(current: int) -&gt; int:
+	&quot;&quot;&quot;Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1&quot;&quot;&quot;
+	match current:
+		1: return 5
+		5: return 10
+		10: return 25
+		25: return 1
+		_: return 1
+
+# Método para compatibilidad con GameController
+func set_generator_manager</code></pre></div><div class="py-4"><p class="text-gray-600">project\debug\DebugPersistence.gd (Line 39:2 - Line 49:4), project\tests\FinalSystemTest.gd (Line 67:2 - Line 77:3)</p><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2" id="expandBtn21" onclick="toggleCodeBlock('cloneGroup21', 'expandBtn21', 'collapseBtn21')">Show code</button><button class="bg-gray-500 text-white px-1 py-0.5 text-xs rounded focus:outline-none ml-2 hidden" id="collapseBtn21" onclick="toggleCodeBlock('cloneGroup21', 'expandBtn21', 'collapseBtn21')">Hide code</button><pre class="bg-gray-100 border border-gray-200 p-4 rounded mt-2 hidden" id="cloneGroup21"><code class="language-python text-sm text-gray-800">var save_path = &quot;user://barsik_save.dat&quot;
+	if FileAccess.file_exists(save_path):
+		print(&quot;✅ Archivo de guardado existe&quot;)
+
+		var file = FileAccess.open(save_path, FileAccess.READ)
+		if file:
+			var content = file.get_as_text()
+			file.close()
+
+			var json = JSON.new()
+			var</code></pre></div><!-- Add more clone groups for .txt format as needed         // Add more clone groups for .txt format as needed--></div></section><!-- Add more sections for other formats and clone groups as needed--></main><footer class="bg-white shadow mt-8 py-4"><div class="container mx-auto px-4 text-center"><p class="text-sm text-gray-600">This report is generated by jscpd, an open-source copy/paste detector.</p><p class="text-sm text-gray-600">jscpd is licensed under the MIT License.</p><a class="text-blue-500 text-sm" href="https://github.com/kucherenko/jscpd" target="_blank" rel="noopener noreferrer">View jscpd on GitHub</a></div></footer><script src="js/prism.js"></script><script>function toggleCodeBlock(codeBlockId, expandBtnId, collapseBtnId) {
+  const codeBlock = document.getElementById(codeBlockId);
+  const expandBtn = document.getElementById(expandBtnId);
+  const collapseBtn = document.getElementById(collapseBtnId);
+
+  codeBlock.classList.toggle('hidden');
+  expandBtn.classList.toggle('hidden');
+  collapseBtn.classList.toggle('hidden');
+}</script></body></html>

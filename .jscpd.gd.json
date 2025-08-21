@@ -1,0 +1,18 @@
+{
+  "pattern": ["project/**/*.gd"],
+  "formatsExts": {"gd": "python"},
+  "minTokens": 35,
+  "minLines": 3,
+  "threshold": 5,
+  "reporters": ["console", "html", "json"],
+  "output": "reports/gd/",
+  "ignore": [
+    "**/.godot/**",
+    "**/.import/**",
+    "**/*.import",
+    "**/*.translation",
+    "**/*.remap",
+    "**/addons/**",
+    "**/build/**"
+  ]
+}
