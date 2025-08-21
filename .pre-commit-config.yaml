@@ -10,14 +10,14 @@ repos:
         language: python
         files: \.gd$
         additional_dependencies: [gdtoolkit]
-        
+
       - id: gdlint
         name: GDScript linting
         entry: gdlint
         language: python
         files: \.gd$
         additional_dependencies: [gdtoolkit]
-        
+
       # Optional: Block PRs with high duplication
       - id: jscpd-check
         name: Check code duplication

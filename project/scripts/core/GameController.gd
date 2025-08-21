@@ -119,7 +119,8 @@ func _setup_managers() -> void:
 	production_manager.set_game_data(game_data)
 	sales_manager.set_game_data(game_data)
 	customer_manager.set_game_data(game_data)
-	customer_manager.set_production_manager(production_manager)  # Para acceder a definiciones de estaciones
+	# Para acceder a definiciones de estaciones
+	customer_manager.set_production_manager(production_manager)
 
 	# Configurar StockManager singleton
 	StockManager.set_game_data(game_data)
@@ -219,8 +220,12 @@ func _setup_panels() -> void:
 		print("✅ GeneratorManager conectado a GenerationPanel")
 
 		# Reconectar señal si no está conectada y existe
-		if (generation_panel.has_signal("generator_purchased") and
-			not generation_panel.generator_purchased.is_connected(_on_ui_generator_purchase_requested)):
+		if (
+			generation_panel.has_signal("generator_purchased")
+			and not generation_panel.generator_purchased.is_connected(
+				_on_ui_generator_purchase_requested
+			)
+		):
 			generation_panel.generator_purchased.connect(_on_ui_generator_purchase_requested)
 			print("✅ Señal generator_purchased reconectada")
 	else:
@@ -621,11 +626,13 @@ func _on_generators_changed(generators: Dictionary) -> void:
 func _on_stations_changed(stations: Dictionary) -> void:
 	"""Reacciona a cambios de estaciones"""
 	if production_panel and production_panel.has_method("update_station_displays"):
-		production_panel.update_station_displays({
-			"stations": stations,
-			"money": cached_money,
-			"resources": game_data.resources if game_data else {}
-		})
+		production_panel.update_station_displays(
+			{
+				"stations": stations,
+				"money": cached_money,
+				"resources": game_data.resources if game_data else {}
+			}
+		)
 
 
 func _on_ui_offer_price_requested_customers(station_id: String) -> void:
