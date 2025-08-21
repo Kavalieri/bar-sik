@@ -151,6 +151,8 @@ func _setup_modular_automation() -> void:
 	#	card.action_requested.connect(_on_automation_action)
 	#	automation_container.add_child(card)
 	#	automation_cards.append(card)
+
+
 func update_customer_displays(game_data: Dictionary) -> void:
 	"""Actualiza las visualizaciones de clientes usando componentes modulares"""
 	if not is_initialized:
@@ -160,9 +162,12 @@ func update_customer_displays(game_data: Dictionary) -> void:
 	var satisfaction = game_data.get("customer_satisfaction", 0.0)
 
 	# Actualizar información de clientes si hay tarjetas configuradas
-	print("🔄 Actualizando datos de clientes: %d activos, satisfacción: %.1f%%" % [
-		customers.size(), satisfaction * 100
-	])
+	print(
+		(
+			"🔄 Actualizando datos de clientes: %d activos, satisfacción: %.1f%%"
+			% [customers.size(), satisfaction * 100]
+		)
+	)
 
 
 func update_timer_displays(game_data: Dictionary) -> void:

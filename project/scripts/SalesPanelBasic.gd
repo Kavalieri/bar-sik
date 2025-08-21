@@ -16,11 +16,13 @@ var update_timer: Timer  # Timer para actualización en tiempo real
 @onready var scroll_container: ScrollContainer = $ScrollContainer
 @onready var main_vbox: VBoxContainer = $ScrollContainer/MainVBox
 
+
 func _ready():
 	print("💰 SalesPanelBasic _ready() iniciado")
 	setup_basic_layout()
 	setup_update_timer()  # Configurar timer de actualización
 	print("✅ SalesPanelBasic inicializado")
+
 
 func setup_basic_layout():
 	"""Configurar layout básico con elementos nativos de Godot"""
@@ -44,6 +46,7 @@ func setup_basic_layout():
 	# === SECCIÓN DE INVENTARIO ===
 	setup_inventory_section()
 
+
 func setup_update_timer():
 	"""Configurar timer de actualización en tiempo real"""
 	update_timer = Timer.new()
@@ -53,11 +56,13 @@ func setup_update_timer():
 	add_child(update_timer)
 	print("⏰ Timer de actualización configurado (cada 1s)")
 
+
 func _on_update_timer_timeout():
 	"""Callback del timer de actualización - actualizar inventario automáticamente"""
 	if not update_in_progress and sales_manager_ref:
 		refresh_all_items()
 		# print("🔄 Inventario actualizado automáticamente")  # Comentado para no spam
+
 
 func setup_inventory_section():
 	"""Configurar sección de inventario (ingredientes y productos)"""
@@ -120,6 +125,7 @@ func setup_inventory_section():
 		products_grid.add_child(sell_button)
 
 	main_vbox.add_child(products_grid)
+
 
 func create_compact_sell_button(
 	item_id: String, data: Dictionary, item_type: String
@@ -200,6 +206,7 @@ func create_compact_sell_button(
 
 	return container
 
+
 func _on_sell_button_pressed(item_id: String, item_type: String):
 	"""Manejar venta de elemento con multiplicador"""
 	if not button_states.has(item_id):
@@ -211,6 +218,7 @@ func _on_sell_button_pressed(item_id: String, item_type: String):
 
 	print("💰 Solicitando venta: %s (%s) x%d" % [item_id, item_type, multiplier])
 	item_sell_requested.emit(item_type, item_id, multiplier)
+
 
 func _on_multiplier_button_pressed(item_id: String):
 	"""Cambiar multiplicador de venta de forma centralizada"""
@@ -239,14 +247,21 @@ func _on_multiplier_button_pressed(item_id: String):
 	_update_single_item_state(item_id)
 	print("✅ Botón actualizado inmediatamente después del cambio de multiplicador")
 
+
 func _get_next_multiplier(current: int) -> int:
 	"""Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1"""
 	match current:
-		1: return 5
-		5: return 10
-		10: return 25
-		25: return 1
-		_: return 1
+		1:
+			return 5
+		5:
+			return 10
+		10:
+			return 25
+		25:
+			return 1
+		_:
+			return 1
+
 
 # Método para compatibilidad con GameController
 func set_sales_manager(manager: Node):
@@ -258,7 +273,9 @@ func set_sales_manager(manager: Node):
 		update_timer.start()
 		print("▶️ Timer de actualización activado")
 
+
 ## ===== MÉTODOS PÚBLICOS PARA INTERFAZ EXTERNA =====
+
 
 func refresh_all_items():
 	"""Refrescar todos los elementos - método público para GameController"""
@@ -266,10 +283,12 @@ func refresh_all_items():
 		var game_data = get_current_game_data()
 		update_inventory_displays(game_data)
 
+
 func refresh_single_item(item_id: String):
 	"""Refrescar un elemento específico - método público"""
 	if sales_manager_ref:
 		_update_single_item_state(item_id)
+
 
 func get_item_multiplier(item_id: String) -> int:
 	"""Obtener multiplicador actual de un elemento"""
@@ -277,12 +296,14 @@ func get_item_multiplier(item_id: String) -> int:
 		return button_states[item_id].multiplier
 	return 1
 
+
 func set_item_multiplier(item_id: String, multiplier: int):
 	"""Establecer multiplicador de un elemento (para sincronización)"""
 	if button_states.has(item_id):
 		button_states[item_id].multiplier = multiplier
 		button_states[item_id].multiplier_button.text = "x%d" % multiplier
 		_update_single_item_state(item_id)
+
 
 # Métodos para actualizar datos
 func update_inventory_displays(game_data: Dictionary):
@@ -294,6 +315,7 @@ func update_inventory_displays(game_data: Dictionary):
 	for item_id in button_states.keys():
 		_update_single_item_state(item_id, game_data)
 	update_in_progress = false
+
 
 func _update_single_item_state(item_id: String, game_data: Dictionary = {}):
 	"""Actualizar estado de un elemento específico usando datos centralizados"""
@@ -324,9 +346,9 @@ func _update_single_item_state(item_id: String, game_data: Dictionary = {}):
 	var can_sell = available >= multiplier
 
 	# Actualizar UI elements
-	state.info_label.text = "Disponible: %d | $%.1f (x%d = $%.1f)" % [
-		available, unit_price, multiplier, total_price
-	]
+	state.info_label.text = (
+		"Disponible: %d | $%.1f (x%d = $%.1f)" % [available, unit_price, multiplier, total_price]
+	)
 
 	# El botón está habilitado solo si hay suficiente cantidad
 	state.sell_button.disabled = not can_sell
@@ -336,6 +358,7 @@ func _update_single_item_state(item_id: String, game_data: Dictionary = {}):
 		state.sell_button.text = "VENDER x%d" % multiplier
 	else:
 		state.sell_button.text = "NO DISPONIBLE"
+
 
 func get_item_sell_price(item_id: String, item_type: String) -> float:
 	"""Obtener precio de venta de un elemento"""
@@ -347,6 +370,7 @@ func get_item_sell_price(item_id: String, item_type: String) -> float:
 		return product_data.get("sell_price", 5.0)
 
 	return 1.0
+
 
 func get_current_game_data() -> Dictionary:
 	"""Obtener datos actuales del juego"""
@@ -364,7 +388,9 @@ func get_current_game_data() -> Dictionary:
 
 	return {"money": 0, "resources": {}, "products": {}}
 
+
 ## === GESTIÓN DE VISIBILIDAD ===
+
 
 func _notification(what):
 	"""Manejar notificaciones de visibilidad para optimizar rendimiento"""

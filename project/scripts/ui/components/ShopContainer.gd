@@ -86,6 +86,8 @@ func _verify_nodes() -> bool:
 		all_present = false
 
 	return all_present
+
+
 ## Configurar el contenedor de tienda
 func setup(title: String, mode: String = "buy") -> void:
 	"""

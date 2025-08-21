@@ -1,6 +1,7 @@
 # Script de prueba para verificar la integración de datos
 extends RefCounted
 
+
 static func test_game_config_data():
 	"""Verificar que los datos de GameConfig están correctamente definidos"""
 	print("\n🧪 === TESTING GAME CONFIG DATA INTEGRATION ===")
@@ -26,17 +27,21 @@ static func test_game_config_data():
 	print("\n✅ Todos los datos están correctamente configurados!")
 	return true
 
+
 static func test_layout_helper():
 	"""Verificar que LayoutFixHelper tiene las funciones necesarias"""
 	print("\n🧪 === TESTING LAYOUT HELPER ===")
 
 	# Verificar métodos estáticos
-	var methods = ["configure_parent_container", "configure_dynamic_component", "force_layout_update"]
+	var methods = [
+		"configure_parent_container", "configure_dynamic_component", "force_layout_update"
+	]
 	for method in methods:
 		print("  ✅ Método disponible: %s" % method)
 
 	print("\n✅ LayoutFixHelper configurado correctamente!")
 	return true
+
 
 # Para ejecutar las pruebas
 static func run_all_tests():

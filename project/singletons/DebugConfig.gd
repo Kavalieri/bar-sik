@@ -11,14 +11,17 @@ const DEBUG_TESTS: bool = DEBUG_ENABLED and false  # Tests deshabilitados por de
 const DEBUG_GENERATION: bool = DEBUG_ENABLED
 const DEBUG_PERSISTENCE: bool = DEBUG_ENABLED
 
+
 # Función helper para debug condicional
 static func debug_print(message: String, system: String = "GENERAL") -> void:
 	if DEBUG_PRINTS:
 		print("[DEBUG-%s] %s" % [system.to_upper(), message])
 
+
 # Función para verificar si los tests deben ejecutarse
 static func should_run_tests() -> bool:
 	return DEBUG_TESTS
+
 
 # Función para verificar si el debug de sistema específico está activo
 static func is_system_debug_enabled(system: String) -> bool:

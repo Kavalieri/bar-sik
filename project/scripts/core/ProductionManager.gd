@@ -105,6 +105,7 @@ func get_unlock_cost(station_id: String) -> float:
 	var config_data = GameConfig.STATION_DATA.get(station_id, {})
 	return config_data.get("base_price", 0.0)
 
+
 ## Verificar si una estación está desbloqueada
 func is_station_unlocked(station_id: String) -> bool:
 	if not game_data:
@@ -141,6 +142,7 @@ func _find_station_by_id(station_id: String) -> Dictionary:
 		"description": station_data.description
 	}
 
+
 ## Obtener todas las definiciones desde GameConfig
 func get_station_definitions() -> Array[Dictionary]:
 	var definitions: Array[Dictionary] = []
@@ -150,16 +152,12 @@ func get_station_definitions() -> Array[Dictionary]:
 			definitions.append(station_def)
 	return definitions
 
+
 ## Obtener datos actuales del juego
 func get_game_data() -> Dictionary:
 	"""Obtener datos actuales del juego para ProductionPanel"""
 	if not game_data:
-		return {
-			"money": 0.0,
-			"stations": {},
-			"products": {},
-			"resources": {}
-		}
+		return {"money": 0.0, "stations": {}, "products": {}, "resources": {}}
 
 	return {
 		"money": game_data.money,

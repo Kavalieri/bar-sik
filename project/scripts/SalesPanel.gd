@@ -198,9 +198,12 @@ func update_sales_displays(game_data: Dictionary) -> void:
 	var recent_sales = sales_data.get("recent", [])
 
 	# Actualizar información de ventas si hay tarjetas configuradas
-	print("🔄 Actualizando datos de ventas: $%.2f total, %d recientes" % [
-		total_sales, recent_sales.size()
-	])
+	print(
+		(
+			"🔄 Actualizando datos de ventas: $%.2f total, %d recientes"
+			% [total_sales, recent_sales.size()]
+		)
+	)
 
 
 func update_stats_displays(game_data: Dictionary) -> void:

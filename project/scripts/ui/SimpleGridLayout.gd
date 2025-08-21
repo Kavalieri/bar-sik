@@ -11,8 +11,10 @@ extends Control
 var main_container: VBoxContainer
 var grid_container: GridContainer
 
+
 func _ready():
 	setup_layout()
+
 
 func setup_layout():
 	"""Configurar la cuadrícula base"""
@@ -43,6 +45,7 @@ func setup_layout():
 
 	print("✅ SimpleGridLayout configurado: %d columnas, spacing %d" % [columns, spacing])
 
+
 func add_title(text: String) -> Label:
 	"""Agregar título a la cuadrícula"""
 	var title = Label.new()
@@ -56,6 +59,7 @@ func add_title(text: String) -> Label:
 	main_container.move_child(title, 0)
 
 	return title
+
 
 func add_simple_button(text: String, icon: String = "") -> Button:
 	"""Agregar botón simple a la cuadrícula"""
@@ -74,6 +78,7 @@ func add_simple_button(text: String, icon: String = "") -> Button:
 
 	grid_container.add_child(button)
 	return button
+
 
 func add_info_panel(title: String, content: String, icon: String = "") -> Panel:
 	"""Agregar panel de información a la cuadrícula"""
@@ -111,6 +116,7 @@ func add_info_panel(title: String, content: String, icon: String = "") -> Panel:
 	grid_container.add_child(panel)
 	return panel
 
+
 func set_columns(new_columns: int):
 	"""Cambiar número de columnas dinámicamente"""
 	columns = new_columns
@@ -118,12 +124,14 @@ func set_columns(new_columns: int):
 		grid_container.columns = columns
 		print("📐 Cuadrícula actualizada a %d columnas" % columns)
 
+
 func clear_grid():
 	"""Limpiar toda la cuadrícula"""
 	if grid_container:
 		for child in grid_container.get_children():
 			child.queue_free()
 		print("🧹 Cuadrícula limpiada")
+
 
 # Configuraciones predefinidas para diferentes pantallas
 func setup_mobile():
@@ -136,6 +144,7 @@ func setup_mobile():
 		grid_container.add_theme_constant_override("v_separation", spacing)
 	print("📱 Configuración mobile aplicada")
 
+
 func setup_tablet():
 	"""Configuración optimizada para tablet"""
 	set_columns(2)
@@ -145,6 +154,7 @@ func setup_tablet():
 		grid_container.add_theme_constant_override("h_separation", spacing)
 		grid_container.add_theme_constant_override("v_separation", spacing)
 	print("📱 Configuración tablet aplicada")
+
 
 func setup_desktop():
 	"""Configuración optimizada para desktop"""

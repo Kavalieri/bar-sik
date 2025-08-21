@@ -7,16 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-          
+
       - run: pip install gdtoolkit
-      
+
       - name: Check GDScript formatting
         run: gdformat --check $(git ls-files '*.gd')
-        
+
       - name: Lint GDScript
         run: gdlint $(git ls-files '*.gd')
 
@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
           version: "4.3"
-          
+
       - name: Run GUT tests
         run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
 
@@ -39,16 +39,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install jscpd
         run: npm i -g jscpd
-        
+
       - name: Check GDScript duplicates
         run: jscpd --formats-exts "python:gd" --output "reports/gd/" --reporters console,json --min-tokens 35 --min-lines 3 project/ --threshold 5
-        
-      - name: Check TSCN duplicates  
+
+      - name: Check TSCN duplicates
         run: jscpd --pattern "project/**/*.tscn" --min-tokens 50 --min-lines 3 --reporters console,json --output "reports/tscn/" --threshold 8
-        
+
       - name: Upload duplicate reports
         uses: actions/upload-artifact@v4
         if: always()

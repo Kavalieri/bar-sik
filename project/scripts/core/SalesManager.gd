@@ -90,15 +90,12 @@ func get_sellable_inventory() -> Dictionary:
 
 	return StockManager.get_sellable_stock()
 
+
 ## Obtener datos actuales del juego (compatibilidad con SalesPanelBasic)
 func get_game_data() -> Dictionary:
 	"""Obtener datos actuales del juego para SalesPanelBasic"""
 	if not game_data:
-		return {
-			"money": 0.0,
-			"resources": {},
-			"products": {}
-		}
+		return {"money": 0.0, "resources": {}, "products": {}}
 
 	return {
 		"money": game_data.money,

@@ -189,15 +189,12 @@ func _find_generator_by_id(generator_id: String) -> Dictionary:
 func get_generator_definitions() -> Array[Dictionary]:
 	return generator_definitions
 
+
 ## Obtener datos actuales del juego
 func get_game_data() -> Dictionary:
 	"""Obtener datos actuales del juego para GenerationPanel"""
 	if not game_data:
-		return {
-			"money": 0.0,
-			"generators": {},
-			"resources": {}
-		}
+		return {"money": 0.0, "generators": {}, "resources": {}}
 
 	return {
 		"money": game_data.money,

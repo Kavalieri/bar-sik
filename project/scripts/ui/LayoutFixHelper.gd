@@ -115,7 +115,9 @@ static func debug_component_layout(component: Control, name: String = "Component
 	print("   Size: %s" % str(component.size))
 	print("   Position: %s" % str(component.position))
 	print("   Custom min size: %s" % str(component.custom_minimum_size))
-	print("   Size flags H: %d, V: %d" % [
-		component.size_flags_horizontal,
-		component.size_flags_vertical
-	])
+	print(
+		(
+			"   Size flags H: %d, V: %d"
+			% [component.size_flags_horizontal, component.size_flags_vertical]
+		)
+	)

@@ -204,9 +204,12 @@ func update_station_interfaces(station_definitions: Array, game_data: Dictionary
 
 	# Usar station_definitions para información adicional si es necesario
 	if station_definitions.size() > 0:
-		print("🔄 Actualizando interfaces de estaciones con %d definiciones" % [
-			station_definitions.size()
-		])
+		print(
+			(
+				"🔄 Actualizando interfaces de estaciones con %d definiciones"
+				% [station_definitions.size()]
+			)
+		)
 
 
 func update_recipe_displays(game_data: Dictionary) -> void:

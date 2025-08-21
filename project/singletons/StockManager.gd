@@ -7,15 +7,19 @@ signal stock_depleted(item_type: String, item_name: String)
 
 var game_data: GameData
 
+
 func _ready() -> void:
 	print("📦 StockManager inicializado")
+
 
 ## Asignar referencia a GameData
 func set_game_data(data: GameData) -> void:
 	game_data = data
 	print("📦 StockManager conectado a GameData")
 
+
 ## === CONSULTAS DE STOCK ===
+
 
 ## Obtener cantidad de un item específico
 func get_stock(item_type: String, item_name: String) -> int:
@@ -31,6 +35,7 @@ func get_stock(item_type: String, item_name: String) -> int:
 			print("❌ StockManager: Tipo de item desconocido: %s" % item_type)
 			return 0
 
+
 ## Obtener todo el stock de un tipo
 func get_all_stock(item_type: String) -> Dictionary:
 	if not game_data:
@@ -44,12 +49,10 @@ func get_all_stock(item_type: String) -> Dictionary:
 		_:
 			return {}
 
+
 ## Obtener stock disponible para venta (excluye agua para ingredientes)
 func get_sellable_stock() -> Dictionary:
-	var sellable = {
-		"products": {},
-		"ingredients": {}
-	}
+	var sellable = {"products": {}, "ingredients": {}}
 
 	if not game_data:
 		return sellable
@@ -76,7 +79,9 @@ func get_sellable_stock() -> Dictionary:
 
 	return sellable
 
+
 ## === MODIFICACIONES DE STOCK ===
+
 
 ## Agregar stock
 func add_stock(item_type: String, item_name: String, quantity: int) -> bool:
@@ -97,6 +102,7 @@ func add_stock(item_type: String, item_name: String, quantity: int) -> bool:
 	stock_updated.emit(item_type, item_name, new_quantity)
 	return true
 
+
 ## Quitar stock
 func remove_stock(item_type: String, item_name: String, quantity: int) -> bool:
 	if not game_data or quantity <= 0:
@@ -104,7 +110,12 @@ func remove_stock(item_type: String, item_name: String, quantity: int) -> bool:
 
 	var current_stock = get_stock(item_type, item_name)
 	if current_stock < quantity:
-		print("❌ Stock insuficiente: %s tiene %d, se requieren %d" % [item_name, current_stock, quantity])
+		print(
+			(
+				"❌ Stock insuficiente: %s tiene %d, se requieren %d"
+				% [item_name, current_stock, quantity]
+			)
+		)
 		return false
 
 	var new_quantity = current_stock - quantity
@@ -124,11 +135,14 @@ func remove_stock(item_type: String, item_name: String, quantity: int) -> bool:
 
 	return true
 
+
 ## === UTILIDADES ===
+
 
 ## Verificar si hay stock suficiente
 func has_stock(item_type: String, item_name: String, required_quantity: int = 1) -> bool:
 	return get_stock(item_type, item_name) >= required_quantity
+
 
 ## Obtener información completa de un item
 func get_item_info(item_type: String, item_name: String) -> Dictionary:
@@ -150,6 +164,7 @@ func get_item_info(item_type: String, item_name: String) -> Dictionary:
 		"emoji": emoji,
 		"available": quantity > 0
 	}
+
 
 ## Obtener resumen completo del inventario
 func get_inventory_summary() -> Dictionary:
@@ -182,7 +197,9 @@ func get_inventory_summary() -> Dictionary:
 
 	return summary
 
+
 ## === GESTIÓN DE RECETAS ===
+
 
 ## Verificar si se puede costear una receta
 func can_afford_recipe(recipe: Dictionary, quantity: int = 1) -> bool:
@@ -192,6 +209,7 @@ func can_afford_recipe(recipe: Dictionary, quantity: int = 1) -> bool:
 		if available < needed:
 			return false
 	return true
+
 
 ## Consumir ingredientes de una receta usando StockManager
 func consume_recipe(recipe: Dictionary, quantity: int = 1) -> bool:

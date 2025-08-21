@@ -29,6 +29,7 @@ func save_game_data_immediate() -> bool:
 		return save_game_data_with_encryption(game_controller.game_data.to_dict())
 	return false
 
+
 ## Guardar datos del juego con encriptación básica
 func save_game_data_with_encryption(data: Dictionary) -> bool:
 	var save_data = {
@@ -56,6 +57,7 @@ func save_game_data_with_encryption(data: Dictionary) -> bool:
 
 	print("❌ Error al guardar archivo")
 	return false
+
 
 ## Guardar datos del juego (método original, ahora usa encriptación)
 func save_game_data(data: Dictionary) -> bool:
@@ -114,7 +116,8 @@ func _get_default_game_data() -> Dictionary:
 		"stations": {"brewery": 1, "bar_station": 0},
 		"offers": {},
 		"upgrades": {},
-		"statistics": {
+		"statistics":
+		{
 			"total_money_earned": 0.0,
 			"products_sold": 0,
 			"customers_served": 0,
@@ -196,11 +199,13 @@ func _on_save_requested() -> void:
 	print("💾 Guardado solicitado por evento")
 	save_game_data_immediate()
 
+
 ## Funciones de encriptación y seguridad
 func _encrypt_data(data: String) -> String:
 	# Encriptación muy simple: solo Base64 con prefijo para identificar archivos encriptados
 	var prefixed_data = "BARSIK_ENC:" + data
 	return Marshalls.utf8_to_base64(prefixed_data)
+
 
 func _decrypt_data(encrypted_data: String) -> String:
 	# Decodificar base64
@@ -214,9 +219,11 @@ func _decrypt_data(encrypted_data: String) -> String:
 
 	return ""  # No es un archivo encriptado válido
 
+
 func _calculate_checksum(data: Dictionary) -> String:
 	var json_string = JSON.stringify(data)
 	return str(json_string.hash())
+
 
 func _try_load_encrypted(content: String) -> Dictionary:
 	var decrypted = _decrypt_data(content)
@@ -229,6 +236,7 @@ func _try_load_encrypted(content: String) -> Dictionary:
 				return data
 	return {}
 
+
 func _try_load_plain_json(content: String) -> Dictionary:
 	var json = JSON.new()
 	var parse_result = json.parse(content)
@@ -237,6 +245,7 @@ func _try_load_plain_json(content: String) -> Dictionary:
 		if _validate_save_data(data):
 			return data
 	return {}
+
 
 func _rotate_backups() -> void:
 	# Rotar: 2→3, 1→2, principal→1

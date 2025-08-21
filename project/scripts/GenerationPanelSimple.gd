@@ -16,19 +16,23 @@ var generator_grid: SimpleGridLayout
 @onready var main_scroll: ScrollContainer = $ScrollContainer
 @onready var main_vbox: VBoxContainer = $ScrollContainer/MainVBox
 
+
 func _initialize_panel_specific() -> void:
 	"""Inicialización específica del panel simple"""
 	setup_simple_layout()
 	print("✅ GenerationPanel (Simple) inicializado")
 
+
 func _connect_panel_signals() -> void:
 	"""Conectar señales específicas"""
-	pass # Las señales se conectan directamente en setup
+	pass  # Las señales se conectan directamente en setup
+
 
 func _update_panel_data(game_data: Dictionary) -> void:
 	"""Actualizar datos del panel"""
 	update_resource_displays(game_data)
 	update_generator_displays(game_data)
+
 
 func setup_simple_layout():
 	"""Configurar layout simple con cuadrículas"""
@@ -73,6 +77,7 @@ func setup_simple_layout():
 	# Llenar cuadrícula de generadores
 	setup_generators_grid()
 
+
 func setup_resources_grid():
 	"""Configurar cuadrícula de recursos usando datos reales"""
 	for resource_id in GameConfig.RESOURCE_DATA.keys():
@@ -83,6 +88,7 @@ func setup_resources_grid():
 		panel.name = "resource_" + resource_id
 
 		print("📦 Recurso agregado: %s %s" % [data.emoji, data.name])
+
 
 func setup_generators_grid():
 	"""Configurar cuadrícula de generadores usando datos reales"""
@@ -97,6 +103,7 @@ func setup_generators_grid():
 		button.pressed.connect(_on_generator_buy_pressed.bind(generator_id))
 
 		print("🚜 Generador agregado: %s %s" % [data.emoji, data.name])
+
 
 func update_resource_displays(game_data: Dictionary):
 	"""Actualizar displays de recursos con datos reales"""
@@ -114,6 +121,7 @@ func update_resource_displays(game_data: Dictionary):
 			var max_storage = GameConfig.RESOURCE_DATA[resource_id].max_storage
 			content_label.text = "Cantidad: %.0f/%.0f" % [amount, max_storage]
 
+
 func update_generator_displays(game_data: Dictionary):
 	"""Actualizar displays de generadores con datos reales"""
 	if not generator_grid:
@@ -123,7 +131,9 @@ func update_generator_displays(game_data: Dictionary):
 	var money = game_data.get("money", 0)
 
 	for generator_id in GameConfig.GENERATOR_DATA.keys():
-		var button_node = generator_grid.grid_container.get_node_or_null("generator_" + generator_id)
+		var button_node = generator_grid.grid_container.get_node_or_null(
+			"generator_" + generator_id
+		)
 		if button_node:
 			var data = GameConfig.GENERATOR_DATA[generator_id]
 			var owned = generators.get(generator_id, 0)
@@ -131,19 +141,21 @@ func update_generator_displays(game_data: Dictionary):
 			var can_afford = money >= current_cost
 
 			# Actualizar texto del botón
-			button_node.text = "%s %s\nPoseído: %.0f\nCosto: $%.0f" % [
-				data.emoji, data.name, owned, current_cost
-			]
+			button_node.text = (
+				"%s %s\nPoseído: %.0f\nCosto: $%.0f" % [data.emoji, data.name, owned, current_cost]
+			)
 
 			# Actualizar estado del botón
 			button_node.disabled = not can_afford
 			button_node.modulate = Color.WHITE if can_afford else Color.GRAY
+
 
 func calculate_generator_cost(generator_id: String, current_owned: float) -> float:
 	"""Calcular costo actual del generador"""
 	var base_price = GameConfig.GENERATOR_DATA[generator_id].base_price
 	var scale_factor = GameConfig.GENERATOR_SCALE_FACTOR
 	return base_price * pow(scale_factor, current_owned)
+
 
 func _on_generator_buy_pressed(generator_id: String):
 	"""Manejar compra de generador"""
@@ -159,6 +171,7 @@ func _on_generator_buy_pressed(generator_id: String):
 		# Fallback: emitir señal directamente si no hay manager
 		print("📤 Emitiendo señal de compra de generador: %s" % generator_id)
 		generator_purchased.emit(generator_id, 1)
+
 
 func set_generator_manager(manager: Node):
 	"""Establecer referencia al GeneratorManager"""

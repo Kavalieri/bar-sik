@@ -37,24 +37,24 @@ def main():
 
     # 1. Instalar pre-commit
     if run_command("pip install pre-commit", "Instalando pre-commit"):
-        
+
         # 2. Instalar hooks
         if run_command("pre-commit install", "Instalando hooks"):
-            
+
             # 3. Ejecutar en todos los archivos (opcional)
             print("\n🔍 ¿Desea ejecutar pre-commit en todos los archivos? (y/N)")
             response = input().lower().strip()
-            
+
             if response in ['y', 'yes', 's', 'si']:
                 run_command("pre-commit run --all-files", "Ejecutando pre-commit en todo el proyecto")
-            
+
             print("\n🎉 Pre-commit configurado exitosamente!")
             print("📝 Los siguientes hooks se ejecutarán automáticamente en cada commit:")
             print("   • gdformat - Formateo automático de GDScript")
             print("   • gdlint - Análisis de estilo")
             print("   • jscpd-check - Verificación de duplicados (opcional)")
             print("\n💡 Para saltear hooks temporalmente: git commit --no-verify")
-            
+
         else:
             print("❌ Error instalando hooks")
     else:

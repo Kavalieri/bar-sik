@@ -16,10 +16,12 @@ var update_in_progress: bool = false  # Prevenir updates recursivos
 @onready var scroll_container: ScrollContainer = $ScrollContainer
 @onready var main_vbox: VBoxContainer = $ScrollContainer/MainVBox
 
+
 func _ready():
 	print("🏭 ProductionPanelBasic _ready() iniciado")
 	setup_basic_layout()
 	print("✅ ProductionPanelBasic inicializado")
+
 
 func setup_basic_layout():
 	"""Configurar layout básico con elementos nativos de Godot"""
@@ -51,6 +53,7 @@ func setup_basic_layout():
 	# === SECCIÓN DE ESTACIONES DE PRODUCCIÓN ===
 	setup_stations_section()
 
+
 func setup_products_section():
 	"""Configurar sección de productos disponibles"""
 	# Título de sección
@@ -74,6 +77,7 @@ func setup_products_section():
 
 	main_vbox.add_child(products_hbox)
 
+
 func setup_stations_section():
 	"""Configurar sección de estaciones de producción con VBoxContainer"""
 	# Título de sección
@@ -94,6 +98,7 @@ func setup_stations_section():
 		var data = GameConfig.STATION_DATA[station_id]
 		var station_button = create_station_button(station_id, data)
 		stations_vbox.add_child(station_button)
+
 
 func create_product_display_panel(product_id: String, data: Dictionary) -> Panel:
 	"""Crear panel individual para mostrar un producto (solo información)"""
@@ -131,6 +136,7 @@ func create_product_display_panel(product_id: String, data: Dictionary) -> Panel
 	panel.add_child(vbox)
 
 	return panel
+
 
 func create_station_button(station_id: String, data: Dictionary) -> VBoxContainer:
 	"""Crear botón individual para una estación de producción"""
@@ -209,6 +215,7 @@ func create_station_button(station_id: String, data: Dictionary) -> VBoxContaine
 
 	return container
 
+
 func _format_recipe_with_availability(station_id: String) -> String:
 	"""Formatear receta mostrando ingredientes en formato cantidad_a_usar/total_disponible"""
 	var station_data = GameConfig.STATION_DATA.get(station_id, {})
@@ -221,17 +228,20 @@ func _format_recipe_with_availability(station_id: String) -> String:
 	for ingredient_id in recipe.keys():
 		var needed_amount = recipe[ingredient_id]
 		var available_amount = get_ingredient_available_amount(ingredient_id)
-		var ingredient_data = GameConfig.RESOURCE_DATA.get(ingredient_id, {"emoji": "❓", "name": ingredient_id})
+		var ingredient_data = GameConfig.RESOURCE_DATA.get(
+			ingredient_id, {"emoji": "❓", "name": ingredient_id}
+		)
 
 		# Formato: emoji cantidad_necesaria/disponible nombre
-		recipe_parts.append("%s %d/%d %s" % [
-			ingredient_data.emoji,
-			needed_amount,
-			available_amount,
-			ingredient_data.name
-		])
+		recipe_parts.append(
+			(
+				"%s %d/%d %s"
+				% [ingredient_data.emoji, needed_amount, available_amount, ingredient_data.name]
+			)
+		)
 
 	return " + ".join(recipe_parts)
+
 
 func get_ingredient_available_amount(ingredient_id: String) -> int:
 	"""Obtener cantidad disponible de un ingrediente"""
@@ -247,7 +257,9 @@ func get_ingredient_available_amount(ingredient_id: String) -> int:
 
 	return 0
 
+
 ## ===== MANEJADORES DE EVENTOS =====
+
 
 func _on_station_buy_pressed(station_id: String):
 	"""Manejar click en botón de compra/producción de estación"""
@@ -271,6 +283,7 @@ func _on_station_buy_pressed(station_id: String):
 	else:
 		station_purchased.emit(station_id, multiplier)
 		print("🛒 Señal station_purchased emitida: %s x%d" % [station_id, multiplier])
+
 
 func _on_multiplier_button_pressed(station_id: String):
 	"""Manejar click en botón multiplicador"""
@@ -298,16 +311,24 @@ func _on_multiplier_button_pressed(station_id: String):
 	_update_single_station_state(station_id)
 	print("✅ Botón actualizado inmediatamente después del cambio de multiplicador")
 
+
 func _get_next_multiplier(current: int) -> int:
 	"""Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1"""
 	match current:
-		1: return 5
-		5: return 10
-		10: return 25
-		25: return 1
-		_: return 1
+		1:
+			return 5
+		5:
+			return 10
+		10:
+			return 25
+		25:
+			return 1
+		_:
+			return 1
+
 
 ## ===== MÉTODOS PÚBLICOS PARA INTERFAZ EXTERNA =====
+
 
 # Método para compatibilidad con GameController
 func set_production_manager(manager: Node):
@@ -315,17 +336,20 @@ func set_production_manager(manager: Node):
 	production_manager_ref = manager
 	print("🔗 ProductionPanelBasic conectado con ProductionManager")
 
+
 func refresh_station_displays():
 	"""Refrescar displays de todas las estaciones - método público para GameController"""
 	if production_manager_ref:
 		var game_data = get_current_game_data()
 		update_station_displays(game_data)
 
+
 func refresh_product_displays():
 	"""Refrescar displays de productos - método público para GameController"""
 	if production_manager_ref:
 		var game_data = get_current_game_data()
 		update_product_displays(game_data)
+
 
 func update_station_displays(game_data: Dictionary):
 	"""Actualizar todos los displays de estaciones"""
@@ -338,6 +362,7 @@ func update_station_displays(game_data: Dictionary):
 		_update_single_station_state(station_id, game_data)
 
 	update_in_progress = false
+
 
 func update_product_displays(game_data: Dictionary):
 	"""Actualizar displays de productos disponibles"""
@@ -353,6 +378,7 @@ func update_product_displays(game_data: Dictionary):
 		if amount_label:
 			var amount = products.get(product_id, 0)
 			amount_label.text = "Cantidad: %d" % amount
+
 
 func _update_single_station_state(station_id: String, game_data: Dictionary = {}):
 	"""Actualizar estado de una estación específica"""
@@ -387,7 +413,9 @@ func _update_single_station_state(station_id: String, game_data: Dictionary = {}
 		# Obtener información del producto generado
 		var station_data = GameConfig.STATION_DATA.get(station_id, {})
 		var product_id = station_data.get("product", "")
-		var product_data = GameConfig.PRODUCT_DATA.get(product_id, {"emoji": "⭐", "name": product_id})
+		var product_data = GameConfig.PRODUCT_DATA.get(
+			product_id, {"emoji": "⭐", "name": product_id}
+		)
 		var product_emoji = product_data.emoji
 		var product_name = product_data.name
 
@@ -410,11 +438,13 @@ func _update_single_station_state(station_id: String, game_data: Dictionary = {}
 			var faltante = unlock_cost - money
 			state.buy_button.text = "DESBLOQUEAR $%.1f (Falta $%.1f)" % [unlock_cost, faltante]
 
+
 func is_station_unlocked_from_manager(station_id: String) -> bool:
 	"""Verificar si una estación está desbloqueada usando el manager"""
 	if production_manager_ref and production_manager_ref.has_method("is_station_unlocked"):
 		return production_manager_ref.is_station_unlocked(station_id)
 	return false
+
 
 func can_afford_production(station_id: String, quantity: int, game_data: Dictionary) -> bool:
 	"""Verificar si se puede costear la producción con ingredientes"""
@@ -430,6 +460,7 @@ func can_afford_production(station_id: String, quantity: int, game_data: Diction
 
 	return true
 
+
 func get_unlock_cost(station_id: String) -> float:
 	"""Obtener costo de desbloqueo de una estación"""
 	if production_manager_ref and production_manager_ref.has_method("get_unlock_cost"):
@@ -438,6 +469,7 @@ func get_unlock_cost(station_id: String) -> float:
 	# Fallback al costo base
 	var station_data = GameConfig.STATION_DATA.get(station_id, {})
 	return station_data.get("unlock_cost", 100.0)
+
 
 func get_current_game_data() -> Dictionary:
 	"""Obtener datos actuales del juego"""

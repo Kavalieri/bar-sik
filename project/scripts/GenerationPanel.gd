@@ -76,12 +76,9 @@ func _setup_modular_resources() -> void:
 	var resource_configs = []
 	for resource_id in GameConfig.RESOURCE_DATA.keys():
 		var data = GameConfig.RESOURCE_DATA[resource_id]
-		resource_configs.append({
-			id = resource_id,
-			name = data.name,
-			icon = data.emoji,
-			action = "view_details"
-		})
+		resource_configs.append(
+			{id = resource_id, name = data.name, icon = data.emoji, action = "view_details"}
+		)
 
 	# Crear tarjeta para cada recurso
 	for config in resource_configs:
@@ -189,7 +186,14 @@ func update_generator_displays(generator_definitions: Array, game_data: Dictiona
 
 	# Usar generator_definitions para obtener información actualizada si está disponible
 	if generator_definitions.size() > 0:
-		print("🔄 Actualizando displays con %d definiciones de generadores" % generator_definitions.size())
+		print(
+			(
+				"🔄 Actualizando displays con %d definiciones de generadores"
+				% generator_definitions.size()
+			)
+		)
+
+
 # Manejadores de señales modulares
 
 

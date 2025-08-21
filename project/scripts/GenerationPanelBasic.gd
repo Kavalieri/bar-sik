@@ -14,10 +14,12 @@ var update_in_progress: bool = false  # Prevenir updates recursivos
 @onready var scroll_container: ScrollContainer = $ScrollContainer
 @onready var main_vbox: VBoxContainer = $ScrollContainer/MainVBox
 
+
 func _ready():
 	print("🎯 GenerationPanelBasic _ready() iniciado")
 	setup_basic_layout()
 	print("✅ GenerationPanelBasic inicializado")
+
 
 func setup_basic_layout():
 	"""Configurar layout básico con elementos nativos de Godot"""
@@ -49,6 +51,7 @@ func setup_basic_layout():
 	# === SECCIÓN DE GENERADORES ===
 	setup_generators_section()
 
+
 func setup_resources_section():
 	"""Crear sección de recursos con GridContainer"""
 	var resources_title = Label.new()
@@ -70,6 +73,7 @@ func setup_resources_section():
 		var resource_panel = create_resource_panel(resource_id, data)
 		resources_grid.add_child(resource_panel)
 
+
 func setup_generators_section():
 	"""Crear sección de generadores con VBoxContainer para mobile"""
 	var generators_title = Label.new()
@@ -88,6 +92,7 @@ func setup_generators_section():
 		var data = GameConfig.GENERATOR_DATA[generator_id]
 		var generator_button = create_generator_button(generator_id, data)
 		generators_vbox.add_child(generator_button)
+
 
 func create_resource_panel(resource_id: String, data: Dictionary) -> Panel:
 	"""Crear panel individual para un recurso"""
@@ -124,6 +129,7 @@ func create_resource_panel(resource_id: String, data: Dictionary) -> Panel:
 	panel.add_child(vbox)
 
 	return panel
+
 
 func create_generator_button(generator_id: String, data: Dictionary) -> Control:
 	"""Crear panel con botón principal y botón multiplicador para un generador"""
@@ -200,6 +206,7 @@ func create_generator_button(generator_id: String, data: Dictionary) -> Control:
 
 	return container
 
+
 func _on_generator_buy_pressed(generator_id: String):
 	"""Manejar compra de generador con multiplicador"""
 	if not button_states.has(generator_id):
@@ -210,6 +217,7 @@ func _on_generator_buy_pressed(generator_id: String):
 	var multiplier = state.multiplier
 	print("🔘 Botón de generador presionado: %s x%d" % [generator_id, multiplier])
 	generator_purchased.emit(generator_id, multiplier)
+
 
 func _on_multiplier_button_pressed(generator_id: String):
 	"""Cambiar multiplicador del generador de forma centralizada"""
@@ -238,14 +246,21 @@ func _on_multiplier_button_pressed(generator_id: String):
 	_update_single_generator_state(generator_id)
 	print("✅ Botón actualizado inmediatamente después del cambio de multiplicador")
 
+
 func _get_next_multiplier(current: int) -> int:
 	"""Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1"""
 	match current:
-		1: return 5
-		5: return 10
-		10: return 25
-		25: return 1
-		_: return 1
+		1:
+			return 5
+		5:
+			return 10
+		10:
+			return 25
+		25:
+			return 1
+		_:
+			return 1
+
 
 # Método para compatibilidad con GameController
 func set_generator_manager(manager: Node):
@@ -253,7 +268,9 @@ func set_generator_manager(manager: Node):
 	generator_manager_ref = manager
 	print("🔗 GenerationPanelBasic conectado con GeneratorManager")
 
+
 ## ===== MÉTODOS PÚBLICOS PARA INTERFAZ EXTERNA =====
+
 
 func refresh_all_generators():
 	"""Refrescar todos los generadores - método público para GameController"""
@@ -261,10 +278,12 @@ func refresh_all_generators():
 		var game_data = get_current_game_data()
 		update_generator_displays(game_data)
 
+
 func refresh_single_generator(generator_id: String):
 	"""Refrescar un generador específico - método público"""
 	if generator_manager_ref:
 		_update_single_generator_state(generator_id)
+
 
 func get_generator_multiplier(generator_id: String) -> int:
 	"""Obtener multiplicador actual de un generador"""
@@ -272,12 +291,14 @@ func get_generator_multiplier(generator_id: String) -> int:
 		return button_states[generator_id].multiplier
 	return 1
 
+
 func set_generator_multiplier(generator_id: String, multiplier: int):
 	"""Establecer multiplicador de un generador (para sincronización)"""
 	if button_states.has(generator_id):
 		button_states[generator_id].multiplier = multiplier
 		button_states[generator_id].multiplier_button.text = "x%d" % multiplier
 		_update_single_generator_state(generator_id)
+
 
 # Métodos para actualizar datos
 func update_resource_displays(game_data: Dictionary):
@@ -291,6 +312,7 @@ func update_resource_displays(game_data: Dictionary):
 			var max_storage = GameConfig.RESOURCE_DATA[resource_id].max_storage
 			amount_label.text = "Cantidad: %.0f/%.0f" % [amount, max_storage]
 
+
 func update_generator_displays(game_data: Dictionary):
 	"""Actualizar displays de generadores usando estado centralizado"""
 	if update_in_progress:
@@ -300,6 +322,7 @@ func update_generator_displays(game_data: Dictionary):
 	for generator_id in GameConfig.GENERATOR_DATA.keys():
 		_update_single_generator_state(generator_id, game_data)
 	update_in_progress = false
+
 
 func _update_single_generator_state(generator_id: String, game_data: Dictionary = {}):
 	"""Actualizar estado de un generador específico usando datos centralizados"""
@@ -324,15 +347,18 @@ func _update_single_generator_state(generator_id: String, game_data: Dictionary 
 	var can_afford = money >= total_cost
 
 	# DEBUG: Mostrar información de cálculo de costos
-	print("🔍 DEBUG BOTÓN %s: dinero=%.1f, multiplicador=%d, costo_unitario=%.1f" % [
-		generator_id, money, multiplier, single_cost
-	])
+	print(
+		(
+			"🔍 DEBUG BOTÓN %s: dinero=%.1f, multiplicador=%d, costo_unitario=%.1f"
+			% [generator_id, money, multiplier, single_cost]
+		)
+	)
 	print("🔍   costo_total=%.1f, puede_costear=%s" % [total_cost, can_afford])
 
 	# Actualizar UI elements
-	state.info_label.text = "Poseído: %.0f | Costo: $%.0f (x%d = $%.0f)" % [
-		owned, single_cost, multiplier, total_cost
-	]
+	state.info_label.text = (
+		"Poseído: %.0f | Costo: $%.0f (x%d = $%.0f)" % [owned, single_cost, multiplier, total_cost]
+	)
 
 	state.buy_button.disabled = not can_afford
 	state.buy_button.modulate = Color.WHITE if can_afford else Color.GRAY
@@ -342,9 +368,11 @@ func _update_single_generator_state(generator_id: String, game_data: Dictionary 
 	else:
 		state.buy_button.text = "SIN DINERO"
 
+
 func update_single_generator_display(generator_id: String, game_data: Dictionary):
 	"""LEGACY: Redirigir a la nueva implementación centralizada"""
 	_update_single_generator_state(generator_id, game_data)
+
 
 func get_generator_cost_from_manager(generator_id: String, quantity: int) -> float:
 	"""Obtener costo usando la misma lógica que GeneratorManager"""
@@ -359,14 +387,13 @@ func get_generator_cost_from_manager(generator_id: String, quantity: int) -> flo
 		data.base_price, owned, quantity, GameConfig.GENERATOR_SCALE_FACTOR
 	)
 
+
 func get_current_game_data() -> Dictionary:
 	"""Obtener datos actuales del juego"""
 	if generator_manager_ref and generator_manager_ref.has_method("get_game_data"):
 		return generator_manager_ref.get_game_data()
-	return {
-		"generators": {},
-		"money": 0
-	}
+	return {"generators": {}, "money": 0}
+
 
 func calculate_generator_cost(generator_id: String, current_owned: float) -> float:
 	"""DEPRECATED: Usar get_generator_cost_from_manager en su lugar"""
