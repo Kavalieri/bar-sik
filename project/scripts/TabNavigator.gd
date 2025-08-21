@@ -2,8 +2,14 @@ extends Control
 ## TabNavigator - Sistema de navegación por pestañas para BAR-SIK
 ## Maneja la navegación entre GenerationPanel, ProductionPanel y SalesPanel
 
+# Preloads
+const CurrencyDisplay = preload("res://scripts/ui/CurrencyDisplay.gd")
+
 @onready var pause_button: Button = $MainContainer/TopPanel/PauseButton
 @onready var save_menu_button: MenuButton = $MainContainer/TopPanel/SaveMenuButton
+@onready var prestige_button: Button = $MainContainer/TopPanel/PrestigeButton
+@onready var missions_button: Button = $MainContainer/TopPanel/MissionsButton  # T019
+@onready var automation_button: Button = $MainContainer/TopPanel/AutomationButton  # T022
 @onready var currency_container: HBoxContainer = $MainContainer/TopPanel/CurrencyContainer
 
 # Botones de pestañas (ahora en la parte inferior)
@@ -20,13 +26,19 @@ extends Control
 
 # Variables para el sistema
 var current_tab: String = "generation"
-var money_label: Label
+var money_label: Label  # LEGACY - mantener por compatibilidad
+var cash_display: Control
+var tokens_display: Control
+var gems_display: Control
 
 # Señales para comunicación con GameScene
 signal tab_changed(tab_name: String)
 signal pause_pressed
 signal save_data_reset_requested
 signal new_save_slot_requested(slot_name: String)
+signal prestige_requested  # T015 - Señal para mostrar panel de prestigio
+signal missions_requested  # T019 - Señal para mostrar panel de misiones y logros
+signal automation_requested  # T022 - Señal para mostrar panel de automatización
 
 
 func _ready() -> void:
@@ -37,10 +49,8 @@ func _ready() -> void:
 
 
 func _setup_ui() -> void:
-	# Setup dinero display con tamaño móvil
-	money_label = Label.new()
-	money_label.add_theme_font_size_override("font_size", 28)  # Aumentado para móvil
-	currency_container.add_child(money_label)
+	# Setup triple currency displays (T004)
+	_setup_currency_displays()
 
 	# Setup botones con tamaños móviles
 	_setup_mobile_friendly_tabs()
@@ -48,8 +58,50 @@ func _setup_ui() -> void:
 	# Setup pause button
 	pause_button.pressed.connect(_on_pause_pressed)
 
+	# T015 - Setup prestige button
+	prestige_button.pressed.connect(_on_prestige_pressed)
+
+	# T019 - Setup missions button
+	missions_button.pressed.connect(_on_missions_pressed)
+
+	# T022 - Setup automation button
+	automation_button.pressed.connect(_on_automation_pressed)
+
 	# Setup menú de guardado
 	_setup_save_menu()
+
+
+func _setup_currency_displays() -> void:
+	"""T004 - Configurar displays de triple moneda"""
+	print("💰 T004 - Configurando triple currency display")
+
+	# Limpiar container
+	for child in currency_container.get_children():
+		child.queue_free()
+
+	# Crear displays usando el componente CurrencyDisplay
+	cash_display = CurrencyDisplay.new()
+	cash_display.setup_currency("cash")
+	cash_display.show_label = false  # Solo mostrar icono y cantidad para ahorrar espacio
+	currency_container.add_child(cash_display)
+
+	tokens_display = CurrencyDisplay.new()
+	tokens_display.setup_currency("tokens")
+	tokens_display.show_label = false
+	currency_container.add_child(tokens_display)
+
+	gems_display = CurrencyDisplay.new()
+	gems_display.setup_currency("gems")
+	gems_display.show_label = false
+	currency_container.add_child(gems_display)
+
+	# Mantener money_label legacy para compatibilidad
+	money_label = Label.new()
+	money_label.add_theme_font_size_override("font_size", 28)
+	money_label.visible = false  # Oculto porque usamos CurrencyDisplay
+	currency_container.add_child(money_label)
+
+	print("✅ T004 - Triple currency display configurado")
 
 
 func _setup_mobile_friendly_tabs() -> void:
@@ -108,8 +160,34 @@ func _show_tab(tab_name: String) -> void:
 
 
 func update_money_display(amount: float) -> void:
-	if money_label:
+	# Legacy method - mantener compatibilidad actualizando cash display
+	update_currency_display("cash", int(amount))
+
+
+## T004 - Métodos para triple currency display
+func update_currency_display(currency_type: String, amount: int) -> void:
+	"""Actualizar display de una moneda específica"""
+	match currency_type:
+		"cash":
+			if cash_display and cash_display.has_method("set_amount"):
+				cash_display.set_amount(float(amount))
+		"tokens":
+			if tokens_display and tokens_display.has_method("set_amount"):
+				tokens_display.set_amount(float(amount))
+		"gems":
+			if gems_display and gems_display.has_method("set_amount"):
+				gems_display.set_amount(float(amount))
+
+	# También actualizar money_label legacy si es cash
+	if currency_type == "cash" and money_label:
 		money_label.text = "💰 $%s" % GameUtils.format_large_number(amount)
+
+
+func update_all_currencies(cash: int, tokens: int, gems: int) -> void:
+	"""T004 - Actualizar todos los displays de currency de una vez"""
+	update_currency_display("cash", cash)
+	update_currency_display("tokens", tokens)
+	update_currency_display("gems", gems)
 
 
 func get_current_panel() -> Control:
@@ -143,6 +221,27 @@ func _on_customers_tab_pressed() -> void:
 func _on_pause_pressed() -> void:
 	print("⏸️ Botón pausa presionado")
 	pause_pressed.emit()
+
+
+# T015 - Handler para botón de prestigio
+func _on_prestige_pressed() -> void:
+	"""Emitir señal para mostrar panel de prestigio"""
+	print("⭐ Botón de prestigio presionado")
+	prestige_requested.emit()
+
+
+# T019 - Signal handler para botón de misiones
+func _on_missions_pressed() -> void:
+	"""Emitir señal para mostrar panel de misiones y logros"""
+	print("🎮 Botón de misiones presionado")
+	missions_requested.emit()
+
+
+# T022 - Signal handler para botón de automatización
+func _on_automation_pressed() -> void:
+	"""Emitir señal para mostrar panel de automatización"""
+	print("🎛️ Botón de automatización presionado")
+	automation_requested.emit()
 
 
 ## MENÚ DE GUARDADO

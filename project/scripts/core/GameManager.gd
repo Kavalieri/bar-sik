@@ -4,7 +4,7 @@ extends Node
 
 # Referencias a los managers
 @onready var resource_manager: ResourceManager
-@onready var currency_manager: CurrencyManager
+# ELIMINADO: @onready var currency_manager: CurrencyManager - Refactor: currencies en GameData
 
 # Estado del juego
 var game_state: Dictionary = {
@@ -29,11 +29,11 @@ func _ready() -> void:
 
 	# Crear instancias de los managers
 	resource_manager = ResourceManager.new()
-	currency_manager = CurrencyManager.new()
+	# ELIMINADO: currency_manager = CurrencyManager.new() - Refactor: currencies en GameData
 
 	# Añadirlos al árbol
 	add_child(resource_manager)
-	add_child(currency_manager)
+	# ELIMINADO: add_child(currency_manager)
 
 	# Conectar señales importantes
 	_connect_signals()

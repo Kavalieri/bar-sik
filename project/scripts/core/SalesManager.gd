@@ -45,6 +45,13 @@ func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 	# Obtener precio
 	var price = get_item_price(item_type, item_name)
 	var total_earned = actual_quantity * price
+
+	# T014 - Aplicar Income Multiplier de prestigio (ventas manuales)
+	var prestige_multiplier = game_data.get("prestige_income_multiplier", 1.0)
+	if prestige_multiplier > 1.0:
+		total_earned *= prestige_multiplier
+		print("   - ⭐ Bonus prestigio aplicado: x%.2f" % prestige_multiplier)
+
 	print("   - Precio unitario: $%.2f, Total: $%.2f" % [price, total_earned])
 
 	# Remover stock usando StockManager
@@ -53,9 +60,8 @@ func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 		print("❌ ERROR: No se pudo remover stock")
 		return false
 
-	# Actualizar dinero y estadísticas
-	game_data.money += total_earned
-	game_data.statistics["total_money_earned"] += total_earned
+	# Actualizar dinero y estadísticas usando método de GameData (T013 - Prestigio)
+	game_data.add_money(total_earned)  # Trackea total_cash_earned automáticamente
 
 	if item_type == "product":
 		game_data.statistics["products_sold"] += actual_quantity

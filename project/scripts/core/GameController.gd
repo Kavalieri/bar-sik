@@ -5,6 +5,9 @@ class_name GameController
 
 # Escenas precargadas
 const PAUSE_MENU_SCENE = preload("res://scenes/PauseMenu.tscn")
+const PRESTIGE_PANEL_SCENE = preload("res://scenes/ui/PrestigePanel.tscn")
+const MISSIONS_PANEL_SCENE = preload("res://scenes/MissionsPanel.tscn")  # T019
+const AUTOMATION_PANEL_SCENE = preload("res://scenes/ui/AutomationPanel.tscn")  # T022
 
 @onready var tab_navigator: Control = $TabNavigator
 
@@ -14,6 +17,13 @@ var generator_manager: GeneratorManager
 var production_manager: ProductionManager
 var sales_manager: SalesManager
 var customer_manager: CustomerManager
+var prestige_manager: PrestigeManager  # T013 - Sistema de Prestigio
+var achievement_manager: AchievementManager  # T017 - Sistema de Logros
+var mission_manager: MissionManager  # T018 - Sistema de Misiones Diarias
+var automation_manager: AutomationManager  # T020 - Sistema de Automatización
+var offline_progress_manager: OfflineProgressManager  # T023 - Progreso Offline
+var daily_reward_manager: DailyRewardManager  # T026 - Sistema de recompensas diarias
+# ELIMINADO: var currency_manager: CurrencyManager - Refactor: currencies en GameData
 
 # Referencias a paneles UI
 var generation_panel: Control
@@ -23,9 +33,13 @@ var customers_panel: Control
 
 # Timers del sistema
 var save_timer: Timer
+var gems_timer: Timer  # T014 - Diamond Bonus timer
 
 # Cache para sistema reactivo
 var cached_money: float = 0.0
+
+# T023 - Control de progreso offline
+var _check_offline_progress_after_load: bool = false
 
 
 func _ready() -> void:
@@ -39,6 +53,7 @@ func _ready() -> void:
 	_setup_state_manager()  # NUEVO: Sistema de estado centralizado
 	_setup_ui_system()
 	_setup_save_timer()
+	_setup_gems_timer()  # T014 - Diamond Bonus timer
 
 	# TEMPORAL: Debug del sistema de generación
 	var debug_generator = preload("res://scripts/DebugGeneratorTest.gd").new()
@@ -51,6 +66,11 @@ func _ready() -> void:
 
 	print_rich("[color=green]✅ GameController listo - Sistema modular activo[/color]")
 	debug_game_state()
+
+	# T023 - Verificar progreso offline después de la inicialización completa
+	if _check_offline_progress_after_load:
+		call_deferred("_process_offline_progress")
+		_check_offline_progress_after_load = false
 
 
 ## === DEBUGGING FUNCTIONS ===
@@ -97,6 +117,9 @@ func _setup_game_data() -> void:
 			game_data.from_dict(loaded_data)
 			print("💾 Datos cargados del sistema de guardado")
 
+			# T023 - Verificar progreso offline después de cargar
+			_check_offline_progress_after_load = true
+
 	print("🎯 Datos del juego configurados")
 
 
@@ -107,24 +130,63 @@ func _setup_managers() -> void:
 	production_manager = ProductionManager.new()
 	sales_manager = SalesManager.new()
 	customer_manager = CustomerManager.new()
+	prestige_manager = PrestigeManager.new()  # T013 - Sistema de Prestigio
+	achievement_manager = AchievementManager.new()  # T017 - Sistema de Logros
+	mission_manager = MissionManager.new()  # T018 - Sistema de Misiones Diarias
+	automation_manager = AutomationManager.new()  # T020 - Sistema de Automatización
+	offline_progress_manager = OfflineProgressManager.new()  # T023 - Progreso Offline
+	# ELIMINADO: currency_manager - Refactor: currencies en GameData
 
 	# Agregar al árbol de nodos
 	add_child(generator_manager)
 	add_child(production_manager)
 	add_child(sales_manager)
 	add_child(customer_manager)
+	add_child(prestige_manager)  # T013 - Sistema de Prestigio
+	add_child(achievement_manager)  # T017 - Sistema de Logros
+	add_child(mission_manager)  # T018 - Sistema de Misiones Diarias
+	add_child(automation_manager)  # T020 - Sistema de Automatización
+	add_child(offline_progress_manager)  # T023 - Progreso Offline
+	add_child(daily_reward_manager)  # T026 - Sistema de recompensas diarias
+	# ELIMINADO: add_child(currency_manager)
 
 	# Asignar datos del juego a todos los managers
 	generator_manager.set_game_data(game_data)
 	production_manager.set_game_data(game_data)
 	sales_manager.set_game_data(game_data)
 	customer_manager.set_game_data(game_data)
+	prestige_manager.set_game_data(game_data)  # T013 - Sistema de Prestigio
+	achievement_manager.set_game_data(game_data)  # T017 - Sistema de Logros
+	mission_manager.set_game_data(game_data)  # T018 - Sistema de Misiones Diarias
+	automation_manager.set_game_data(game_data)  # T020 - Sistema de Auto-Producción
+	offline_progress_manager.set_game_data(game_data)  # T023 - Progreso Offline
+	daily_reward_manager.set_game_data(game_data)  # T026 - Sistema de recompensas diarias
+	# ELIMINADO: currency_manager.set_game_data(game_data) - Ya no existe
 	# Para acceder a definiciones de estaciones
 	customer_manager.set_production_manager(production_manager)
+
+	# T020 - Conectar AutomationManager con otros managers
+	automation_manager.set_managers(production_manager, sales_manager)
+	print("🤖 AutomationManager conectado con managers")
+
+	# T023 - Conectar OfflineProgressManager con managers necesarios
+	offline_progress_manager.set_managers(automation_manager, customer_manager, generator_manager)
+	print("📴 OfflineProgressManager conectado con managers")
 
 	# Configurar StockManager singleton
 	StockManager.set_game_data(game_data)
 	print("📦 StockManager configurado con GameData")
+
+	# T013 - Cargar datos de prestigio en el PrestigeManager
+	prestige_manager.load_prestige_data_from_game_data()
+	print("🌟 PrestigeManager datos cargados desde GameData")
+
+	# T014 - Aplicar bonificaciones de prestige al cargar
+	if prestige_manager.active_star_bonuses.size() > 0:
+		prestige_manager._apply_all_star_bonuses()
+		print(
+			"⭐ Bonificaciones aplicadas: %d activas" % prestige_manager.active_star_bonuses.size()
+		)
 
 	# CRÍTICO: Conectar señal de StockManager para actualizaciones en tiempo real
 	StockManager.stock_updated.connect(_on_stock_updated)
@@ -166,6 +228,25 @@ func _connect_manager_signals() -> void:
 	customer_manager.customer_served.connect(_on_customer_served)
 	customer_manager.upgrade_purchased.connect(_on_customer_upgrade_purchased)
 
+	# T013 - Señales de prestigio
+	prestige_manager.prestige_available.connect(_on_prestige_available)
+	prestige_manager.prestige_completed.connect(_on_prestige_completed)
+	prestige_manager.star_bonus_applied.connect(_on_star_bonus_applied)
+
+	# T017 - Señales del sistema de logros
+	achievement_manager.achievement_unlocked.connect(_on_achievement_unlocked)
+
+	# T018 - Señales del sistema de misiones
+	mission_manager.mission_completed.connect(_on_mission_completed)
+	mission_manager.daily_missions_reset.connect(_on_daily_missions_reset)
+
+	# T020-T021 - Señales del sistema de automatización
+	automation_manager.auto_production_started.connect(_on_auto_production_started)
+	automation_manager.auto_sell_triggered.connect(_on_auto_sell_triggered)
+	automation_manager.automation_config_changed.connect(_on_automation_config_changed)
+
+	# ELIMINADO: Señales de currency - Refactor: currencies en GameData, sin signals
+
 
 ## Configurar sistema de UI
 func _setup_ui_system() -> void:
@@ -199,6 +280,9 @@ func _setup_ui_system() -> void:
 	tab_navigator.tab_changed.connect(_on_tab_changed)
 	tab_navigator.pause_pressed.connect(_on_pause_pressed)
 	tab_navigator.save_data_reset_requested.connect(_on_reset_data_requested)
+	tab_navigator.prestige_requested.connect(_on_prestige_button_pressed)  # T015
+	tab_navigator.missions_requested.connect(show_missions_panel)  # T019
+	tab_navigator.automation_requested.connect(show_automation_panel)  # T022
 
 	# Configurar paneles con datos iniciales
 	_setup_panels()
@@ -295,6 +379,27 @@ func _setup_save_timer() -> void:
 	print("💾 Timer de guardado automático configurado (cada 10s)")
 
 
+## T014 - Configurar timer de gemas por hora (Diamond Bonus)
+func _setup_gems_timer() -> void:
+	gems_timer = Timer.new()
+	gems_timer.wait_time = 3600.0  # 1 hora = 3600 segundos
+	gems_timer.autostart = true
+	gems_timer.timeout.connect(_on_gems_timer_timeout)
+	add_child(gems_timer)
+
+	print("💎 Timer de gemas por hora configurado (Diamond Bonus)")
+
+
+func _on_gems_timer_timeout() -> void:
+	"""Otorgar gemas por hora si Diamond Bonus está activo"""
+	var gems_per_hour = game_data.get("prestige_gems_per_hour", 0.0)
+	if gems_per_hour > 0:
+		var gems_to_add = int(gems_per_hour)
+		game_data.add_gems(gems_to_add)
+		print("💎 Diamond Bonus: +%d gemas por hora de juego" % gems_to_add)
+		# TODO: Mostrar notification en UI
+
+
 ## Actualizar todas las interfaces
 func _update_all_displays() -> void:
 	var game_dict = game_data.to_dict()
@@ -303,8 +408,12 @@ func _update_all_displays() -> void:
 	GameStateManager.update_game_state(game_dict)
 	cached_money = game_data.money
 
-	# Actualizar display de dinero
+	# Actualizar display de dinero (legacy)
 	tab_navigator.update_money_display(game_data.money)
+
+	# REFACTOR: Actualizar displays de triple currency directamente desde GameData
+	if tab_navigator.has_method("update_all_currencies"):
+		tab_navigator.update_all_currencies(int(game_data.money), game_data.tokens, game_data.gems)
 
 	# Actualizar paneles
 	if generation_panel.has_method("update_resource_displays"):
@@ -347,6 +456,12 @@ func _on_generator_purchased(generator_id: String, quantity: int) -> void:
 	print("✅ Generador comprado: %dx %s" % [quantity, generator_id])
 	_update_all_displays()
 
+	# T017 - Notificar al Achievement Manager sobre compra de generadores
+	achievement_manager.notify_generator_purchased(generator_id, quantity)
+
+	# T018 - Notificar al Mission Manager sobre compra de generadores
+	mission_manager.notify_generator_purchased(quantity)
+
 
 func _on_resource_generated(resource_type: String, amount: int) -> void:
 	"""Maneja la generación de recursos en tiempo real"""
@@ -356,10 +471,22 @@ func _on_resource_generated(resource_type: String, amount: int) -> void:
 	# Solo necesitamos actualizar el dinero por si hay ventas automáticas
 	tab_navigator.update_money_display(game_data.money)
 
+	# T017 - Notificar al Achievement Manager sobre recursos generados
+	achievement_manager.notify_resource_generated(resource_type, amount)
+
+	# T018 - Notificar al Mission Manager sobre recursos generados
+	mission_manager.notify_resource_generated(resource_type, amount)
+
 
 func _on_station_purchased(station_id: String) -> void:
 	print("✅ Estación comprada: %s" % station_id)
 	_update_all_displays()
+
+	# T017 - Notificar al Achievement Manager sobre compra de estaciones
+	achievement_manager.notify_station_purchased(station_id)
+
+	# T018 - Notificar al Mission Manager sobre compra de estaciones
+	mission_manager.notify_station_purchased()
 
 
 func _on_station_unlocked(station_id: String) -> void:
@@ -371,12 +498,26 @@ func _on_product_produced(product_type: String, amount: int) -> void:
 	print("🍺 Producido: %dx %s" % [amount, product_type])
 	_update_all_displays()
 
+	# T017 - Notificar al Achievement Manager sobre producción
+	achievement_manager.notify_product_produced(product_type, amount)
+
+	# T018 - Notificar al Mission Manager sobre producción
+	mission_manager.notify_product_produced(amount)
+
 
 func _on_item_sold(
 	item_type: String, item_name: String, quantity: int, total_earned: float
 ) -> void:
 	print("💰 Vendido: %dx %s (%s) por $%.2f" % [quantity, item_name, item_type, total_earned])
 	_update_all_displays()
+
+	# T017 - Notificar al Achievement Manager sobre ventas
+	achievement_manager.notify_item_sold(item_type, quantity, total_earned)
+
+	# T018 - Notificar al Mission Manager sobre ventas manuales
+	mission_manager.notify_manual_sale(total_earned)
+	mission_manager.notify_money_earned(total_earned)
+
 	# MEJORA: Guardar después de ventas importantes (>$10)
 	if total_earned >= 10.0:
 		_save_game_immediate()
@@ -389,6 +530,14 @@ func _on_customer_served(
 		"👤 %s compró %d productos por $%.2f" % [customer_type, products_bought.size(), total_earned]
 	)
 	_update_all_displays()
+
+	# T017 - Notificar al Achievement Manager sobre clientes servidos
+	achievement_manager.notify_customer_served(customer_type, products_bought.size(), total_earned)
+
+	# T018 - Notificar al Mission Manager sobre clientes servidos
+	mission_manager.notify_customer_served()
+	mission_manager.notify_money_earned(total_earned)
+
 	# MEJORA: Guardar después de ventas importantes (>$5)
 	if total_earned >= 5.0:
 		_save_game_immediate()
@@ -397,7 +546,95 @@ func _on_customer_served(
 func _on_customer_upgrade_purchased(upgrade_id: String, cost: float) -> void:
 	print("⬆️ Upgrade de cliente: %s por $%.0f" % [upgrade_id, cost])
 	_update_all_displays()
+
+	# T017 - Notificar al Achievement Manager sobre upgrades comprados
+	achievement_manager.notify_upgrade_purchased(upgrade_id, cost)
+
 	_save_game_immediate()  # MEJORA: Siempre guardar después de upgrades
+
+
+# T013 - Handlers del PrestigeManager
+func _on_prestige_available(stars_to_gain: int) -> void:
+	"""Manejar cuando el prestigio está disponible"""
+	print("🌟 Prestigio disponible - Stars a ganar: %d" % stars_to_gain)
+	# TODO: Mostrar notification o highlight en UI
+
+
+func _on_prestige_completed(stars_gained: int, total_stars: int) -> void:
+	"""Manejar cuando se completa un prestigio"""
+	print("✨ Prestigio completado - Ganadas: %d | Total: %d stars" % [stars_gained, total_stars])
+	_update_all_displays()
+
+	# T017 - Notificar al Achievement Manager sobre prestigio completado
+	achievement_manager.notify_prestige_completed(stars_gained, total_stars)
+
+	_save_game_immediate()  # Guardar inmediatamente después de prestigio
+	# TODO: Mostrar panel de celebración/resumen
+
+
+func _on_star_bonus_applied(bonus_id: String, effect_value: float) -> void:
+	"""Manejar cuando se aplica una bonificación de star"""
+	print("⭐ Star bonus aplicado: %s (valor: %.2f)" % [bonus_id, effect_value])
+	_update_all_displays()  # Actualizar UI para reflejar bonificaciones
+
+
+# T017 - Signal handler para logros desbloqueados
+func _on_achievement_unlocked(_achievement_id: String, achievement_data: Dictionary) -> void:
+	"""Manejar cuando se desbloquea un logro"""
+	print("🏆 Logro desbloqueado: %s - %s" % [achievement_data.name, achievement_data.description])
+
+	# Aplicar recompensas del logro
+	if achievement_data.has("token_reward") and achievement_data.token_reward > 0:
+		game_data.add_tokens(achievement_data.token_reward)
+		print("💰 +%d tokens por logro" % achievement_data.token_reward)
+
+	if achievement_data.has("gem_reward") and achievement_data.gem_reward > 0:
+		game_data.add_gems(achievement_data.gem_reward)
+		print("💎 +%d gemas por logro" % achievement_data.gem_reward)
+
+	_update_all_displays()
+	_save_game_immediate()  # Guardar progreso de logros
+	# TODO: Mostrar notification visual de logro desbloqueado
+
+
+# T018 - Signal handlers para misiones
+func _on_mission_completed(_mission_id: String, mission_data: Dictionary) -> void:
+	"""Manejar cuando se completa una misión diaria"""
+	print("📋 Misión completada: %s - %s" % [mission_data.name, mission_data.description])
+
+	# La recompensa ya fue aplicada por el MissionManager
+	_update_all_displays()
+	_save_game_immediate()  # Guardar progreso de misiones
+	# TODO: Mostrar notification visual de misión completada
+
+
+func _on_daily_missions_reset() -> void:
+	"""Manejar cuando se resetean las misiones diarias"""
+	print("📅 Misiones diarias reseteadas - Nuevas misiones disponibles")
+	_update_all_displays()
+	# TODO: Mostrar notification de nuevas misiones disponibles
+
+
+## === T020 - EVENTOS DE AUTOMATIZACIÓN ===
+
+
+func _on_auto_production_started(station_id: String, product_id: String, quantity: int) -> void:
+	"""Manejar cuando se inicia auto-producción"""
+	print("🤖 Auto-producción iniciada: %s produciendo %s x%d" % [station_id, product_id, quantity])
+	_update_all_displays()
+
+
+func _on_auto_sell_triggered(product_id: String, quantity: int, earnings: float) -> void:
+	"""Manejar cuando se dispara auto-venta"""
+	print("💰 Auto-venta ejecutada: %s x%d por %.2f monedas" % [product_id, quantity, earnings])
+	_update_all_displays()
+
+
+func _on_automation_config_changed(setting_type: String, enabled: bool) -> void:
+	"""Manejar cuando cambia configuración de automatización"""
+	print("⚙️ Automatización configurada: %s = %s" % [setting_type, enabled])
+	# Guardar configuración
+	_save_game_data()
 
 
 ## === EVENTOS DE UI ===
@@ -455,21 +692,25 @@ func _on_tab_changed(tab_name: String) -> void:
 
 
 func _on_pause_pressed() -> void:
-	print("⏸️ Botón pausa presionado")
+	print("⏸️ Pausa solicitada desde TabNavigator")
 
-	if get_tree().paused:
-		# Si ya está pausado, reanudar
-		print("▶️ Reanudando juego")
-		get_tree().paused = false
-		# Remover menú de pausa si existe
-		var pause_menu = get_node_or_null("PauseMenuOverlay")
-		if pause_menu:
-			pause_menu.queue_free()
-	else:
-		# Pausar y mostrar menú
+	# Buscar menú de pausa existente antes de crear uno nuevo
+	var existing_pause_menu = get_node_or_null("PauseMenuOverlay")
+	if existing_pause_menu:
+		print("⏸️ Menú de pausa ya existe, removiendo...")
+		existing_pause_menu.queue_free()
+
+	if not get_tree().paused:
 		print("⏸️ Juego pausado")
 		get_tree().paused = true
 		_show_pause_menu()
+
+
+# T015 - Handler para botón de prestigio del TabNavigator
+func _on_prestige_button_pressed() -> void:
+	"""Manejar click del botón de prestigio"""
+	print("⭐ Botón de prestigio presionado desde TabNavigator")
+	show_prestige_panel()
 
 
 func _show_pause_menu() -> void:
@@ -484,6 +725,156 @@ func _show_pause_menu() -> void:
 	print("⏸️ Menú de pausa mostrado")
 
 
+# T015 - Mostrar panel de prestigio
+func show_prestige_panel() -> void:
+	"""Mostrar panel de prestigio"""
+	print("🌟 Mostrando panel de prestigio...")
+
+	# Verificar que no haya otro panel ya abierto
+	var existing_panel = get_node_or_null("PrestigePanelOverlay")
+	if existing_panel:
+		existing_panel.queue_free()
+		print("🗑️ Panel de prestigio anterior removido")
+
+	# Crear instancia del panel
+	var prestige_panel_instance = PRESTIGE_PANEL_SCENE.instantiate()
+	prestige_panel_instance.name = "PrestigePanelOverlay"
+	prestige_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Configurar con managers
+	prestige_panel_instance.setup_with_managers(prestige_manager, game_data)
+
+	# Conectar señales del panel
+	prestige_panel_instance.prestige_requested.connect(_on_prestige_requested)
+	prestige_panel_instance.bonus_purchase_requested.connect(_on_bonus_purchase_requested)
+	prestige_panel_instance.panel_closed.connect(_on_prestige_panel_closed)
+
+	# Añadir como overlay (encima de todo)
+	add_child(prestige_panel_instance)
+
+	# Mostrar con animación
+	prestige_panel_instance.show_panel()
+
+	print("✅ Panel de prestigio mostrado")
+
+
+# T019 - Función para mostrar panel de misiones y logros
+func show_missions_panel():
+	"""Mostrar el panel de misiones y logros"""
+	print("🎮 Mostrando panel de misiones y logros")
+
+	# Crear instancia del panel
+	var missions_panel_instance = MISSIONS_PANEL_SCENE.instantiate()
+	missions_panel_instance.name = "MissionsPanelOverlay"
+	missions_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Configurar con managers
+	missions_panel_instance.setup_managers(mission_manager, achievement_manager)
+
+	# Conectar señales del panel
+	missions_panel_instance.panel_closed.connect(_on_missions_panel_closed)
+
+	# Añadir como overlay (encima de todo)
+	add_child(missions_panel_instance)
+
+	# Mostrar panel
+	missions_panel_instance.show_panel()
+
+	print("✅ Panel de misiones mostrado")
+
+
+func _on_missions_panel_closed():
+	"""Manejar cierre del panel de misiones"""
+	print("🎮 Panel de misiones cerrado")
+
+	# Buscar y eliminar el panel overlay
+	var missions_overlay = get_node_or_null("MissionsPanelOverlay")
+	if missions_overlay:
+		missions_overlay.queue_free()
+
+
+# T022 - Panel de automatización
+func show_automation_panel():
+	"""Mostrar el panel de automatización"""
+	print("🎛️ Mostrando panel de automatización")
+
+	# Crear instancia del panel
+	var automation_panel_instance = AUTOMATION_PANEL_SCENE.instantiate()
+	automation_panel_instance.name = "AutomationPanelOverlay"
+	automation_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Configurar con managers (el panel obtendrá las referencias por sí mismo)
+	# automation_panel_instance ya tiene acceso a GameController via singleton
+
+	# Conectar señal de cierre si existe
+	if automation_panel_instance.has_signal("panel_closed"):
+		automation_panel_instance.panel_closed.connect(_on_automation_panel_closed)
+
+	# Añadir como overlay (encima de todo)
+	add_child(automation_panel_instance)
+
+	# Mostrar panel
+	automation_panel_instance.show_panel()
+
+	print("✅ Panel de automatización mostrado")
+
+
+func _on_automation_panel_closed():
+	"""Manejar cierre del panel de automatización"""
+	print("🎛️ Panel de automatización cerrado")
+
+	# Buscar y eliminar el panel overlay
+	var automation_overlay = get_node_or_null("AutomationPanelOverlay")
+	if automation_overlay:
+		automation_overlay.queue_free()
+
+
+func _on_prestige_requested() -> void:
+	"""Manejar solicitud de prestigio"""
+	print("⭐ Prestigio solicitado por el usuario")
+
+	if prestige_manager and prestige_manager.can_prestige():
+		var stars_gained = prestige_manager.perform_prestige()
+		print("🌟 Prestigio realizado - Stars ganadas: %d" % stars_gained)
+
+		# Actualizar displays
+		_update_all_displays()
+
+		# Guardar inmediatamente
+		_save_game_immediate()
+
+		# Cerrar panel de prestigio si está abierto
+		var prestige_panel = get_node_or_null("PrestigePanelOverlay")
+		if prestige_panel:
+			prestige_panel.queue_free()
+	else:
+		print("❌ No se puede realizar prestigio")
+
+
+func _on_bonus_purchase_requested(bonus_id: String) -> void:
+	"""Manejar compra de bonificación de prestigio"""
+	print("🛒 Compra de bonus solicitada: %s" % bonus_id)
+
+	if prestige_manager:
+		var success = prestige_manager.purchase_star_bonus(bonus_id)
+		if success:
+			print("✅ Bonus comprado: %s" % bonus_id)
+			# Actualizar displays
+			_update_all_displays()
+			# Guardar inmediatamente
+			_save_game_immediate()
+		else:
+			print("❌ No se pudo comprar bonus: %s" % bonus_id)
+
+
+func _on_prestige_panel_closed() -> void:
+	"""Manejar cierre del panel de prestigio"""
+	print("🌟 Panel de prestigio cerrado")
+	var prestige_panel = get_node_or_null("PrestigePanelOverlay")
+	if prestige_panel:
+		prestige_panel.queue_free()
+
+
 func _on_reset_data_requested() -> void:
 	print("🗑️ Resetear datos solicitado")
 
@@ -495,6 +886,7 @@ func _on_reset_data_requested() -> void:
 	production_manager.set_game_data(game_data)
 	sales_manager.set_game_data(game_data)
 	customer_manager.set_game_data(game_data)
+	# ELIMINADO: currency_manager.set_game_data(game_data) - Ya no existe
 
 	# PASO 3: Actualizar StockManager también
 	StockManager.set_game_data(game_data)
@@ -527,8 +919,121 @@ func _save_game_immediate() -> void:
 ## Guardar al cerrar
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		# Actualizar el timestamp de last_close_time antes de guardar
+		game_data.gameplay_data["last_close_time"] = Time.get_unix_time_from_system()
 		_save_game()
 		get_tree().quit()
+
+
+## === T023 - OFFLINE PROGRESS SYSTEM ===
+
+
+func _process_offline_progress():
+	"""Procesar cálculo de progreso offline después de cargar datos"""
+	print("📴 Iniciando cálculo de progreso offline...")
+
+	if not offline_progress_manager:
+		print("⚠️ OfflineProgressManager no disponible")
+		return
+
+	# Verificar y calcular progreso offline
+	var progress_data = offline_progress_manager.check_offline_progress()
+
+	if progress_data.is_empty():
+		print("📴 No hay progreso offline significativo")
+		return
+
+	# Mostrar resumen de progreso offline
+	_show_offline_progress_summary(progress_data)
+
+	# Actualizar displays después de aplicar progreso offline
+	call_deferred("_update_all_displays")
+
+
+func _show_offline_progress_summary(progress_data: Dictionary):
+	"""Mostrar resumen visual del progreso offline"""
+	print("📴 ═══ PROGRESO OFFLINE ═══")
+	print("📴 Tiempo ausente: %.1f horas" % progress_data.offline_hours)
+	print("📴 Eficiencia: %.0f%%" % (progress_data.efficiency * 100))
+
+	# Log detallado en consola
+	if progress_data.resources_generated.size() > 0:
+		print("📴 🔋 Recursos generados:")
+		for resource in progress_data.resources_generated:
+			var amount = progress_data.resources_generated[resource]
+			if amount > 0:
+				print("📴   +%d %s" % [amount, resource])
+
+	if progress_data.products_produced.size() > 0:
+		print("📴 🏭 Productos creados:")
+		for product in progress_data.products_produced:
+			var amount = progress_data.products_produced[product]
+			if amount > 0:
+				print("📴   +%d %s" % [amount, product])
+
+	if progress_data.customers_served > 0:
+		print("📴 👥 Clientes servidos: %d" % progress_data.customers_served)
+		print("📴 🪙 Tokens ganados: %d (incluye bonus)" % progress_data.tokens_earned)
+
+	if progress_data.catch_up_bonus > 0:
+		print("📴 🎁 Bonus de regreso: %d tokens" % progress_data.catch_up_bonus)
+
+	print("📴 ═══ FIN PROGRESO OFFLINE ═══")
+
+	# Mostrar diálogo visual bonito
+	_create_offline_progress_dialog(progress_data)
+
+
+## Crear diálogo visual del progreso offline
+func _create_offline_progress_dialog(progress_data: Dictionary) -> void:
+	var dialog = AcceptDialog.new()
+	dialog.title = "🏠 ¡Bienvenido de vuelta!"
+
+	# Construir mensaje atractivo
+	var message = "Has estado ausente por %.1f horas\n\n" % progress_data.offline_hours
+	message += "🎮 Tu negocio siguió funcionando...\n\n"
+
+	# Mostrar eficiencia
+	message += "⚙️ Eficiencia offline: %.0f%%\n\n" % (progress_data.efficiency * 100)
+
+	# Recursos generados
+	if progress_data.resources_generated.size() > 0:
+		message += "⚡ RECURSOS GENERADOS:\n"
+		for resource in progress_data.resources_generated:
+			var amount = progress_data.resources_generated[resource]
+			if amount > 0:
+				message += "   • %s: +%d\n" % [resource.capitalize(), amount]
+		message += "\n"
+
+	# Productos producidos
+	if progress_data.products_produced.size() > 0:
+		message += "🍺 PRODUCTOS CREADOS:\n"
+		for product in progress_data.products_produced:
+			var amount = progress_data.products_produced[product]
+			if amount > 0:
+				message += "   • %s: +%d\n" % [product.capitalize(), amount]
+		message += "\n"
+
+	# Clientes y tokens
+	if progress_data.customers_served > 0:
+		message += "👥 CLIENTES ATENDIDOS: %d\n" % progress_data.customers_served
+		message += "🪙 TOKENS GANADOS: %d\n" % progress_data.tokens_earned
+		if progress_data.catch_up_bonus > 0:
+			message += "🎁 BONUS DE REGRESO: +%d tokens\n" % progress_data.catch_up_bonus
+		message += "\n"
+
+	message += "🚀 ¡Continúa construyendo tu imperio!\n"
+	message += "¡Tu negocio te esperaba! 🍻"
+
+	dialog.dialog_text = message
+	dialog.ok_button_text = "¡Continuar!"
+
+	# Agregar al árbol y mostrar
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(500, 400))
+
+	# Auto-limpiar cuando se cierre
+	dialog.tree_exited.connect(dialog.queue_free)
 
 
 ## === CALLBACKS DE OFERTAS ===
@@ -688,3 +1193,17 @@ func _on_stock_updated(item_type: String, item_name: String, new_quantity: int) 
 			}
 			sales_panel.update_inventory_displays(minimal_data)
 			print("✅ SalesPanelBasic actualizado con nuevo stock de %s" % item_name)
+
+
+## === CALLBACKS ELIMINADOS ===
+## CurrencyManager eliminado - currencies ahora en GameData directamente
+## Sin signals, sin callbacks, updates directos en _update_all_displays()
+
+# ═════════════════════════════════════════════════════════════════════════════════════
+# T026: ACCESO PÚBLICO PARA DAILY REWARD MANAGER
+# ═════════════════════════════════════════════════════════════════════════════════════
+
+
+## Acceso público al AchievementManager para DailyRewardManager
+func get_achievement_manager() -> AchievementManager:
+	return achievement_manager

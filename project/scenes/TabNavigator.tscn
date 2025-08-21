@@ -41,6 +41,27 @@ size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 18
 text = "💾 Guardado"
 
+[node name="PrestigeButton" type="Button" parent="MainContainer/TopPanel"]
+custom_minimum_size = Vector2(140, 60)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "⭐ Prestigio"
+
+[node name="MissionsButton" type="Button" parent="MainContainer/TopPanel"]
+custom_minimum_size = Vector2(140, 60)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "🎮 Misiones"
+
+[node name="AutomationButton" type="Button" parent="MainContainer/TopPanel"]
+custom_minimum_size = Vector2(140, 60)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "🎛️ Auto"
+
 [node name="CurrencyContainer" type="HBoxContainer" parent="MainContainer/TopPanel"]
 layout_mode = 2
 size_flags_horizontal = 3

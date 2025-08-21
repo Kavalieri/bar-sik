@@ -1,0 +1,124 @@
+[gd_scene load_steps=2 format=3 uid="uid://by8vywp87wdxj"]
+
+[ext_resource type="Script" path="res://scripts/ui/AutomationPanel.gd" id="1_x7y2b"]
+
+[node name="AutomationPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_x7y2b")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.1, 0.8)
+
+[node name="MainContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -350.0
+offset_right = 400.0
+offset_bottom = 350.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="MainContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MainContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🎛️ PANEL DE AUTOMATIZACIÓN"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="Button" parent="MainContainer/VBoxContainer/Header"]
+layout_mode = 2
+text = "❌"
+
+[node name="HSeparator" type="HSeparator" parent="MainContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer"]
+layout_mode = 2
+offset_top = 67.0
+offset_bottom = 700.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="AutoProductionSection" type="VBoxContainer" parent="MainContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProductionHeader" type="Label" parent="MainContainer/ScrollContainer/VBoxContainer/AutoProductionSection"]
+layout_mode = 2
+text = "🏭 AUTO-PRODUCCIÓN"
+horizontal_alignment = 1
+
+[node name="ProductionContainer" type="VBoxContainer" parent="MainContainer/ScrollContainer/VBoxContainer/AutoProductionSection"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MainContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="AutoSellSection" type="VBoxContainer" parent="MainContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SellHeader" type="Label" parent="MainContainer/ScrollContainer/VBoxContainer/AutoSellSection"]
+layout_mode = 2
+text = "💰 AUTO-VENTA"
+horizontal_alignment = 1
+
+[node name="SellContainer" type="VBoxContainer" parent="MainContainer/ScrollContainer/VBoxContainer/AutoSellSection"]
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="MainContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GlobalSection" type="VBoxContainer" parent="MainContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GlobalHeader" type="Label" parent="MainContainer/ScrollContainer/VBoxContainer/GlobalSection"]
+layout_mode = 2
+text = "🔧 CONFIGURACIÓN GLOBAL"
+horizontal_alignment = 1
+
+[node name="SettingsContainer" type="VBoxContainer" parent="MainContainer/ScrollContainer/VBoxContainer/GlobalSection"]
+layout_mode = 2
+
+[node name="SmartPriorityToggle" type="CheckBox" parent="MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer"]
+layout_mode = 2
+text = "🧠 Prioridad Inteligente"
+
+[node name="SmartPricingToggle" type="CheckBox" parent="MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer"]
+layout_mode = 2
+text = "💡 Smart Pricing"
+
+[node name="ThresholdContainer" type="HBoxContainer" parent="MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer"]
+layout_mode = 2
+
+[node name="ThresholdLabel" type="Label" parent="MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/ThresholdContainer"]
+layout_mode = 2
+text = "🎚️ Umbral: 80%"
+
+[node name="ThresholdSlider" type="HSlider" parent="MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/ThresholdContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.5
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[connection signal="pressed" from="MainContainer/VBoxContainer/Header/CloseButton" to="." method="hide_panel"]
+[connection signal="toggled" from="MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/SmartPriorityToggle" to="." method="_on_smart_priority_toggled"]
+[connection signal="toggled" from="MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/SmartPricingToggle" to="." method="_on_smart_pricing_toggled"]

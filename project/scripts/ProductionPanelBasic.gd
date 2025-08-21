@@ -101,11 +101,25 @@ func setup_stations_section():
 
 
 func create_product_display_panel(product_id: String, data: Dictionary) -> Panel:
-	"""Crear panel individual para mostrar un producto (solo información)"""
-	# Panel compacto para producto
+	"""T010: Crear panel mejorado con recipe preview card"""
+	# Panel compacto para producto con styling profesional
 	var panel = Panel.new()
-	panel.custom_minimum_size = Vector2(200, 100)  # 180x80→200x100 más grande para fuentes
+	panel.custom_minimum_size = Vector2(220, 140)  # 200x100→220x140 más espacio para recipe
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# T010: Estilo del panel
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.15, 0.15, 0.25, 0.9)  # Fondo azul oscuro
+	panel_style.corner_radius_top_left = 8
+	panel_style.corner_radius_top_right = 8
+	panel_style.corner_radius_bottom_left = 8
+	panel_style.corner_radius_bottom_right = 8
+	panel_style.border_width_left = 2
+	panel_style.border_width_right = 2
+	panel_style.border_width_top = 2
+	panel_style.border_width_bottom = 2
+	panel_style.border_color = Color.CYAN
+	panel.add_theme_stylebox_override("panel", panel_style)
 
 	# Contenedor interno
 	var vbox = VBoxContainer.new()
@@ -121,6 +135,15 @@ func create_product_display_panel(product_id: String, data: Dictionary) -> Panel
 	title_label.text = "%s %s" % [data.emoji, data.name]
 	title_label.add_theme_font_size_override("font_size", 18)  # 14→18 más grande
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_color_override("font_color", Color.GOLD)
+
+	# T010: Recipe preview card - mostrar de qué se hace
+	var recipe_label = Label.new()
+	recipe_label.text = _get_product_recipe_preview(product_id)
+	recipe_label.add_theme_font_size_override("font_size", 12)
+	recipe_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	recipe_label.add_theme_color_override("font_color", Color.LIGHT_BLUE)
+	recipe_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 	# Cantidad del producto
 	var amount_label = Label.new()
@@ -130,8 +153,10 @@ func create_product_display_panel(product_id: String, data: Dictionary) -> Panel
 	amount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	amount_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	amount_label.name = "amount_label_" + product_id
+	amount_label.add_theme_color_override("font_color", Color.WHITE)
 
 	vbox.add_child(title_label)
+	vbox.add_child(recipe_label)  # T010: Recipe preview añadido
 	vbox.add_child(amount_label)
 	panel.add_child(vbox)
 
@@ -139,14 +164,28 @@ func create_product_display_panel(product_id: String, data: Dictionary) -> Panel
 
 
 func create_station_button(station_id: String, data: Dictionary) -> VBoxContainer:
-	"""Crear botón individual para una estación de producción"""
+	"""T010: Crear panel mejorado de estación con resource availability indicators"""
 	var container = VBoxContainer.new()
 	container.add_theme_constant_override("separation", 8)
 
-	# Panel principal de la estación
+	# T010: Panel principal con styling profesional
 	var main_panel = Panel.new()
-	main_panel.custom_minimum_size = Vector2(0, 100)  # 80→100 más alto para fuentes grandes
+	main_panel.custom_minimum_size = Vector2(0, 120)  # 100→120 más alto para recipe preview
 	main_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# T010: Estilo del panel de estación
+	var station_panel_style = StyleBoxFlat.new()
+	station_panel_style.bg_color = Color(0.2, 0.15, 0.1, 0.9)  # Fondo marrón oscuro
+	station_panel_style.corner_radius_top_left = 8
+	station_panel_style.corner_radius_top_right = 8
+	station_panel_style.corner_radius_bottom_left = 8
+	station_panel_style.corner_radius_bottom_right = 8
+	station_panel_style.border_width_left = 2
+	station_panel_style.border_width_right = 2
+	station_panel_style.border_width_top = 2
+	station_panel_style.border_width_bottom = 2
+	station_panel_style.border_color = Color.ORANGE
+	main_panel.add_theme_stylebox_override("panel", station_panel_style)
 
 	# Layout del panel
 	var panel_vbox = VBoxContainer.new()
@@ -162,37 +201,65 @@ func create_station_button(station_id: String, data: Dictionary) -> VBoxContaine
 	title_label.text = "%s %s" % [data.emoji, data.name]
 	title_label.add_theme_font_size_override("font_size", 18)  # 14→18 más grande
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_color_override("font_color", Color.GOLD)
 
-	# Info de la estación con ingredientes en formato cantidad/total
+	# T010: Recipe preview mejorado con availability colors
+	var recipe_preview_label = Label.new()
+	recipe_preview_label.text = _get_station_recipe_preview_colored(station_id)
+	recipe_preview_label.add_theme_font_size_override("font_size", 14)
+	recipe_preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	recipe_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	recipe_preview_label.name = "recipe_preview_" + station_id
+
+	# Info de la estación con disponibilidad de ingredientes
 	var info_label = Label.new()
-	var recipe_text = _format_recipe_with_availability(station_id)
-	info_label.text = "Poseído: 0 | %s" % recipe_text
+	info_label.text = "Poseído: 0 | Calculando disponibilidad..."
 	info_label.add_theme_font_size_override("font_size", 14)  # Agregar tamaño
 	info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info_label.name = "info_label_" + station_id
+	info_label.add_theme_color_override("font_color", Color.WHITE)
 
 	panel_vbox.add_child(title_label)
+	panel_vbox.add_child(recipe_preview_label)  # T010: Recipe preview añadido
 	panel_vbox.add_child(info_label)
 	main_panel.add_child(panel_vbox)
 
-	# Contenedor de botones (horizontal)
+	# T010: Contenedor de botones mejorado con styling profesional
 	var buttons_hbox = HBoxContainer.new()
-	buttons_hbox.add_theme_constant_override("separation", 8)
+	buttons_hbox.add_theme_constant_override("separation", 10)  # 8→10 más espacio
 
-	# Botón principal de compra
+	# T010: Botón principal estilo IdleBuyButton
 	var buy_button = Button.new()
-	buy_button.text = "COMPRAR"
+	buy_button.text = "PRODUCIR"  # COMPRAR → PRODUCIR más claro
 	buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	buy_button.custom_minimum_size = Vector2(0, 40)
-	buy_button.add_theme_font_size_override("font_size", 16)  # Botones más legibles
+	buy_button.custom_minimum_size = Vector2(0, 45)  # 40→45 como en T009
+	buy_button.add_theme_font_size_override("font_size", 18)  # 16→18 como en T009
 	buy_button.name = "buy_button_" + station_id
 
-	# Botón multiplicador
+	# T010: Estilo del botón principal (verde)
+	var buy_button_style = StyleBoxFlat.new()
+	buy_button_style.bg_color = Color(0.1, 0.5, 0.1, 1.0)  # Verde
+	buy_button_style.corner_radius_top_left = 6
+	buy_button_style.corner_radius_top_right = 6
+	buy_button_style.corner_radius_bottom_left = 6
+	buy_button_style.corner_radius_bottom_right = 6
+	buy_button.add_theme_stylebox_override("normal", buy_button_style)
+
+	# T010: Botón multiplicador con batch production x1→x3→x5→x10
 	var multiplier_button = Button.new()
 	multiplier_button.text = "x1"
-	multiplier_button.custom_minimum_size = Vector2(60, 40)
-	multiplier_button.add_theme_font_size_override("font_size", 14)  # Botón multiplicador legible
+	multiplier_button.custom_minimum_size = Vector2(70, 45)  # 60x40→70x45 como en T009
+	multiplier_button.add_theme_font_size_override("font_size", 16)  # 14→16 como en T009
 	multiplier_button.name = "multiplier_button_" + station_id
+
+	# T010: Estilo del botón multiplicador (naranja para diferenciarlo)
+	var mult_button_style = StyleBoxFlat.new()
+	mult_button_style.bg_color = Color(0.6, 0.3, 0.1, 1.0)  # Naranja (distinto del marrón)
+	mult_button_style.corner_radius_top_left = 6
+	mult_button_style.corner_radius_top_right = 6
+	mult_button_style.corner_radius_bottom_left = 6
+	mult_button_style.corner_radius_bottom_right = 6
+	multiplier_button.add_theme_stylebox_override("normal", mult_button_style)
 
 	# Conectar señales
 	buy_button.pressed.connect(_on_station_buy_pressed.bind(station_id))
@@ -201,11 +268,12 @@ func create_station_button(station_id: String, data: Dictionary) -> VBoxContaine
 	buttons_hbox.add_child(buy_button)
 	buttons_hbox.add_child(multiplier_button)
 
-	# Guardar estado del botón
+	# T010: Guardar estado completo con recipe_preview_label
 	button_states[station_id] = {
 		"buy_button": buy_button,
 		"multiplier_button": multiplier_button,
 		"info_label": info_label,
+		"recipe_preview_label": recipe_preview_label,  # T010: Para actualizar colors
 		"multiplier": 1,
 		"station_id": station_id
 	}
@@ -256,6 +324,86 @@ func get_ingredient_available_amount(ingredient_id: String) -> int:
 		return int(game_data.resources.get(ingredient_id, 0))
 
 	return 0
+
+
+# T010: Método para generar recipe preview para productos
+func _get_product_recipe_preview(product_id: String) -> String:
+	"""Generar preview de receta para un producto específico"""
+	# Buscar la estación que produce este producto
+	for station_id in GameConfig.STATION_DATA.keys():
+		var station_data = GameConfig.STATION_DATA[station_id]
+		var produces = station_data.get("produces", "")
+
+		if produces == product_id:
+			var recipe = station_data.get("recipe", {})
+			if recipe.is_empty():
+				return "Sin receta"
+
+			var recipe_parts = []
+			for ingredient_id in recipe.keys():
+				var needed_amount = recipe[ingredient_id]
+				var ingredient_data = GameConfig.RESOURCE_DATA.get(
+					ingredient_id, {"emoji": "❓", "name": ingredient_id}
+				)
+				recipe_parts.append("%s%d" % [ingredient_data.emoji, needed_amount])
+
+			var product_data = GameConfig.PRODUCT_DATA.get(product_id, {"emoji": "❓"})
+			return "%s → %s1" % [" + ".join(recipe_parts), product_data.emoji]
+
+	return "Producción desconocida"
+
+
+# T010: Método para recipe preview con color coding
+func _get_station_recipe_preview_colored(station_id: String) -> String:
+	"""Generar preview de receta coloreado según disponibilidad"""
+	var station_data = GameConfig.STATION_DATA.get(station_id, {})
+	var recipe = station_data.get("recipe", {})
+	var produces = station_data.get("produces", "")
+
+	if recipe.is_empty():
+		return "Sin receta"
+
+	var recipe_parts = []
+	for ingredient_id in recipe.keys():
+		var needed_amount = recipe[ingredient_id]
+		var available_amount = get_ingredient_available_amount(ingredient_id)
+		var ingredient_data = GameConfig.RESOURCE_DATA.get(
+			ingredient_id, {"emoji": "❓", "name": ingredient_id}
+		)
+
+		# El color se manejará mediante RichTextLabel en updates
+		recipe_parts.append("%s%d" % [ingredient_data.emoji, needed_amount])
+
+	var product_data = GameConfig.PRODUCT_DATA.get(produces, {"emoji": "❓"})
+	return "%s → %s1" % [" + ".join(recipe_parts), product_data.emoji]
+
+
+# T010: Método para actualizar recipe preview con indicadores de color
+func _get_recipe_with_color_indicators(station_id: String, game_data: Dictionary) -> String:
+	"""Generar recipe preview con indicadores visuales de disponibilidad"""
+	var station_data = GameConfig.STATION_DATA.get(station_id, {})
+	var recipe = station_data.get("recipe", {})
+	var produces = station_data.get("produces", "")
+
+	if recipe.is_empty():
+		return "Sin receta"
+
+	var recipe_parts = []
+	var resources = game_data.get("resources", {})
+
+	for ingredient_id in recipe.keys():
+		var needed_amount = recipe[ingredient_id]
+		var available_amount = int(resources.get(ingredient_id, 0))
+		var ingredient_data = GameConfig.RESOURCE_DATA.get(
+			ingredient_id, {"emoji": "❓", "name": ingredient_id}
+		)
+
+		# T010: Indicador visual de disponibilidad
+		var indicator = "✅" if available_amount >= needed_amount else "❌"
+		recipe_parts.append("%s %s%d" % [indicator, ingredient_data.emoji, needed_amount])
+
+	var product_data = GameConfig.PRODUCT_DATA.get(produces, {"emoji": "❓"})
+	return "%s → %s1" % [" + ".join(recipe_parts), product_data.emoji]
 
 
 ## ===== MANEJADORES DE EVENTOS =====
@@ -313,15 +461,15 @@ func _on_multiplier_button_pressed(station_id: String):
 
 
 func _get_next_multiplier(current: int) -> int:
-	"""Obtener siguiente multiplicador en secuencia x1→x5→x10→x25→x1"""
+	"""T010: Obtener siguiente multiplicador en secuencia x1→x3→x5→x10→x1 (batch production)"""
 	match current:
 		1:
+			return 3
+		3:
 			return 5
 		5:
 			return 10
 		10:
-			return 25
-		25:
 			return 1
 		_:
 			return 1
@@ -381,7 +529,7 @@ func update_product_displays(game_data: Dictionary):
 
 
 func _update_single_station_state(station_id: String, game_data: Dictionary = {}):
-	"""Actualizar estado de una estación específica"""
+	"""T010: Actualizar estado de estación con color coding de ingredientes"""
 	if not button_states.has(station_id):
 		print("❌ Estado no encontrado para estación: %s" % station_id)
 		return
@@ -396,6 +544,10 @@ func _update_single_station_state(station_id: String, game_data: Dictionary = {}
 	# Obtener información actualizada
 	var stations_owned = game_data.get("stations", {})
 	var owned_count = stations_owned.get(station_id, 0)
+
+	# T010: Actualizar recipe preview con color coding
+	if state.has("recipe_preview_label") and state.recipe_preview_label:
+		state.recipe_preview_label.text = _get_recipe_with_color_indicators(station_id, game_data)
 
 	# Actualizar información con ingredientes disponibles
 	var recipe_text = _format_recipe_with_availability(station_id)

@@ -1,0 +1,149 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvl8x6ycxhw3j"]
+
+[ext_resource type="Script" path="res://scripts/ui/PrestigePanel.gd" id="1_7n4qg"]
+
+[node name="PrestigePanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_7n4qg")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+
+[node name="PanelBackground" type="NinePatchRect" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = null
+
+[node name="HeaderContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+
+[node name="TitleLabel" type="Label" parent="MainContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🌟 SISTEMA DE PRESTIGIO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StarsDisplay" type="Label" parent="MainContainer/HeaderContainer"]
+layout_mode = 2
+text = "⭐ 0 stars | Prestigios: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="MainContainer/HeaderContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(40, 40)
+text = "❌"
+
+[node name="RequirementsSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 120)
+
+[node name="RequirementsTitleLabel" type="Label" parent="MainContainer/RequirementsSection"]
+layout_mode = 2
+text = "📋 REQUISITOS PARA PRESTIGIO"
+horizontal_alignment = 1
+
+[node name="RequirementsContainer" type="VBoxContainer" parent="MainContainer/RequirementsSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatsSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 100)
+
+[node name="StatsContainer" type="VBoxContainer" parent="MainContainer/StatsSection"]
+layout_mode = 2
+
+[node name="CurrentCashLabel" type="Label" parent="MainContainer/StatsSection/StatsContainer"]
+layout_mode = 2
+text = "💰 Cash Actual: $0"
+horizontal_alignment = 1
+
+[node name="TotalCashLabel" type="Label" parent="MainContainer/StatsSection/StatsContainer"]
+layout_mode = 2
+text = "📈 Cash Total: $0"
+horizontal_alignment = 1
+
+[node name="StarsToGainLabel" type="Label" parent="MainContainer/StatsSection/StatsContainer"]
+layout_mode = 2
+text = "⭐ Ganarás: 0 stars"
+horizontal_alignment = 1
+
+[node name="NextStarProgress" type="ProgressBar" parent="MainContainer/StatsSection/StatsContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(300, 25)
+max_value = 100.0
+show_percentage = false
+
+[node name="BonusesSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BonusesTitle" type="Label" parent="MainContainer/BonusesSection"]
+layout_mode = 2
+text = "🎁 BONIFICACIONES"
+horizontal_alignment = 1
+
+[node name="BonusesScroll" type="ScrollContainer" parent="MainContainer/BonusesSection"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="BonusesContainer" type="VBoxContainer" parent="MainContainer/BonusesSection/BonusesScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="WarningSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 150)
+
+[node name="WarningContainer" type="VBoxContainer" parent="MainContainer/WarningSection"]
+layout_mode = 2
+
+[node name="WarningLabel" type="RichTextLabel" parent="MainContainer/WarningSection/WarningContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[color=orange]⚠️ ADVERTENCIA DE RESET ⚠️[/color]"
+fit_content = true
+scroll_active = false
+
+[node name="ActionSection" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+
+[node name="ActionContainer" type="HBoxContainer" parent="MainContainer/ActionSection"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 50)
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="MainContainer/ActionSection/ActionContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 50)
+text = "❌ CANCELAR"
+
+[node name="PrestigeButton" type="Button" parent="MainContainer/ActionSection/ActionContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 50)
+text = "⭐ REALIZAR PRESTIGIO"

@@ -109,6 +109,16 @@ func load_game_data() -> Dictionary:
 func _get_default_game_data() -> Dictionary:
 	return {
 		"money": 50.0,
+		# T001-T004 Triple Currency System
+		"tokens": 0,
+		"gems": 150,  # T026: Inicio más generoso (era 100)
+		"customer_system_unlocked": false,
+		# T013-T015 Prestige System
+		"prestige_stars": 0,
+		"prestige_count": 0,
+		"active_star_bonuses": [],
+		"total_cash_earned": 0.0,
+		# Core game data
 		"resources": {"barley": 0, "hops": 0, "water": 10, "yeast": 0},
 		"resource_limits": {"barley": 100, "hops": 100, "water": 50, "yeast": 25},
 		"products": {"basic_beer": 0, "premium_beer": 0, "cocktail": 0},
@@ -185,12 +195,33 @@ func _validate_save_data(data: Dictionary) -> bool:
 		return false
 	if not data.has("game_data"):
 		return false
-	if not data["game_data"].has("money"):
+
+	var game_data = data["game_data"]
+
+	# Campos requeridos básicos
+	if not game_data.has("money"):
 		return false
-	if not data["game_data"].has("resources"):
+	if not game_data.has("resources"):
 		return false
-	if not data["game_data"].has("products"):
+	if not game_data.has("products"):
 		return false
+
+	# Validar que money es un número válido
+	if typeof(game_data["money"]) != TYPE_FLOAT and typeof(game_data["money"]) != TYPE_INT:
+		return false
+
+	# Validar arrays y diccionarios críticos
+	if typeof(game_data["resources"]) != TYPE_DICTIONARY:
+		return false
+	if typeof(game_data["products"]) != TYPE_DICTIONARY:
+		return false
+
+	# Los campos de prestigio son opcionales (backward compatibility)
+	# pero si existen, validar su tipo
+	if game_data.has("active_star_bonuses"):
+		if typeof(game_data["active_star_bonuses"]) != TYPE_ARRAY:
+			return false
+
 	return true
 
 

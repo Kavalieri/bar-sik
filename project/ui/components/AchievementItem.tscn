@@ -1,0 +1,91 @@
+[gd_scene load_steps=3 format=3 uid="uid://bi5ljkq8v62mc"]
+
+[ext_resource type="Script" path="res://scripts/ui/AchievementItem.gd" id="1_8x42j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1h7nf"]
+bg_color = Color(0.15, 0.15, 0.2, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.6, 0.4, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="AchievementItem" type="Control"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 90.0
+script = ExtResource("1_8x42j")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1h7nf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -5.0
+
+[node name="IconLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "🏆"
+theme_override_font_sizes/font_size = 22
+
+[node name="InfoContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+text = "Nombre del Logro"
+theme_override_font_sizes/font_size = 14
+
+[node name="CategoryLabel" type="Label" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+text = "[Básico]"
+theme_override_font_sizes/font_size = 10
+
+[node name="DescriptionLabel" type="Label" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+text = "Descripción del logro a conseguir"
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 3
+
+[node name="ProgressContainer" type="VBoxContainer" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="HBoxContainer/InfoContainer/ProgressContainer"]
+layout_mode = 2
+value = 75.0
+
+[node name="ProgressLabel" type="Label" parent="HBoxContainer/InfoContainer/ProgressContainer"]
+layout_mode = 2
+text = "75.0%"
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+
+[node name="RewardContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="CompletedIcon" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "🏆"
+theme_override_font_sizes/font_size = 20

@@ -85,6 +85,14 @@ func _generate_resources() -> void:
 			var resource_type = generator_def.produces
 			var amount = int(generator_def.production_rate * owned_count)
 
+			# T014 - Aplicar Speed Boost de prestigio
+			var prestige_speed_multiplier = game_data.get("prestige_speed_multiplier", 1.0)
+			if prestige_speed_multiplier > 1.0:
+				amount = int(amount * prestige_speed_multiplier)
+				# Solo imprimir ocasionalmente para evitar spam
+				if randf() < 0.1:  # 10% de probabilidad
+					print("  ⭐ Speed boost activo: x%.2f" % prestige_speed_multiplier)
+
 			# Verificar límite máximo antes de generar
 			var current_amount = game_data.resources.get(resource_type, 0)
 			var max_limit = game_data.resource_limits.get(resource_type, 999999)
@@ -173,8 +181,14 @@ func get_generator_cost(generator_id: String, quantity: int = 1) -> float:
 		return 0.0
 
 	var owned = game_data.generators.get(generator_id, 0)
-	# Usar costo escalado exponencial como los edificios
-	return GameUtils.calculate_exponential_cost(generator_def.base_price, owned, quantity)
+
+	# T024: Usar nuevo sistema de escalado para generadores
+	if quantity == 1:
+		return GameUtils.get_scaled_cost(generator_def.base_price, owned + 1, "generator")
+	else:
+		return GameUtils.get_bulk_scaled_cost(
+			generator_def.base_price, owned, quantity, "generator"
+		)
 
 
 ## Obtener definición de generador por ID

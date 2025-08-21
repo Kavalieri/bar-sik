@@ -1,0 +1,163 @@
+[gd_scene load_steps=3 format=3 uid="uid://bq8u2nxcw5gxk"]
+
+[ext_resource type="Script" path="res://scripts/ui/MissionsPanel.gd" id="1_0yc3k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bqp2"]
+bg_color = Color(0.1, 0.1, 0.15, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.6, 1, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MissionsPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = 50.0
+offset_right = -100.0
+offset_bottom = -50.0
+script = ExtResource("1_0yc3k")
+
+[node name="Background" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture_filter = 1
+
+[node name="BackgroundPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1bqp2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+
+[node name="TopBar" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🎮 MISIONES Y LOGROS"
+theme_override_font_sizes/font_size = 24
+
+[node name="CloseButton" type="Button" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+text = "✕ Cerrar"
+
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tab_alignment = 1
+
+[node name="Misiones" type="Control" parent="VBoxContainer/TabContainer"]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/Misiones"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="MissionTimerContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Misiones"]
+layout_mode = 2
+
+[node name="TimerIcon" type="Label" parent="VBoxContainer/TabContainer/Misiones/MissionTimerContainer"]
+layout_mode = 2
+text = "⏰"
+
+[node name="TimerLabel" type="Label" parent="VBoxContainer/TabContainer/Misiones/MissionTimerContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Nuevas misiones en: --h --m"
+
+[node name="CompletedLabel" type="Label" parent="VBoxContainer/TabContainer/Misiones"]
+layout_mode = 2
+text = "Completadas hoy: 0/3"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/TabContainer/Misiones"]
+layout_mode = 2
+
+[node name="MissionsTitle" type="Label" parent="VBoxContainer/TabContainer/Misiones"]
+layout_mode = 2
+text = "📅 MISIONES DIARIAS:"
+theme_override_font_sizes/font_size = 18
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/TabContainer/Misiones"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MissionsList" type="VBoxContainer" parent="VBoxContainer/TabContainer/Misiones/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Logros" type="Control" parent="VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/Logros"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="FilterContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Logros"]
+layout_mode = 2
+
+[node name="FilterLabel" type="Label" parent="VBoxContainer/TabContainer/Logros/FilterContainer"]
+layout_mode = 2
+text = "Filtrar:"
+
+[node name="FilterOption" type="OptionButton" parent="VBoxContainer/TabContainer/Logros/FilterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressLabel" type="Label" parent="VBoxContainer/TabContainer/Logros"]
+layout_mode = 2
+text = "Progreso: 0/20 logros (0.0%)"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/TabContainer/Logros"]
+layout_mode = 2
+
+[node name="AchievementsTitle" type="Label" parent="VBoxContainer/TabContainer/Logros"]
+layout_mode = 2
+text = "🏆 LOGROS:"
+theme_override_font_sizes/font_size = 18
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/TabContainer/Logros"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AchievementsList" type="VBoxContainer" parent="VBoxContainer/TabContainer/Logros/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3

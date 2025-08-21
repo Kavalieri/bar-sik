@@ -9,7 +9,10 @@ signal purchase_attempted(item_id: String, cost: Dictionary, success: bool)
 signal not_enough_currency(currency_type: String, required: int, available: int)
 
 # Tipos de moneda
-enum CurrencyType { CASH, TOKENS, STARS }  # 💵 Dinero - Venta de bebidas  # 🎯 Tokens - Misiones completadas  # ⭐ Estrellas - Sistema de prestigio
+enum CurrencyType { CASH, TOKENS, STARS }
+
+# Referencia a GameData para sincronización
+var game_data_ref: GameData
 
 # Datos de las monedas
 var currencies: Dictionary = {
@@ -25,9 +28,73 @@ var currencies: Dictionary = {
 func _ready() -> void:
 	print("💰 CurrencyManager inicializado")
 
-	# Dar algo de dinero inicial para testing
-	if AppConfig.is_debug:
-		add_currency("cash", 100)
+	# Inicializar monedas para jugadores nuevos
+	_init_starting_currencies()
+
+
+## Inicializar monedas iniciales para nuevos jugadores
+func _init_starting_currencies() -> void:
+	# Solo inicializar si todas las monedas están en 0 (nuevo jugador)
+	var is_new_player = (
+		get_currency_amount("cash") == 0
+		and get_currency_amount("tokens") == 0
+		and get_currency_amount("gems") == 0
+	)
+
+	if is_new_player:
+		print("🎮 Nuevo jugador detectado - inicializando monedas")
+		add_currency("cash", 50)  # Cash inicial
+		add_currency("tokens", 0)  # Sin tokens iniciales - se ganan jugando
+		add_currency("gems", 100)  # 100 diamantes para desbloquear clientes
+		print("✅ Monedas iniciales establecidas: 💵50 | 🪙0 | 💎100")
+
+	# Debug: añadir extra cash si debug está activo
+	if AppConfig.is_debug and get_currency_amount("cash") < 100:
+		add_currency("cash", 50)  # Extra cash para testing
+
+
+## ===== INTEGRACIÓN CON GAMEDATA =====
+
+
+## Conectar CurrencyManager con GameData para sincronización
+func set_game_data(data: GameData) -> void:
+	if not data:
+		push_error("❌ GameData no puede ser null")
+		return
+
+	game_data_ref = data
+	print("🔗 CurrencyManager conectado con GameData")
+
+	# Sincronizar currencies desde GameData (load)
+	_sync_currencies_from_game_data()
+
+
+## Sincronizar currencies desde GameData (al cargar save)
+func _sync_currencies_from_game_data() -> void:
+	if not game_data_ref:
+		return
+
+	print("📥 Sincronizando currencies desde GameData...")
+	currencies["cash"].amount = int(game_data_ref.money)
+	currencies["tokens"].amount = game_data_ref.tokens
+	currencies["gems"].amount = game_data_ref.gems
+
+	print(
+		(
+			"💰 Currencies cargadas: 💵%d | 🪙%d | 💎%d"
+			% [currencies["cash"].amount, currencies["tokens"].amount, currencies["gems"].amount]
+		)
+	)
+
+
+## Sincronizar currencies hacia GameData (al cambiar)
+func _sync_currencies_to_game_data() -> void:
+	if not game_data_ref:
+		return
+
+	game_data_ref.money = float(currencies["cash"].amount)
+	game_data_ref.tokens = currencies["tokens"].amount
+	game_data_ref.gems = currencies["gems"].amount
 
 
 ## Añadir cantidad a una moneda
@@ -44,6 +111,9 @@ func add_currency(currency_type: String, amount: int) -> bool:
 
 	currencies[currency_type].amount = new_amount
 	currencies[currency_type].total_earned += amount
+
+	# Sincronizar con GameData automáticamente
+	_sync_currencies_to_game_data()
 
 	currency_changed.emit(currency_type, old_amount, new_amount)
 
@@ -67,6 +137,9 @@ func spend_currency(currency_type: String, amount: int) -> bool:
 
 	var new_amount = current_amount - amount
 	currencies[currency_type].amount = new_amount
+
+	# Sincronizar con GameData automáticamente
+	_sync_currencies_to_game_data()
 
 	currency_changed.emit(currency_type, current_amount, new_amount)
 

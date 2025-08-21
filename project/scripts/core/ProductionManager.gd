@@ -100,10 +100,22 @@ func manual_production(station_id: String, quantity: int) -> int:
 	return successful_productions
 
 
-## Obtener costo de desbloqueo de estación (solo primera vez)
+## Obtener costo de desbloqueo de estación (escalado)
 func get_unlock_cost(station_id: String) -> float:
 	var config_data = GameConfig.STATION_DATA.get(station_id, {})
-	return config_data.get("base_price", 0.0)
+	var base_cost = config_data.get("base_price", 0.0)
+
+	# T024: Para desbloqueo de estaciones, usar escalado simple
+	if not game_data:
+		return base_cost
+
+	var owned = game_data.stations.get(station_id, 0)
+	if owned == 0:
+		# Primera compra: costo base
+		return base_cost
+	else:
+		# Upgrades adicionales: usar escalado de estación
+		return GameUtils.get_scaled_cost(base_cost, owned + 1, "station")
 
 
 ## Verificar si una estación está desbloqueada

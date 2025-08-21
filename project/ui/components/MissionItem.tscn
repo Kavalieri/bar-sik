@@ -1,0 +1,89 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4mxnmkrp45b7"]
+
+[ext_resource type="Script" path="res://scripts/ui/MissionItem.gd" id="1_2y6j8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1oep3"]
+bg_color = Color(0.15, 0.15, 0.2, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.3, 0.4, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="MissionItem" type="Control"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 80.0
+script = ExtResource("1_2y6j8")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1oep3")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -5.0
+
+[node name="IconLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "📋"
+theme_override_font_sizes/font_size = 20
+
+[node name="InfoContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+text = "Nombre de la Misión"
+theme_override_font_sizes/font_size = 14
+
+[node name="DescriptionLabel" type="Label" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+text = "Descripción de la misión a completar"
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 3
+
+[node name="ProgressContainer" type="VBoxContainer" parent="HBoxContainer/InfoContainer"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="HBoxContainer/InfoContainer/ProgressContainer"]
+layout_mode = 2
+value = 50.0
+
+[node name="ProgressLabel" type="Label" parent="HBoxContainer/InfoContainer/ProgressContainer"]
+layout_mode = 2
+text = "5/10"
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+
+[node name="RewardContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="RewardLabel" type="Label" parent="HBoxContainer/RewardContainer"]
+layout_mode = 2
+text = "🪙 15 tokens"
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="CompletedIcon" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "✅"
+theme_override_font_sizes/font_size = 18
