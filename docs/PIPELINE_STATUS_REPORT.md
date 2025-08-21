@@ -13,7 +13,7 @@
 
 - ✅ **Configuración Escenas**: `.jscpd.tscn.json`
   - Formato: `text:tscn` (trata .tscn como texto)
-  - Umbrales: 20 tokens, 3 líneas  
+  - Umbrales: 20 tokens, 3 líneas
   - Threshold: 8% (más permisivo para escenas)
   - Output: `reports/tscn/`
 
@@ -24,7 +24,7 @@
 #### 3. 🤖 **Automatización VS Code**
 - ✅ **Tareas configuradas** en `.vscode/tasks.json`:
   - 🔍 "Duplicados GDScript"
-  - 🎭 "Duplicados Escenas" 
+  - 🎭 "Duplicados Escenas"
   - 🎨 "Formatear GDScript"
   - 📝 "Lint GDScript"
   - 🚀 "Pipeline Completo"
@@ -46,7 +46,7 @@
 - **Clones**: 50 detectados (reducido de 62)
 - **Formato**: `python:gd` funciona perfectamente
 
-### 🎭 **Escenas (.tscn files)**  
+### 🎭 **Escenas (.tscn files)**
 - **Estado**: ✅ **PERFECTO**
 - **Duplicación**: 0% detectable
 - **Formato**: `text:tscn` configurado correctamente
@@ -61,7 +61,7 @@
 # GDScript (análisis preciso)
 jscpd --config .jscpd.gd.json
 
-# Escenas (análisis estructural)  
+# Escenas (análisis estructural)
 jscpd --config .jscpd.tscn.json
 ```
 
@@ -96,7 +96,7 @@ gdlint $(git ls-files '*.gd')
 ## 🎯 **BENEFICIOS CONSEGUIDOS:**
 
 1. **🔍 Detección automática**: Duplicados identificados en tiempo real
-2. **🎨 Formato consistente**: Código limpio y profesional  
+2. **🎨 Formato consistente**: Código limpio y profesional
 3. **📊 Métricas de calidad**: Umbrales profesionales (<5%)
 4. **🤖 Automatización completa**: CI/CD + tareas locales
 5. **⚡ Flujo eficiente**: Un comando → análisis completo
@@ -114,7 +114,7 @@ gdlint $(git ls-files '*.gd')
 
 ## 🎉 **CONCLUSIÓN:**
 
-**BAR-SIK ya tiene un pipeline profesional de Godot completo y funcional.** 
+**BAR-SIK ya tiene un pipeline profesional de Godot completo y funcional.**
 
 El proyecto cumple con estándares profesionales:
 - ✅ Duplicación bajo control (3.05%)

@@ -1,0 +1,28 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  # GDScript formatting and linting
+  - repo: local
+    hooks:
+      - id: gdformat
+        name: GDScript formatting
+        entry: gdformat
+        language: python
+        files: \.gd$
+        additional_dependencies: [gdtoolkit]
+        
+      - id: gdlint
+        name: GDScript linting
+        entry: gdlint
+        language: python
+        files: \.gd$
+        additional_dependencies: [gdtoolkit]
+        
+      # Optional: Block PRs with high duplication
+      - id: jscpd-check
+        name: Check code duplication
+        entry: bash
+        language: system
+        pass_filenames: false
+        args: [-c, 'jscpd --formats-exts "python:gd" --min-tokens 35 --min-lines 3 project/ --threshold 5 --reporters console']
+        files: \.gd$

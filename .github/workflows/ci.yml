@@ -1,115 +1,57 @@
-name: 🚀 BAR-SIK Professional CI
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+name: CI
+on: [push, pull_request]
 
 jobs:
+  # Job 1: Lint & Format
   lint-format:
-    name: 🎨 Lint & Format
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+          
+      - run: pip install gdtoolkit
+      
+      - name: Check GDScript formatting
+        run: gdformat --check $(git ls-files '*.gd')
+        
+      - name: Lint GDScript
+        run: gdlint $(git ls-files '*.gd')
 
-      - name: 📦 Install gdtoolkit
-        run: pip install gdtoolkit
-
-      - name: 🎨 Check GDScript formatting
-        run: |
-          echo "🔍 Verificando formato de archivos GDScript..."
-          gdformat --check $(git ls-files '*.gd') || {
-            echo "❌ Archivos mal formateados encontrados"
-            echo "💡 Ejecuta: gdformat \$(git ls-files '*.gd')"
-            exit 1
-          }
-
-      - name: 📝 Lint GDScript
-        run: |
-          echo "🔍 Ejecutando análisis de estilo..."
-          gdlint $(git ls-files '*.gd') || {
-            echo "❌ Errores de estilo encontrados"
-            exit 1
-          }
-
+  # Job 2: Unit Tests
   tests:
-    name: 🧪 Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-
-      - name: 🎮 Setup Godot
+      - uses: actions/checkout@v4
+      
+      - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
           version: "4.3"
+          
+      - name: Run GUT tests
+        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
 
-      - name: 🧪 Run GUT Tests
-        run: |
-          echo "🚀 Ejecutando tests en modo headless..."
-          godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit || {
-            echo "❌ Tests fallaron"
-            exit 1
-          }
-
-  code-quality:
-    name: 📊 Code Quality
+  # Job 3: Clone Detection
+  clones:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-
-      - name: 📦 Install jscpd
+      - uses: actions/checkout@v4
+      
+      - name: Install jscpd
         run: npm i -g jscpd
-
-      - name: 🔍 Analyze GDScript Duplication
-        run: |
-          echo "🔍 Analizando duplicación en archivos GDScript..."
-          jscpd --config .jscpd.gd.json
-
-      - name: 🎭 Analyze Scene Duplication
-        run: |
-          echo "🔍 Analizando duplicación en escenas..."
-          jscpd --config .jscpd.tscn.json
-
-      - name: 📊 Upload Reports
+        
+      - name: Check GDScript duplicates
+        run: jscpd --formats-exts "python:gd" --output "reports/gd/" --reporters console,json --min-tokens 35 --min-lines 3 project/ --threshold 5
+        
+      - name: Check TSCN duplicates  
+        run: jscpd --pattern "project/**/*.tscn" --min-tokens 50 --min-lines 3 --reporters console,json --output "reports/tscn/" --threshold 8
+        
+      - name: Upload duplicate reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: quality-reports
+          name: duplicate-reports
           path: reports/
-
-      - name: 💬 Quality Summary
-        run: |
-          echo "📊 === RESUMEN DE CALIDAD ==="
-          echo "✅ Análisis completado"
-          echo "📄 Reportes disponibles en artifacts"
-
-  security:
-    name: 🔒 Security Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-
-      - name: 🔒 Security Scan
-        run: |
-          echo "🔒 Ejecutando análisis de seguridad básico..."
-
-          # Verificar archivos sensibles
-          if find . -name "*.key" -o -name "*.pem" -o -name "password*" | grep -v .git; then
-            echo "⚠️ Archivos potencialmente sensibles encontrados"
-          fi
-
-          # Verificar credenciales hardcodeadas (básico)
-          if grep -r "password\|secret\|key.*=" --include="*.gd" --include="*.cs" .; then
-            echo "⚠️ Posibles credenciales hardcodeadas encontradas"
-          fi
-
-          echo "✅ Análisis de seguridad completado"
