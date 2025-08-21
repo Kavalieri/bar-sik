@@ -1,0 +1,100 @@
+================================================================================
+🎯 BAR-SIK ENHANCED CODE ANALYSIS REPORT
+================================================================================
+
+📊 RESUMEN EJECUTIVO
+----------------------------------------
+🔍 Total de clones detectados: 0
+📏 Líneas duplicadas: 0 de 0 (0%)
+✅ ACEPTABLE: Nivel de duplicación bajo (<5%)
+
+🔥 TOP 10 CLONES MÁS GRANDES
+----------------------------------------
+1. 0 líneas, 0 tokens
+   📄 Fragmento: button.add_theme_stylebox_override("normal", style_normal)
+	button.add_theme_stylebox_override("hov...
+
+2. 0 líneas, 0 tokens
+   📄 Fragmento: var title_label = Label.new()
+	title_label.text = title
+	title_label.add_theme_font_size_override(...
+
+3. 0 líneas, 0 tokens
+   📄 Fragmento: return {
+		"money": game_data.money,
+		"resources": game_data.resources.duplicate(),
+		"products": g...
+
+4. 0 líneas, 0 tokens
+   📄 Fragmento: (resource_id: String, amount: int) -> bool:
+	if not resources.has(resource_id):
+		push_error("❌ Re...
+
+5. 0 líneas, 0 tokens
+   📄 Fragmento: resource_changed.emit(resource_id, old_amount, new_amount)
+
+	if AppConfig.is_debug:
+		print("📦 ",...
+
+6. 0 líneas, 0 tokens
+   📄 Fragmento: if not is_instance_valid(container):
+		return
+
+	for child in container.get_children():
+		if is_i...
+
+7. 0 líneas, 0 tokens
+   📄 Fragmento: var station_defs = production_manager.get_station_definitions()
+	if station_index < station_defs.siz...
+
+8. 0 líneas, 0 tokens
+   📄 Fragmento: var station_defs = production_manager.get_station_definitions()
+	if station_index < station_defs.siz...
+
+9. 0 líneas, 0 tokens
+   📄 Fragmento: (upgrade_id: String) -> bool:
+	if not game_data:
+		return false
+
+	var upgrade_def = _find_upgrad...
+
+10. 0 líneas, 0 tokens
+   📄 Fragmento: (currency_type: String, amount: int) -> bool:
+	if not currencies.has(currency_type):
+		push_error(...
+
+🎮 ANÁLISIS DE PATRONES GDSCRIPT
+----------------------------------------
+📌 $: 154 usos en 34 archivos
+   🏆 project\scripts\ShopScene.gd: 12 usos
+   🏆 project\scripts\TabNavigator.gd: 12 usos
+   🏆 project\scripts\ui\components\ShopContainer.gd: 12 usos
+📌 _ready(): 7 usos en 7 archivos
+   🏆 project\debug\ProductionPanelBasic_backup.gd: 1 usos
+   🏆 project\scripts\GenerationPanelBasic.gd: 1 usos
+   🏆 project\scripts\ProductionPanelBasic.gd: 1 usos
+📌 connect(): 99 usos en 34 archivos
+   🏆 project\scripts\core\GameController.gd: 22 usos
+   🏆 project\scripts\core\GameManager.gd: 8 usos
+   🏆 project\scripts\TabNavigator.gd: 6 usos
+📌 signal: 86 usos en 33 archivos
+   🏆 project\singletons\GameEvents.gd: 16 usos
+   🏆 project\scripts\core\GameStateManager.gd: 6 usos
+   🏆 project\scripts\ProductionPanel.gd: 4 usos
+📌 onready: 103 usos en 27 archivos
+   🏆 project\scripts\TabNavigator.gd: 11 usos
+   🏆 project\scripts\ui\components\ShopContainer.gd: 11 usos
+   🏆 project\scripts\ShopScene.gd: 7 usos
+📌 _input(): 5 usos en 5 archivos
+📌 export: 40 usos en 7 archivos
+   🏆 project\scripts\core\GameData.gd: 12 usos
+   🏆 project\singletons\AppConfig.gd: 10 usos
+   🏆 project\scripts\components\StockDisplayComponent.gd: 6 usos
+📌 _process(): 3 usos en 3 archivos
+📌 get_node(): 4 usos en 1 archivos
+
+💡 RECOMENDACIONES DE REFACTORIZACIÓN
+----------------------------------------
+✅ Código en buen estado, sin refactorizaciones críticas
+
+================================================================================

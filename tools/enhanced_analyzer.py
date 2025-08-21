@@ -30,21 +30,23 @@ class EnhancedBarSikAnalyzer:
             print("📋 Ejecutando: jscpd --formats-exts 'python:gd' --reporters console,html,json --output reports/ project/")
 
             result = subprocess.run([
-                "jscpd", 
+                "jscpd",
                 "--formats-exts", "python:gd",
-                "--reporters", "console,html,json", 
+                "--reporters", "console,html,json",
                 "--output", "reports/",
                 "--min-lines", "3",
-                "--min-tokens", "25", 
+                "--min-tokens", "25",
                 "--threshold", "10",
                 "project/"
-            ], 
+            ],
             cwd=str(self.project_path),
             capture_output=True,
             text=True,
             timeout=120,
             check=False,  # No fallar si encuentra duplicaciones
-            shell=True  # CRÍTICO: Necesario en Windows para ejecutar scripts npm
+            shell=True,  # CRÍTICO: Necesario en Windows para ejecutar scripts npm
+            encoding='utf-8',  # FIX: Manejo explicito de encoding
+            errors='ignore'  # FIX: Ignorar errores de encoding Unicode
             )            # Leer resultados JSON
             json_report = self.project_path / "reports" / "jscpd-report.json"
             if json_report.exists():
@@ -68,10 +70,15 @@ class EnhancedBarSikAnalyzer:
             print("⏰ jscpd timeout - continuando con análisis propio")
         except FileNotFoundError:
             print("⚠️  jscpd no encontrado - usando solo análisis propio")
-        except Exception as e:
-            print(f"⚠️  Error ejecutando jscpd: {e} - continuando con análisis propio")
-
-    def _parse_jscpd_statistics(self, output):
+            except subprocess.TimeoutExpired:
+                logging.error("❌ Timeout ejecutando jscpd (120 segundos)")
+                return False
+            except subprocess.CalledProcessError as e:
+                logging.error(f"❌ Error ejecutando jscpd: {e}")
+                return False
+            except FileNotFoundError:
+                logging.error("❌ jscpd no encontrado - instálelo: npm install -g jscpd")
+                return False    def _parse_jscpd_statistics(self, output):
         """Parsear estadísticas de jscpd desde salida de consola"""
         if not output:
             return
