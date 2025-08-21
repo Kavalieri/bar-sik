@@ -10,8 +10,8 @@ Write-Host "🌐 Bar-Sik - Build Web v$Version" -ForegroundColor Green
 Write-Host "===============================" -ForegroundColor Cyan
 
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$ProjectRoot = Join-Path $PSScriptRoot "project"
-$BuildDir = Join-Path $PSScriptRoot "builds"
+$ProjectRoot = "E:\GitHub\bar-sik\project"
+$BuildDir = "E:\GitHub\bar-sik\builds"
 $GodotPath = "E:\2- Descargas\Godot_v4.4.1-stable_win64.exe\Godot_v4.4.1-stable_win64.exe"
 
 Write-Host "📅 Timestamp: $timestamp" -ForegroundColor Gray

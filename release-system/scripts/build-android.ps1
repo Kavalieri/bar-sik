@@ -9,8 +9,10 @@ Write-Host "📱 Bar-Sik - Build Android v$Version" -ForegroundColor Green
 Write-Host "====================================" -ForegroundColor Cyan
 
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$ProjectRoot = Join-Path $PSScriptRoot "project"
-$BuildDir = Join-Path $PSScriptRoot "builds"
+$ProjectRoot = "E:\GitHub\bar-sik\project"
+$BuildDir = "E:\GitHub\bar-sik\builds"
+$GodotPath = "E:\2- Descargas\Godot_v4.4.1-stable_win64.exe\Godot_v4.4.1-stable_win64.exe"
+$BuildDir = "E:\GitHub\bar-sik\builds"
 $GodotPath = "E:\2- Descargas\Godot_v4.4.1-stable_win64.exe\Godot_v4.4.1-stable_win64.exe"
 
 Write-Host "📅 Timestamp: $timestamp" -ForegroundColor Gray
@@ -33,22 +35,7 @@ function New-AndroidTimestampedDir {
 
     $androidDir = Join-Path $BuildDir "android"
     $timestampDir = Join-Path $androidDir $Timestamp
-    $latestDir = Join-Path $androidDir "latest"
-
     New-Item -ItemType Directory -Force -Path $timestampDir | Out-Null
-
-    if (Test-Path $latestDir) {
-        Remove-Item $latestDir -Force -Recurse -ErrorAction SilentlyContinue
-    }
-
-    try {
-        New-Item -ItemType SymbolicLink -Path $latestDir -Target $timestampDir -ErrorAction Stop | Out-Null
-        Write-Host "   🔗 Symlink 'latest' creado" -ForegroundColor Gray
-    } catch {
-        Copy-Item $timestampDir $latestDir -Recurse -Force
-        Write-Host "   📁 Directorio 'latest' copiado" -ForegroundColor Gray
-    }
-
     return $timestampDir
 }
 
@@ -126,6 +113,23 @@ Write-Host "=========================" -ForegroundColor Cyan
 if ($buildSuccess -gt 0) {
     Write-Host "✅ Builds exitosos: $buildSuccess" -ForegroundColor Green
     Write-Host "📍 Ubicación: $timestampDir" -ForegroundColor Gray
+
+    # Actualizar directorio latest después de generar los archivos
+    $androidDir = Join-Path $BuildDir "android"
+    $latestDir = Join-Path $androidDir "latest"
+
+    if (Test-Path $latestDir) {
+        Remove-Item $latestDir -Force -Recurse -ErrorAction SilentlyContinue
+    }
+
+    try {
+        New-Item -ItemType SymbolicLink -Path $latestDir -Target $timestampDir -ErrorAction Stop | Out-Null
+        Write-Host "   🔗 Directorio 'latest' actualizado (symlink)" -ForegroundColor Gray
+    } catch {
+        Copy-Item $timestampDir $latestDir -Recurse -Force
+        Write-Host "   📁 Directorio 'latest' actualizado (copia)" -ForegroundColor Gray
+    }
+
     Write-Host "📂 Acceso rápido: builds\android\latest\" -ForegroundColor Gray
 
     Write-Host "`n📋 ARCHIVOS GENERADOS:" -ForegroundColor Cyan

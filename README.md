@@ -2,6 +2,12 @@
 
 > Proyecto de videojuego multiplataforma desarrollado en **Godot 4.4.1** para **Windows** y **Android**.
 
+## 🎲 Jugar Ahora
+
+- 🌐 **[Jugar en Web (Vercel)](https://bar-sik.vercel.app)** - ¡Juega directamente en tu navegador!
+- 📱 **Android APK** - Descarga desde [Releases](https://github.com/Kavalieri/bar-sik/releases)
+- 🪟 **Windows EXE** - Descarga desde [Releases](https://github.com/Kavalieri/bar-sik/releases)
+
 ## 🚀 Características
 
 - ✅ **Multiplataforma**: Windows, Android (iOS en el futuro)

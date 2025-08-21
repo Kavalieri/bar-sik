@@ -1,10 +1,13 @@
-# 🚀 BUILD SIMPLE WINDOWS - Bar-Sik
-Write-Host "🚀 Bar-Sik - Build Simple Windows" -ForegroundColor Green
-Write-Host "===================================" -ForegroundColor Cyan
+# 🚀 BUILD WINDOWS - Bar-Sik
+# Versión optimizada para máxima compatibilidad en otros PCs
+
+Write-Host "🚀 Bar-Sik - Build Windows" -ForegroundColor Green
+Write-Host "===========================" -ForegroundColor Cyan
+Write-Host "💡 Optimizado para compatibilidad máxima" -ForegroundColor Yellow
 
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$ProjectRoot = Join-Path $PSScriptRoot "project"
-$BuildDir = Join-Path $PSScriptRoot "builds"
+$ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..\project")
+$BuildDir = Resolve-Path (Join-Path $PSScriptRoot "..\..\builds")
 $GodotPath = "E:\2- Descargas\Godot_v4.4.1-stable_win64.exe\Godot_v4.4.1-stable_win64.exe"
 
 Write-Host "📅 Timestamp: $timestamp" -ForegroundColor Gray
@@ -29,48 +32,58 @@ New-Item -ItemType Directory -Force -Path $timestampDir | Out-Null
 
 $exePath = Join-Path $timestampDir "bar-sik.exe"
 
-Write-Host "`n🎯 Compilando Windows EXE..." -ForegroundColor Cyan
-Write-Host "Output: $exePath" -ForegroundColor Gray
+Write-Host "`n🔧 Modificando configuración temporal para máxima compatibilidad..." -ForegroundColor Yellow
 
-try {
-    $arguments = '--path "' + $ProjectRoot + '" --headless --export-release "Windows Desktop" "' + $exePath + '"'
-    Write-Host "Ejecutando: $GodotPath $arguments" -ForegroundColor Gray
+# Backup de export_presets.cfg
+$exportPresetsPath = Join-Path $ProjectRoot "export_presets.cfg"
+$backupPath = Join-Path $ProjectRoot "export_presets.cfg.backup"
+Copy-Item $exportPresetsPath $backupPath -Force
 
-    $process = Start-Process -FilePath $GodotPath -ArgumentList $arguments.Split(' ', [StringSplitOptions]::RemoveEmptyEntries) -PassThru -Wait -NoNewWindow
+# Leer configuración actual
+$exportConfig = Get-Content $exportPresetsPath -Raw
 
-    if ($process.ExitCode -eq 0) {
-        if (Test-Path $exePath) {
-            $fileSize = (Get-Item $exePath).Length
-            $fileSizeMB = [math]::Round($fileSize / 1MB, 2)
+# Modificar para máxima compatibilidad
+$newConfig = $exportConfig -replace 'debug/export_console_wrapper=0', 'debug/export_console_wrapper=1'
+$newConfig = $newConfig -replace 'export_path="../builds/windows/bar-sik.exe"', 'export_path="../builds/windows/bar-sik.exe"'
 
-            Write-Host "✅ Build exitoso!" -ForegroundColor Green
-            Write-Host "📦 Archivo: bar-sik.exe ($fileSizeMB MB)" -ForegroundColor White
-            Write-Host "📍 Ubicación: $timestampDir" -ForegroundColor Gray
+# Aplicar configuración temporal
+Set-Content $exportPresetsPath $newConfig -NoNewline
 
-            # Crear enlace latest
-            $latestDir = Join-Path $windowsDir "latest"
-            if (Test-Path $latestDir) {
-                Remove-Item $latestDir -Force -Recurse -ErrorAction SilentlyContinue
-            }
+Write-Host "`n🔨 Ejecutando build con configuración standalone..." -ForegroundColor Yellow
 
-            try {
-                New-Item -ItemType SymbolicLink -Path $latestDir -Target $timestampDir -ErrorAction Stop | Out-Null
-                Write-Host "🔗 Symlink 'latest' creado" -ForegroundColor Gray
-            } catch {
-                Copy-Item $timestampDir $latestDir -Recurse -Force
-                Write-Host "📁 Directorio 'latest' copiado" -ForegroundColor Gray
-            }
+# Build con preset 0 (Windows Desktop)
+$godotArgs = "--headless --export-release `"Windows Desktop`" `"$exePath`" --path `"$ProjectRoot`""
+$process = Start-Process -FilePath $GodotPath -ArgumentList $godotArgs -Wait -PassThru -NoNewWindow
 
-            Write-Host "`n🚀 Build completado exitosamente!" -ForegroundColor Green
-        } else {
-            Write-Host "❌ El archivo EXE no se generó" -ForegroundColor Red
-            exit 1
-        }
-    } else {
-        Write-Host "❌ Error en el proceso de compilación (código: $($process.ExitCode))" -ForegroundColor Red
-        exit 1
-    }
-} catch {
-    Write-Host "❌ Error ejecutando Godot: $($_.Exception.Message)" -ForegroundColor Red
+# Restaurar configuración original
+Copy-Item $backupPath $exportPresetsPath -Force
+Remove-Item $backupPath -Force
+
+# Verificar resultado
+if (Test-Path $exePath) {
+    $exeInfo = Get-Item $exePath
+    Write-Host "`n✅ BUILD COMPLETADO!" -ForegroundColor Green
+    Write-Host "📁 Ubicación: $exePath" -ForegroundColor Cyan
+    Write-Host "📏 Tamaño: $([math]::Round($exeInfo.Length/1MB, 2)) MB" -ForegroundColor Cyan
+
+    # Copiar a latest
+    $latestDir = Join-Path $windowsDir "latest"
+    $latestPath = Join-Path $latestDir "bar-sik.exe"
+    New-Item -ItemType Directory -Force -Path $latestDir | Out-Null
+    Copy-Item $exePath $latestPath -Force
+
+    Write-Host "`n💡 RECOMENDACIONES PARA COMPATIBILIDAD:" -ForegroundColor Yellow
+    Write-Host "  ✅ PCK embedido - No necesita archivos adicionales" -ForegroundColor Green
+    Write-Host "  ✅ Console wrapper habilitado - Mejor debuging" -ForegroundColor Green
+    Write-Host "  ⚠️  Visual C++ 2019/2022 Redistributable puede ser necesario" -ForegroundColor Yellow
+    Write-Host "  💡 Incluir vcredist_x64.exe con la distribución" -ForegroundColor Cyan
+
+    Write-Host "`n🌐 URLs de descarga para VC++ Redistributable:" -ForegroundColor Cyan
+    Write-Host "  https://aka.ms/vs/17/release/vc_redist.x64.exe" -ForegroundColor Blue
+
+} else {
+    Write-Host "`n❌ Error: No se pudo generar el ejecutable" -ForegroundColor Red
     exit 1
 }
+
+Write-Host "`n🎯 Build Windows listo para distribución!" -ForegroundColor Green

@@ -1,6 +1,5 @@
 extends BasePanel
-## CustomersPanel - Panel de clientes usando componentes modulares
-## Implementa Scene Composition con ItemListCard para clientes y upgrades
+## CustomersPanel - Panel de clientes (versión simplificada sin componentes modulares)
 
 # Señales específicas del panel
 signal autosell_upgrade_purchased(upgrade_id: String)
@@ -9,14 +8,14 @@ signal automation_upgrade_purchased(upgrade_id: String)
 # Estado específico del panel
 var customer_manager_ref: Node = null
 
-# Componentes modulares
+# Componentes modulares - DESACTIVADOS TEMPORALMENTE
 var timer_cards: Array[Node] = []
 var upgrades_shop: Node = null
 var automation_cards: Array[Node] = []
 
-# Referencias a contenedores específicos
-@onready var timer_container: VBoxContainer = $MainContainer/TimerSection/TimerContainer
-@onready var upgrades_container: VBoxContainer = $MainContainer/UpgradesSection
+# Referencias a contenedores específicos - VERSIÓN SIMPLIFICADA
+#@onready var timer_container: VBoxContainer = $MainContainer/TimerSection/TimerContainer
+#@onready var upgrades_container: VBoxContainer = $MainContainer/UpgradesSection
 @onready
 var automation_container: VBoxContainer = $MainContainer/AutomationSection/AutomationContainer
 
@@ -55,38 +54,26 @@ func _update_panel_data(game_data: Dictionary) -> void:
 
 
 func _setup_modular_timers() -> void:
-	"""Configurar información de timers usando ItemListCard"""
-	# Limpiar contenedor existente
-	for child in timer_container.get_children():
-		child.queue_free()
-	timer_cards.clear()
+	"""Configurar información de timers usando ItemListCard - DESACTIVADO"""
+	print("⚠️ CustomersPanel: _setup_modular_timers desactivado temporalmente")
+	return
 
-	# Definir información de timers
-	var timer_configs = [
-		{id = "autosell_timer", name = "Auto-Venta", icon = "⏰", action = "configure_timer"},
-		{id = "production_timer", name = "Producción", icon = "⚗️", action = "configure_timer"},
-		{id = "customer_timer", name = "Clientes", icon = "👥", action = "configure_timer"}
-	]
-
-	# Crear tarjeta para cada timer
-	for config in timer_configs:
-		var card = ComponentsPreloader.create_item_list_card()
-		var button_config = {text = "Config", icon = "⚙️", action = config.action}
-
-		card.setup_item(config, button_config)
-		card.action_requested.connect(_on_timer_action)
-		timer_container.add_child(card)
-		timer_cards.append(card)
+	# CÓDIGO ORIGINAL COMENTADO PARA EVITAR COMPONENTES PROBLEMÁTICOS
+	# var timer_configs = [
+	#	{id = "autosell_timer", name = "Auto-Venta", icon = "⏰", action = "configure_timer"},
+	#	{id = "production_timer", name = "Producción", icon = "⚗️", action = "configure_timer"},
+	#	{id = "customer_timer", name = "Clientes", icon = "👥", action = "configure_timer"}
+	# ]
+	# for config in timer_configs:
+	#	var card = ComponentsPreloader.create_item_list_card()
 
 
 func _setup_modular_upgrades() -> void:
-	"""Configurar tienda de upgrades usando ShopContainer"""
-	# Limpiar contenedor existente
-	for child in upgrades_container.get_children():
-		child.queue_free()
+	"""Configurar tienda de upgrades usando ShopContainer - DESACTIVADO"""
+	print("⚠️ CustomersPanel: _setup_modular_upgrades desactivado temporalmente")
+	return
 
-	# Crear ShopContainer para upgrades
-	upgrades_shop = ComponentsPreloader.create_shop_container()
+	# CÓDIGO ORIGINAL COMENTADO PARA EVITAR COMPONENTES PROBLEMÁTICOS
 	upgrades_shop.setup("Mejoras Disponibles", "buy")
 
 	# Definir upgrades disponibles
@@ -125,43 +112,45 @@ func _setup_modular_upgrades() -> void:
 
 		card.set_cost_calculator(cost_calculator)
 
-	# Conectar señales de compra
-	upgrades_shop.purchase_requested.connect(_on_upgrade_purchase)
+	# CÓDIGO COMENTADO - EVITAR COMPONENTES PROBLEMÁTICOS
+	# # Conectar señales de compra
+	# upgrades_shop.purchase_requested.connect(_on_upgrade_purchase)
 
-	# Agregar tienda al contenedor
-	upgrades_container.add_child(upgrades_shop)
+	# # Agregar tienda al contenedor
+	# upgrades_container.add_child(upgrades_shop)
 
 
 func _setup_modular_automation() -> void:
-	"""Configurar tarjetas de automatización usando ItemListCard"""
-	# Limpiar contenedor existente
-	for child in automation_container.get_children():
-		child.queue_free()
-	automation_cards.clear()
+	"""Configurar automatización usando ItemListCard - DESACTIVADO"""
+	print("⚠️ CustomersPanel: _setup_modular_automation desactivado temporalmente")
+	return
 
-	# Definir configuraciones de automatización
-	var automation_configs = [
-		{
-			id = "auto_production",
-			name = "Producción Automática",
-			icon = "⚙️",
-			action = "toggle_auto"
-		},
-		{id = "auto_sales", name = "Ventas Automáticas", icon = "💸", action = "toggle_auto"},
-		{id = "auto_purchase", name = "Compras Automáticas", icon = "🛒", action = "toggle_auto"}
-	]
+	# CÓDIGO ORIGINAL COMENTADO PARA EVITAR COMPONENTES PROBLEMÁTICOS
+	# # Limpiar contenedor existente
+	# for child in automation_container.get_children():
+	#	child.queue_free()
 
-	# Crear tarjeta para cada automatización
-	for config in automation_configs:
-		var card = ComponentsPreloader.create_item_list_card()
-		var button_config = {text = "Activar", icon = "▶️", action = config.action}
+	# # Configuración de automatizaciones disponibles
+	# var automation_configs = [
+	#	{
+	#		id = "auto_production",
+	#		name = "Producción Automática",
+	#		icon = "⚙️",
+	#		action = "toggle_auto"
+	#	},
+	#	{id = "auto_sales", name = "Ventas Automáticas", icon = "💸", action = "toggle_auto"},
+	#	{id = "auto_purchase", name = "Compras Automáticas", icon = "🛒", action = "toggle_auto"}
+	# ]
 
-		card.setup_item(config, button_config)
-		card.action_requested.connect(_on_automation_action)
-		automation_container.add_child(card)
-		automation_cards.append(card)
+	# # Crear tarjeta para cada automatización
+	# for config in automation_configs:
+	#	var card = ComponentsPreloader.create_item_list_card()
+	#	var button_config = {text = "Activar", icon = "▶️", action = config.action}
 
-
+	#	card.setup_item(config, button_config)
+	#	card.action_requested.connect(_on_automation_action)
+	#	automation_container.add_child(card)
+	#	automation_cards.append(card)
 func update_customer_displays(game_data: Dictionary) -> void:
 	"""Actualiza las visualizaciones de clientes usando componentes modulares"""
 	if not is_initialized:
