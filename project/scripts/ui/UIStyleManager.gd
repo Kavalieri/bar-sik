@@ -1,5 +1,5 @@
-extends RefCounted
 class_name UIStyleManager
+extends RefCounted
 ## UIStyleManager - Gestión centralizada de estilos (COMPATIBILIDAD)
 ## ⚠️ DEPRECADO: Usar UITheme + UIComponentsFactory para nuevos desarrollos
 
@@ -77,7 +77,7 @@ static func create_section_header(title: String, subtitle: String = "") -> VBoxC
 
 
 ## Crear panel estilizado (ACTUALIZADO)
-static func create_styled_panel(style: String = "card") -> Panel:
+static func create_styled_panel(_style: String = "card") -> Panel:
 	# Usar el nuevo sistema
 	return UIComponentsFactory.create_content_panel()
 

@@ -1,0 +1,218 @@
+{
+  "estado_actual": {
+    "core_loop": {
+      "generation": "✅ Generadores automáticos de recursos (cebada, lúpulo, agua, levadura)",
+      "processing": "✅ Estaciones de producción (brewery, bar_station)",
+      "selling": "✅ Sistema de venta automática con ofertas",
+      "upgrading": "✅ Sistema de upgrades básico"
+    },
+    "resources": {
+      "primary": [
+        "barley",
+        "hops",
+        "water",
+        "yeast"
+      ],
+      "currency": [
+        "money"
+      ],
+      "storage": "✅ Límites de almacenamiento configurables"
+    },
+    "progression": {
+      "generators": "✅ Escalado de costos (factor 1.10)",
+      "stations": "✅ Escalado de costos (factor 1.15)",
+      "upgrades": "⚠️ Sistema básico, necesita expansión",
+      "unlocks": "⚠️ Sistema de hitos muy simple"
+    },
+    "automation": {
+      "resource_generation": "✅ Timer de 3 segundos",
+      "selling": "✅ Sistema de ofertas automáticas",
+      "customers": "✅ Clientes automáticos cada 8 segundos",
+      "save_system": "✅ Guardado automático cada 30 segundos"
+    },
+    "ui_systems": {
+      "panels": "✅ Generation, Production, Sales, Customers",
+      "notifications": "⚠️ Sistema básico",
+      "progress_tracking": "⚠️ Estadísticas limitadas"
+    }
+  },
+  "estandares_idle": {
+    "progression_systems": {
+      "exponential_scaling": "Escalado exponencial suave (e^x, no x^2)",
+      "multiple_currencies": "3+ monedas (básica, premium, prestige)",
+      "unlock_tiers": "5-10 tiers de contenido progresivo",
+      "prestige_mechanics": "Sistema de reset con bonificaciones permanentes",
+      "achievements": "50+ logros con recompensas incrementales"
+    },
+    "automation_layers": {
+      "basic_automation": "Auto-clickers para todas las acciones manuales",
+      "smart_automation": "Managers que optimizan automáticamente",
+      "mega_automation": "Sistemas que se ejecutan offline",
+      "prestige_automation": "Automatización de prestiges"
+    },
+    "engagement_mechanics": {
+      "active_bonuses": "Recompensas por juego activo (x2-x10 multipliers)",
+      "timed_events": "Eventos especiales con recompensas limitadas",
+      "daily_rewards": "Recompensas progresivas por días consecutivos",
+      "challenges": "Objetivos especiales con restricciones"
+    },
+    "mathematical_balance": {
+      "growth_rate": "Progreso medible cada 2-5 minutos",
+      "soft_caps": "Múltiples paredes de progreso bien balanceadas",
+      "exponential_rewards": "Recompensas que escalan con la dificultad",
+      "meta_progression": "Progreso permanente entre resets"
+    },
+    "retention_mechanics": {
+      "offline_progress": "Generación mientras no juegas",
+      "comeback_bonuses": "Bonificaciones por regresar después de tiempo",
+      "milestone_rewards": "Recompensas significativas en hitos importantes",
+      "social_features": "Comparaciones, leaderboards básicos"
+    }
+  },
+  "gaps_identificados": [
+    {
+      "categoria": "Sistema de Monedas",
+      "problema": "Solo tiene 'money' como moneda",
+      "estandar": "Necesita 3+ monedas (Cash, Tokens, Stars)",
+      "impacto": "ALTO",
+      "complejidad": "MEDIA"
+    },
+    {
+      "categoria": "Sistema de Prestigio",
+      "problema": "No implementado en el código actual",
+      "estandar": "Prestiges con bonificaciones permanentes",
+      "impacto": "CRÍTICO",
+      "complejidad": "ALTA"
+    },
+    {
+      "categoria": "Escalado Matemático",
+      "problema": "Escalado lineal simple (1.10, 1.15)",
+      "estandar": "Escalado exponencial con multiple curvas",
+      "impacto": "ALTO",
+      "complejidad": "ALTA"
+    },
+    {
+      "categoria": "Automatización Avanzada",
+      "problema": "Solo timers básicos",
+      "estandar": "Managers inteligentes + offline progress",
+      "impacto": "MEDIO",
+      "complejidad": "MEDIA"
+    },
+    {
+      "categoria": "Contenido Escalable",
+      "problema": "4 recursos fijos, pocas estaciones",
+      "estandar": "10+ tiers de contenido desbloqueables",
+      "impacto": "ALTO",
+      "complejidad": "MEDIA-ALTA"
+    },
+    {
+      "categoria": "Engagement Systems",
+      "problema": "No hay eventos, logros, o bonos activos",
+      "estandar": "Múltiples sistemas de engagement",
+      "impacto": "MEDIO",
+      "complejidad": "MEDIA"
+    },
+    {
+      "categoria": "Offline Progress",
+      "problema": "No implementado",
+      "estandar": "Generación offline con catch-up bonus",
+      "impacto": "CRÍTICO",
+      "complejidad": "MEDIA"
+    }
+  ],
+  "propuestas_mejora": [
+    {
+      "titulo": "💰 Sistema de Múltiples Monedas",
+      "descripcion": "Implementar 3 monedas: Cash (básico), Tokens (misiones), Stars (prestigio)",
+      "implementacion": [
+        "Expandir GameData con tokens y stars",
+        "Crear CurrencyManager centralizado",
+        "Añadir UI para mostrar las 3 monedas",
+        "Balancear earning rates entre monedas"
+      ],
+      "impacto": "ALTO",
+      "esfuerzo": "MEDIO",
+      "tiempo_estimado": "1-2 semanas"
+    },
+    {
+      "titulo": "⭐ Sistema de Prestigio Completo",
+      "descripcion": "Reset que da bonificaciones permanentes escalables",
+      "implementacion": [
+        "PrestigeManager para manejar resets",
+        "Cálculo de Stars basado en progreso total",
+        "Árbol de bonificaciones permanentes comprables con Stars",
+        "UI de prestigio con preview de beneficios"
+      ],
+      "impacto": "CRÍTICO",
+      "esfuerzo": "ALTO",
+      "tiempo_estimado": "2-3 semanas"
+    },
+    {
+      "titulo": "📈 Balanceado Matemático Profesional",
+      "descripcion": "Curvas de costo/reward exponenciales balanceadas",
+      "implementacion": [
+        "Crear BalanceConfig con fórmulas matemáticas",
+        "Implementar múltiples curvas de crecimiento",
+        "Sistema de soft-caps automáticos",
+        "Herramientas de testing para balance"
+      ],
+      "impacto": "ALTO",
+      "esfuerzo": "ALTO",
+      "tiempo_estimado": "2-4 semanas"
+    },
+    {
+      "titulo": "🤖 Automatización Inteligente",
+      "descripcion": "Managers que optimizan automáticamente + offline progress",
+      "implementacion": [
+        "ManagerSystem para automatización inteligente",
+        "OfflineProgressCalculator",
+        "Smart buying algorithms",
+        "UI de management con toggles automáticos"
+      ],
+      "impacto": "ALTO",
+      "esfuerzo": "MEDIO",
+      "tiempo_estimado": "1-2 semanas"
+    },
+    {
+      "titulo": "🏆 Sistema de Logros y Eventos",
+      "descripcion": "50+ logros + eventos temporales para engagement",
+      "implementacion": [
+        "AchievementManager con sistema de tracking",
+        "EventManager para eventos temporales",
+        "Daily rewards y streaks",
+        "UI de achievements con progress bars"
+      ],
+      "impacto": "MEDIO",
+      "esfuerzo": "MEDIO",
+      "tiempo_estimado": "1-2 semanas"
+    },
+    {
+      "titulo": "🎯 Contenido Escalable Infinito",
+      "descripcion": "Generación procedural de contenido + tiers infinitos",
+      "implementacion": [
+        "Sistema de tiers con scaling automático",
+        "Generación procedural de recursos/recetas",
+        "Unlock tree con ramificaciones",
+        "Balanceado automático para contenido infinito"
+      ],
+      "impacto": "ALTO",
+      "esfuerzo": "ALTO",
+      "tiempo_estimado": "3-4 semanas"
+    }
+  ],
+  "roadmap_implementacion": {
+    "Fase 1 - Quick Wins (2-4 semanas)": [
+      "💰 Sistema de Múltiples Monedas",
+      "🤖 Automatización Inteligente",
+      "🏆 Sistema de Logros básico"
+    ],
+    "Fase 2 - Core Features (4-8 semanas)": [
+      "⭐ Sistema de Prestigio Completo",
+      "📈 Balanceado Matemático Profesional"
+    ],
+    "Fase 3 - Contenido Infinito (8-12 semanas)": [
+      "🎯 Contenido Escalable Infinito",
+      "🌟 Polish y optimización final"
+    ]
+  }
+}
