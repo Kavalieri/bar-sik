@@ -68,6 +68,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = "📝 Créditos"
 
+[node name="QAButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(280, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "🎯 Professional QA"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(280, 70)
 layout_mode = 2

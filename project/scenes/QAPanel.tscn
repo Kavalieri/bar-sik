@@ -1,0 +1,119 @@
+[gd_scene load_steps=3 format=3 uid="uid://bshnpnqgvxkxs"]
+
+[ext_resource type="Script" path="res://ui/panels/QAPanel.gd" id="1_1p8qk"]
+
+[sub_resource type="Theme" id="Theme_1x4kg"]
+default_font_size = 16
+
+[node name="QAPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource("Theme_1x4kg")
+script = ExtResource("1_1p8qk")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.12, 0.95)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+
+[node name="HeaderSection" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/HeaderSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "🎯 BAR-SIK PROFESSIONAL QA"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="VBoxContainer/HeaderSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+text = "Automated Quality Assurance System"
+horizontal_alignment = 1
+
+[node name="HSeparator1" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressSection" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressLabel" type="Label" parent="VBoxContainer/ProgressSection"]
+layout_mode = 2
+text = "Ready to run QA Pass"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer/ProgressSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+max_value = 100.0
+show_percentage = false
+
+[node name="ButtonSection" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RunQAButton" type="Button" parent="VBoxContainer/ButtonSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "🔍 Run QA Pass"
+
+[node name="ExportButton" type="Button" parent="VBoxContainer/ButtonSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "📁 Export Report"
+disabled = true
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ResultsSection" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ResultsLabel" type="Label" parent="VBoxContainer/ResultsSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "📋 QA Results"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/ResultsSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ResultsText" type="RichTextLabel" parent="VBoxContainer/ResultsSection/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][color=gray]Click 'Run QA Pass' to begin professional validation[/color][/center]"
+fit_content = true
+scroll_following = true
+
+[node name="FooterSection" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer/FooterSection"]
+layout_mode = 2
+
+[node name="HelpLabel" type="Label" parent="VBoxContainer/FooterSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+text = "Press F5 to run QA quickly • ESC to close panel"
+horizontal_alignment = 1

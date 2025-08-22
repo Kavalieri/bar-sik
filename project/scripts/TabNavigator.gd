@@ -10,6 +10,7 @@ const CurrencyDisplay = preload("res://scripts/ui/CurrencyDisplay.gd")
 @onready var prestige_button: Button = $MainContainer/TopPanel/PrestigeButton
 @onready var missions_button: Button = $MainContainer/TopPanel/MissionsButton  # T019
 @onready var automation_button: Button = $MainContainer/TopPanel/AutomationButton  # T022
+@onready var achievements_button: Button = $MainContainer/TopPanel/AchievementsButton  # T029
 @onready var currency_container: HBoxContainer = $MainContainer/TopPanel/CurrencyContainer
 
 # Botones de pestañas (ahora en la parte inferior)
@@ -39,6 +40,7 @@ signal new_save_slot_requested(slot_name: String)
 signal prestige_requested  # T015 - Señal para mostrar panel de prestigio
 signal missions_requested  # T019 - Señal para mostrar panel de misiones y logros
 signal automation_requested  # T022 - Señal para mostrar panel de automatización
+signal achievements_requested  # T029 - Señal para mostrar panel de achievements
 
 
 func _ready() -> void:
@@ -66,6 +68,9 @@ func _setup_ui() -> void:
 
 	# T022 - Setup automation button
 	automation_button.pressed.connect(_on_automation_pressed)
+
+	# T029 - Setup achievements button
+	achievements_button.pressed.connect(_on_achievements_pressed)
 
 	# Setup menú de guardado
 	_setup_save_menu()
@@ -242,6 +247,13 @@ func _on_automation_pressed() -> void:
 	"""Emitir señal para mostrar panel de automatización"""
 	print("🎛️ Botón de automatización presionado")
 	automation_requested.emit()
+
+
+# T029 - Signal handler para botón de achievements
+func _on_achievements_pressed() -> void:
+	"""Emitir señal para mostrar panel de achievements"""
+	print("🏆 Botón de achievements presionado")
+	achievements_requested.emit()
 
 
 ## MENÚ DE GUARDADO

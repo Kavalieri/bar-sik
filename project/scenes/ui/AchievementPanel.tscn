@@ -1,0 +1,93 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxk7dvdv7agww"]
+
+[ext_resource type="Script" path="res://ui/AchievementPanel.gd" id="1_1xk7j"]
+
+[node name="AchievementPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_1xk7j")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+
+[node name="HeaderContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MainContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🏆 LOGROS"
+horizontal_alignment = 1
+
+[node name="ProgressLabel" type="Label" parent="MainContainer/HeaderContainer"]
+layout_mode = 2
+text = "Progreso: 0/30 (0%)"
+
+[node name="CloseButton" type="Button" parent="MainContainer/HeaderContainer"]
+layout_mode = 2
+text = "✖"
+
+[node name="CategoryTabs" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="ContentScroll" type="ScrollContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AchievementList" type="VBoxContainer" parent="MainContainer/ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NotificationContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="NotificationPanel" type="PanelContainer" parent="NotificationContainer"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = -50.0
+
+[node name="VBox" type="VBoxContainer" parent="NotificationContainer/NotificationPanel"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="NotificationContainer/NotificationPanel/VBox"]
+layout_mode = 2
+text = "🏆 Achievement Unlocked!"
+horizontal_alignment = 1
+
+[node name="DescLabel" type="Label" parent="NotificationContainer/NotificationPanel/VBox"]
+layout_mode = 2
+text = "Achievement description here"
+horizontal_alignment = 1
+
+[node name="RewardLabel" type="Label" parent="NotificationContainer/NotificationPanel/VBox"]
+layout_mode = 2
+text = "Rewards: 💎 25 Gems"
+horizontal_alignment = 1

@@ -6,6 +6,7 @@ extends Control
 @onready var start_button: Button = $VBoxContainer/StartButton
 @onready var settings_button: Button = $VBoxContainer/SettingsButton
 @onready var credits_button: Button = $VBoxContainer/CreditsButton
+@onready var qa_button: Button = $VBoxContainer/QAButton
 @onready var quit_button: Button = $VBoxContainer/QuitButton
 @onready var version_label: Label = $VersionLabel
 
@@ -25,6 +26,7 @@ func _ready() -> void:
 	start_button.pressed.connect(_on_start_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
 	credits_button.pressed.connect(_on_credits_pressed)
+	qa_button.pressed.connect(_on_qa_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 
 	# Configurar efectos hover
@@ -41,7 +43,7 @@ func _ready() -> void:
 
 func _apply_consistent_theming() -> void:
 	"""Aplicar el tema coherente a todos los botones del menú"""
-	var buttons = [start_button, settings_button, credits_button, quit_button]
+	var buttons = [start_button, settings_button, credits_button, qa_button, quit_button]
 
 	for button in buttons:
 		if button:
@@ -51,7 +53,7 @@ func _apply_consistent_theming() -> void:
 
 func _setup_hover_effects() -> void:
 	"""Configurar efectos hover profesionales"""
-	var buttons = [start_button, settings_button, credits_button, quit_button]
+	var buttons = [start_button, settings_button, credits_button, qa_button, quit_button]
 
 	for button in buttons:
 		if button:
@@ -71,6 +73,12 @@ func _on_settings_pressed() -> void:
 func _on_credits_pressed() -> void:
 	print("📜 Mostrando créditos...")
 	Router.goto_scene("credits")
+
+
+func _on_qa_pressed() -> void:
+	print("🎯 Abriendo Professional QA Pass...")
+	var qa_panel = load("res://scenes/QAPanel.tscn").instantiate()
+	get_tree().current_scene.add_child(qa_panel)
 
 
 func _on_quit_pressed() -> void:

@@ -16,10 +16,14 @@ extends Resource
 
 # T017 - Sistema de Logros
 @export var unlocked_achievements: Array[String] = []  # IDs de logros desbloqueados
+@export var achievement_progress: Dictionary = {}  # Progreso de achievements
+@export var lifetime_stats: Dictionary = {}  # Estadísticas de por vida para achievements
 
-# T018 - Sistema de Misiones Diarias
+# T018/T030 - Sistema de Misiones Diarias y Semanales
 @export var active_missions: Dictionary = {}  # Misiones diarias activas
-@export var last_mission_reset: int = 0  # Timestamp del último reset
+@export var active_weekly_missions: Dictionary = {}  # T030 - Misiones semanales activas
+@export var last_mission_reset: int = 0  # Timestamp del último reset diario
+@export var last_weekly_mission_reset: int = 0  # T030 - Timestamp del último reset semanal
 
 ## Estado del tutorial y sistemas
 @export var tutorial_completed: bool = false
@@ -98,9 +102,13 @@ func to_dict() -> Dictionary:
 		"total_cash_earned": total_cash_earned,
 		# T017 - Sistema de Logros
 		"unlocked_achievements": unlocked_achievements.duplicate(),
-		# T018 - Sistema de Misiones Diarias
+		"achievement_progress": achievement_progress.duplicate(),
+		"lifetime_stats": lifetime_stats.duplicate(),
+		# T018/T030 - Sistema de Misiones Diarias y Semanales
 		"active_missions": active_missions.duplicate(true),
+		"active_weekly_missions": active_weekly_missions.duplicate(true),
 		"last_mission_reset": last_mission_reset,
+		"last_weekly_mission_reset": last_weekly_mission_reset,
 		# Datos del juego
 		"resources": resources,
 		"products": products,
@@ -109,7 +117,9 @@ func to_dict() -> Dictionary:
 		"offers": offers,
 		"upgrades": upgrades,
 		"milestones": milestones,
-		"statistics": statistics
+		"statistics": statistics,
+		# T031 - Sistema de Desbloqueos Progresivos
+		"unlock_data": _get_unlock_manager_data()  # Se llenará por UnlockManager
 	}
 
 
@@ -126,9 +136,13 @@ func from_dict(data: Dictionary) -> void:
 	total_cash_earned = data.get("total_cash_earned", 0.0)
 	# T017 - Sistema de Logros
 	unlocked_achievements = data.get("unlocked_achievements", [])
-	# T018 - Sistema de Misiones Diarias
+	achievement_progress = data.get("achievement_progress", {})
+	lifetime_stats = data.get("lifetime_stats", {})
+	# T018/T030 - Sistema de Misiones Diarias y Semanales
 	active_missions = data.get("active_missions", {})
+	active_weekly_missions = data.get("active_weekly_missions", {})
 	last_mission_reset = data.get("last_mission_reset", 0)
+	last_weekly_mission_reset = data.get("last_weekly_mission_reset", 0)
 	# Datos del juego
 	resources = data.get("resources", resources)
 	products = data.get("products", products)
@@ -138,6 +152,30 @@ func from_dict(data: Dictionary) -> void:
 	upgrades = data.get("upgrades", upgrades)
 	milestones = data.get("milestones", milestones)
 	statistics = data.get("statistics", statistics)
+
+	# T031 - Sistema de Desbloqueos Progresivos (carga diferida)
+	unlock_data = data.get("unlock_data", {})
+
+
+## === T031 - UNLOCK MANAGER INTEGRATION ===
+
+# Variable para almacenar los datos de unlock temporal
+var unlock_data: Dictionary = {}
+
+func _get_unlock_manager_data() -> Dictionary:
+	"""Obtiene los datos del UnlockManager para guardado"""
+	var unlock_manager = get_node_or_null("/root/GameController/UnlockManager")
+	if unlock_manager and unlock_manager.has_method("to_dict"):
+		return unlock_manager.to_dict()
+	return unlock_data  # Fallback a datos almacenados
+
+
+func load_unlock_data_to_manager():
+	"""Carga los datos de desbloqueos al UnlockManager"""
+	var unlock_manager = get_node_or_null("/root/GameController/UnlockManager")
+	if unlock_manager and unlock_manager.has_method("from_dict"):
+		unlock_manager.from_dict(unlock_data)
+		print("🔓 Datos de desbloqueos cargados al UnlockManager")
 
 
 ## === CURRENCY METHODS - Refactorizado desde CurrencyManager ===

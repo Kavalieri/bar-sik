@@ -6,8 +6,10 @@ class_name GameController
 # Escenas precargadas
 const PAUSE_MENU_SCENE = preload("res://scenes/PauseMenu.tscn")
 const PRESTIGE_PANEL_SCENE = preload("res://scenes/ui/PrestigePanel.tscn")
-const MISSIONS_PANEL_SCENE = preload("res://scenes/MissionsPanel.tscn")  # T019
+const MISSIONS_PANEL_SCENE = preload("res://scenes/ui/MissionPanel.tscn")  # T030
 const AUTOMATION_PANEL_SCENE = preload("res://scenes/ui/AutomationPanel.tscn")  # T022
+const ACHIEVEMENT_PANEL_SCENE = preload("res://scenes/ui/AchievementPanel.tscn")  # T029
+const UNLOCK_PANEL_SCENE = preload("res://scenes/ui/UnlockPanel.tscn")  # T031
 
 @onready var tab_navigator: Control = $TabNavigator
 
@@ -23,6 +25,12 @@ var mission_manager: MissionManager  # T018 - Sistema de Misiones Diarias
 var automation_manager: AutomationManager  # T020 - Sistema de Automatización
 var offline_progress_manager: OfflineProgressManager  # T023 - Progreso Offline
 var daily_reward_manager: DailyRewardManager  # T026 - Sistema de recompensas diarias
+var unlock_manager: UnlockManager  # T031 - Sistema de Desbloqueos Progresivos
+var audio_manager: AudioManager  # T032 - Sistema de Audio Profesional
+var effects_manager: EffectsManager  # T033 - Sistema de Efectos Visuales
+var statistics_manager: StatisticsManager  # T034 - Sistema de Dashboard de Estadísticas
+var research_manager: ResearchManager  # T035 - Sistema de Árbol de Investigación
+var contract_manager: ContractManager  # T036 - Sistema de Contratos
 # T028 - Performance Optimization Managers
 var performance_manager: PerformanceManager
 var object_pool_manager: ObjectPoolManager
@@ -139,6 +147,12 @@ func _setup_managers() -> void:
 	mission_manager = MissionManager.new()  # T018 - Sistema de Misiones Diarias
 	automation_manager = AutomationManager.new()  # T020 - Sistema de Automatización
 	offline_progress_manager = OfflineProgressManager.new()  # T023 - Progreso Offline
+	unlock_manager = UnlockManager.new()  # T031 - Sistema de Desbloqueos Progresivos
+	audio_manager = AudioManager.new()  # T032 - Sistema de Audio Profesional
+	effects_manager = EffectsManager.new()  # T033 - Sistema de Efectos Visuales
+	statistics_manager = StatisticsManager.new()  # T034 - Sistema de Dashboard de Estadísticas
+	research_manager = ResearchManager.new()  # T035 - Sistema de Árbol de Investigación
+	contract_manager = ContractManager.new()  # T036 - Sistema de Contratos
 	# ELIMINADO: currency_manager - Refactor: currencies en GameData
 
 	# Agregar al árbol de nodos
@@ -152,6 +166,12 @@ func _setup_managers() -> void:
 	add_child(automation_manager)  # T020 - Sistema de Automatización
 	add_child(offline_progress_manager)  # T023 - Progreso Offline
 	add_child(daily_reward_manager)  # T026 - Sistema de recompensas diarias
+	add_child(unlock_manager)  # T031 - Sistema de Desbloqueos Progresivos
+	add_child(audio_manager)  # T032 - Sistema de Audio Profesional
+	add_child(effects_manager)  # T033 - Sistema de Efectos Visuales
+	add_child(statistics_manager)  # T034 - Sistema de Dashboard de Estadísticas
+	add_child(research_manager)  # T035 - Sistema de Árbol de Investigación
+	add_child(contract_manager)  # T036 - Sistema de Contratos
 	# ELIMINADO: add_child(currency_manager)
 
 	# Asignar datos del juego a todos los managers
@@ -165,6 +185,12 @@ func _setup_managers() -> void:
 	automation_manager.set_game_data(game_data)  # T020 - Sistema de Auto-Producción
 	offline_progress_manager.set_game_data(game_data)  # T023 - Progreso Offline
 	daily_reward_manager.set_game_data(game_data)  # T026 - Sistema de recompensas diarias
+	unlock_manager.game_data = game_data  # T031 - Sistema de Desbloqueos Progresivos
+	audio_manager.set_game_data(game_data)  # T032 - Sistema de Audio Profesional
+	effects_manager.set_game_data(game_data)  # T033 - Sistema de Efectos Visuales
+	statistics_manager.set_game_data(game_data)  # T034 - Sistema de Dashboard de Estadísticas
+	research_manager.set_game_data(game_data)  # T035 - Sistema de Árbol de Investigación
+	contract_manager.set_game_data(game_data)  # T036 - Sistema de Contratos
 	# ELIMINADO: currency_manager.set_game_data(game_data) - Ya no existe
 	# Para acceder a definiciones de estaciones
 	customer_manager.set_production_manager(production_manager)
@@ -185,12 +211,32 @@ func _setup_managers() -> void:
 	prestige_manager.load_prestige_data_from_game_data()
 	print("🌟 PrestigeManager datos cargados desde GameData")
 
+	# T029 - Cargar datos de achievements en el AchievementManager
+	if achievement_manager and game_data:
+		var achievement_data = {
+			"unlocked_achievements": game_data.unlocked_achievements,
+			"achievement_progress": game_data.achievement_progress,
+			"lifetime_stats": game_data.lifetime_stats
+		}
+		achievement_manager.load_achievement_data(achievement_data)
+		print("🏆 AchievementManager datos cargados desde GameData")
+
 	# T014 - Aplicar bonificaciones de prestige al cargar
 	if prestige_manager.active_star_bonuses.size() > 0:
 		prestige_manager._apply_all_star_bonuses()
 		print(
 			"⭐ Bonificaciones aplicadas: %d activas" % prestige_manager.active_star_bonuses.size()
 		)
+
+	# T035 - Conectar ResearchManager con StatisticsManager
+	if research_manager and statistics_manager:
+		research_manager.set_statistics_manager(statistics_manager)
+		print("🔬 ResearchManager conectado con StatisticsManager")
+
+	# T036 - Conectar ContractManager con StatisticsManager
+	if contract_manager and statistics_manager:
+		contract_manager.set_statistics_manager(statistics_manager)
+		print("📋 ContractManager conectado con StatisticsManager")
 
 	# CRÍTICO: Conectar señal de StockManager para actualizaciones en tiempo real
 	StockManager.stock_updated.connect(_on_stock_updated)
@@ -287,6 +333,7 @@ func _setup_ui_system() -> void:
 	tab_navigator.prestige_requested.connect(_on_prestige_button_pressed)  # T015
 	tab_navigator.missions_requested.connect(show_missions_panel)  # T019
 	tab_navigator.automation_requested.connect(show_automation_panel)  # T022
+	tab_navigator.achievements_requested.connect(show_achievements_panel)  # T029
 
 	# Configurar paneles con datos iniciales
 	_setup_panels()
@@ -762,29 +809,38 @@ func show_prestige_panel() -> void:
 	print("✅ Panel de prestigio mostrado")
 
 
-# T019 - Función para mostrar panel de misiones y logros
+# T030 - Función para mostrar panel de misiones profesional
 func show_missions_panel():
-	"""Mostrar el panel de misiones y logros"""
-	print("🎮 Mostrando panel de misiones y logros")
+	"""Mostrar el panel de misiones diarias y semanales"""
+	print("🎮 Mostrando panel de misiones (T030)")
 
 	# Crear instancia del panel
 	var missions_panel_instance = MISSIONS_PANEL_SCENE.instantiate()
 	missions_panel_instance.name = "MissionsPanelOverlay"
-	missions_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
-
-	# Configurar con managers
-	missions_panel_instance.setup_managers(mission_manager, achievement_manager)
 
 	# Conectar señales del panel
-	missions_panel_instance.panel_closed.connect(_on_missions_panel_closed)
+	if missions_panel_instance.has_signal("mission_panel_closed"):
+		missions_panel_instance.mission_panel_closed.connect(_on_missions_panel_closed)
 
 	# Añadir como overlay (encima de todo)
 	add_child(missions_panel_instance)
 
-	# Mostrar panel
-	missions_panel_instance.show_panel()
+	print("✅ Panel de misiones T030 mostrado")
 
-	print("✅ Panel de misiones mostrado")
+
+# T031 - Función para mostrar panel de desbloqueos progresivos
+func show_unlock_panel():
+	"""Mostrar el panel de desbloqueos progresivos"""
+	print("🎮 Mostrando panel de desbloqueos (T031)")
+
+	# Crear instancia del panel
+	var unlock_panel_instance = UNLOCK_PANEL_SCENE.instantiate()
+	unlock_panel_instance.name = "UnlockPanelOverlay"
+
+	# Añadir como overlay (encima de todo)
+	add_child(unlock_panel_instance)
+
+	print("✅ Panel de desbloqueos T031 mostrado")
 
 
 func _on_missions_panel_closed():
@@ -831,6 +887,39 @@ func _on_automation_panel_closed():
 	var automation_overlay = get_node_or_null("AutomationPanelOverlay")
 	if automation_overlay:
 		automation_overlay.queue_free()
+
+
+# T029 - Panel de achievements
+func show_achievements_panel():
+	"""Mostrar el panel de achievements"""
+	print("🏆 Mostrando panel de achievements")
+
+	# Crear instancia del panel
+	var achievement_panel_instance = ACHIEVEMENT_PANEL_SCENE.instantiate()
+	achievement_panel_instance.name = "AchievementPanelOverlay"
+	achievement_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Conectar señal de cierre si existe
+	if achievement_panel_instance.has_signal("achievement_panel_closed"):
+		achievement_panel_instance.achievement_panel_closed.connect(_on_achievement_panel_closed)
+
+	# Añadir como overlay (encima de todo)
+	add_child(achievement_panel_instance)
+
+	# Mostrar panel
+	achievement_panel_instance.show_panel()
+
+	print("✅ Panel de achievements mostrado")
+
+
+func _on_achievement_panel_closed():
+	"""Manejar cierre del panel de achievements"""
+	print("🏆 Panel de achievements cerrado")
+
+	# Buscar y eliminar el panel overlay
+	var achievement_overlay = get_node_or_null("AchievementPanelOverlay")
+	if achievement_overlay:
+		achievement_overlay.queue_free()
 
 
 func _on_prestige_requested() -> void:
@@ -909,6 +998,7 @@ func _on_reset_data_requested() -> void:
 ## Guardado automático
 func _save_game() -> void:
 	if SaveSystem:
+		_sync_managers_to_game_data()  # Sincronizar datos antes de guardar
 		SaveSystem.save_game_data_with_encryption(game_data.to_dict())
 		print("💾 Juego guardado automáticamente con encriptación")
 
@@ -916,8 +1006,30 @@ func _save_game() -> void:
 ## Guardado inmediato para eventos críticos
 func _save_game_immediate() -> void:
 	if SaveSystem:
+		_sync_managers_to_game_data()  # Sincronizar datos antes de guardar
 		SaveSystem.save_game_data_immediate()
 		print("💾 Guardado inmediato realizado")
+
+
+# T029 - Sincronizar datos de managers con GameData
+func _sync_managers_to_game_data() -> void:
+	"""Sincronizar datos de todos los managers con GameData antes del guardado"""
+
+	# Sincronizar achievements
+	if achievement_manager:
+		var achievement_data = achievement_manager._save_achievement_data()
+		game_data.unlocked_achievements = achievement_data.get("unlocked_achievements", [])
+		game_data.achievement_progress = achievement_data.get("achievement_progress", {})
+		game_data.lifetime_stats = achievement_data.get("lifetime_stats", {})
+
+	# T031 - Sincronizar datos de desbloqueos progresivos
+	if unlock_manager:
+		var unlock_dict = game_data.to_dict()
+		unlock_dict["unlock_data"] = unlock_manager.to_dict()
+		# Los datos se actualizarán en el próximo to_dict() de GameData
+
+	# Aquí se pueden añadir más managers en el futuro
+	print("📊 Datos de managers sincronizados con GameData")
 
 
 ## Guardar al cerrar

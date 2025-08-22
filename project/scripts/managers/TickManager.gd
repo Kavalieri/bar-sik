@@ -381,7 +381,7 @@ func get_tick_summary() -> String:
 	return (
 		"""Tick System: %d total callbacks
 Fast (60fps): %d callbacks
-Normal (30fps): %d callbacks  
+Normal (30fps): %d callbacks
 Slow (10fps): %d callbacks
 Very Slow (1fps): %d callbacks
 Batched Signals: %d queued"""
