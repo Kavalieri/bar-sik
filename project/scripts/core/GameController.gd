@@ -23,6 +23,10 @@ var mission_manager: MissionManager  # T018 - Sistema de Misiones Diarias
 var automation_manager: AutomationManager  # T020 - Sistema de Automatización
 var offline_progress_manager: OfflineProgressManager  # T023 - Progreso Offline
 var daily_reward_manager: DailyRewardManager  # T026 - Sistema de recompensas diarias
+# T028 - Performance Optimization Managers
+var performance_manager: PerformanceManager
+var object_pool_manager: ObjectPoolManager
+var tick_manager: TickManager
 # ELIMINADO: var currency_manager: CurrencyManager - Refactor: currencies en GameData
 
 # Referencias a paneles UI
