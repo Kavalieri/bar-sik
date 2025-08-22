@@ -87,11 +87,26 @@ func calculate_exponential_cost(
 
 
 ## ═══════════════════════════════════════════════════════════════════════════════════
-## T024 - SISTEMA DE ESCALADO DE COSTOS REBALANCEADO
+## T027 - SISTEMA DE ESCALADO MATEMÁTICAMENTE OPTIMIZADO
 ## ═══════════════════════════════════════════════════════════════════════════════════
 
 
-## Obtener costo escalado con curvas específicas por tipo de item
+## Obtener costo escalado con curvas optimizadas científicamente (T027)
+func get_scaled_cost_optimized(
+	base_cost: float, level: int, item_type: String = "generator", player_progress: Dictionary = {}
+) -> float:
+	"""
+	Sistema de escalado T027 - Matemáticamente optimizado para idle game de clase mundial:
+	- Early game: Gratificación cada 30-60 segundos
+	- Mid game: Walls balanceadas cada 5-10 minutos
+	- Late game: Prestige timing perfecto
+	"""
+	# Usar el nuevo sistema matemático optimizado
+	var math_manager = MathematicalBalanceManager.new()
+	return math_manager.get_optimized_cost(base_cost, level, item_type, player_progress)
+
+
+## Obtener costo escalado con curvas específicas por tipo de item (LEGACY)
 func get_scaled_cost(base_cost: float, level: int, item_type: String = "default") -> float:
 	"""
 	Sistema de escalado rebalanceado para mejor progresión:

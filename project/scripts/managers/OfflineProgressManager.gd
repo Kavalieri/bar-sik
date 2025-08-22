@@ -1,8 +1,9 @@
 class_name OfflineProgressManager
 extends Node
 
-## T023 - Sistema de Cálculo de Progreso Offline
+## T023 + T027 - Sistema de Cálculo de Progreso Offline con Optimización Matemática
 ## Calcula lo que habría ocurrido durante tiempo offline usando automatizaciones
+## T027: Curvas de eficiencia científicamente optimizadas
 
 # Señales para notificar cálculo completado
 signal offline_progress_calculated(progress_data: Dictionary)
@@ -86,7 +87,7 @@ func calculate_offline_progress(offline_seconds: float) -> Dictionary:
 
 	var progress_data = {
 		"offline_hours": offline_seconds / 3600.0,
-		"efficiency": offline_premium_efficiency if has_premium else offline_efficiency,
+		"efficiency": _get_optimized_offline_efficiency(offline_seconds, has_premium),
 		"resources_generated": {},
 		"products_produced": {},
 		"products_sold": {},
@@ -380,6 +381,12 @@ func _apply_offline_progress(progress_data: Dictionary):
 func _has_offline_premium() -> bool:
 	"""Verificar si tiene premium offline"""
 	return game_data.upgrades.get("offline_premium", false)
+
+
+func _get_optimized_offline_efficiency(offline_seconds: float, has_premium: bool) -> float:
+	"""T027: Curva de eficiencia offline optimizada científicamente"""
+	var math_manager = MathematicalBalanceManager.new()
+	return math_manager.get_idle_efficiency(offline_seconds, has_premium)
 
 
 func _get_generator_base_rate(generator_id: String) -> float:
