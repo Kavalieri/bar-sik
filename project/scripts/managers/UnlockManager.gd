@@ -22,14 +22,10 @@ var unlock_conditions: Dictionary = {}
 var feature_progress: Dictionary = {}
 
 # Constantes para fases del juego
-enum GamePhase {
-	EARLY,      # 0-30 minutos
-	MID,        # 30-120 minutos
-	LATE,       # 2+ horas
-	ENDGAME     # Post-prestige avanzado
-}
+enum GamePhase { EARLY, MID, LATE, ENDGAME }  # 0-30 minutos  # 30-120 minutos  # 2+ horas  # Post-prestige avanzado
 
 var current_phase: GamePhase = GamePhase.EARLY
+
 
 func _ready():
 	print("🔓 UnlockManager inicializado (T031 - Progressive Unlocks)")
@@ -54,10 +50,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea clientes automáticos que compran tu cerveza",
 		"phase": GamePhase.EARLY,
 		"icon": "👥",
-		"conditions": {
-			"total_money_earned": 100.0,
-			"beers_produced": 50
-		},
+		"conditions": {"total_money_earned": 100.0, "beers_produced": 50},
 		"unlocks": ["CustomerPanel", "customer_upgrades"],
 		"notification": "¡Clientes desbloqueados! Ahora generarás dinero automáticamente."
 	}
@@ -68,10 +61,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea el panel de automatización básico",
 		"phase": GamePhase.EARLY,
 		"icon": "🤖",
-		"conditions": {
-			"total_money_earned": 500.0,
-			"customers_unlocked": true
-		},
+		"conditions": {"total_money_earned": 500.0, "customers_unlocked": true},
 		"unlocks": ["AutomationPanel", "auto_production"],
 		"notification": "¡Automatización disponible! Tus generadores trabajarán solos."
 	}
@@ -82,10 +72,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea mejoras permanentes para optimizar producción",
 		"phase": GamePhase.EARLY,
 		"icon": "⬆️",
-		"conditions": {
-			"total_money_earned": 1000.0,
-			"basic_automation_unlocked": true
-		},
+		"conditions": {"total_money_earned": 1000.0, "basic_automation_unlocked": true},
 		"unlocks": ["UpgradePanel", "permanent_bonuses"],
 		"notification": "¡Mejoras desbloqueadas! Optimiza tu producción permanentemente."
 	}
@@ -97,11 +84,8 @@ func _init_unlock_definitions():
 		"description": "Desbloquea sistemas de automatización complejos",
 		"phase": GamePhase.MID,
 		"icon": "🔧",
-		"conditions": {
-			"total_money_earned": 10000.0,
-			"upgrades_purchased": 5,
-			"playtime_minutes": 30
-		},
+		"conditions":
+		{"total_money_earned": 10000.0, "upgrades_purchased": 5, "playtime_minutes": 30},
 		"unlocks": ["AdvancedAutomation", "auto_sell", "bulk_operations"],
 		"notification": "¡Automatización avanzada! Tu negocio casi se maneja solo."
 	}
@@ -112,7 +96,8 @@ func _init_unlock_definitions():
 		"description": "Reinicia el progreso por bonos permanentes masivos",
 		"phase": GamePhase.MID,
 		"icon": "⭐",
-		"conditions": {
+		"conditions":
+		{
 			"total_money_earned": 100000.0,
 			"advanced_automation_unlocked": true,
 			"playtime_minutes": 60
@@ -127,10 +112,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea la segunda moneda para upgrades premium",
 		"phase": GamePhase.MID,
 		"icon": "🪙",
-		"conditions": {
-			"prestige_completed": 1,
-			"prestige_stars": 10
-		},
+		"conditions": {"prestige_completed": 1, "prestige_stars": 10},
 		"unlocks": ["TokenEconomy", "premium_upgrades", "token_generators"],
 		"notification": "¡Tokens desbloqueados! Nueva moneda para mejoras premium."
 	}
@@ -141,10 +123,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea logros y metas para progresar",
 		"phase": GamePhase.MID,
 		"icon": "🏆",
-		"conditions": {
-			"prestige_completed": 1,
-			"tokens_earned": 100
-		},
+		"conditions": {"prestige_completed": 1, "tokens_earned": 100},
 		"unlocks": ["AchievementPanel", "achievement_rewards", "progression_tracking"],
 		"notification": "¡Logros desbloqueados! Completa objetivos por recompensas."
 	}
@@ -155,11 +134,8 @@ func _init_unlock_definitions():
 		"description": "Desbloquea misiones diarias y semanales",
 		"phase": GamePhase.MID,
 		"icon": "📋",
-		"conditions": {
-			"achievements_unlocked": true,
-			"achievements_completed": 3,
-			"playtime_minutes": 90
-		},
+		"conditions":
+		{"achievements_unlocked": true, "achievements_completed": 3, "playtime_minutes": 90},
 		"unlocks": ["MissionPanel", "daily_missions", "weekly_missions"],
 		"notification": "¡Misiones desbloqueadas! Objetivos diarios y semanales disponibles."
 	}
@@ -171,11 +147,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea la moneda premium para upgrades élite",
 		"phase": GamePhase.LATE,
 		"icon": "💎",
-		"conditions": {
-			"prestige_completed": 3,
-			"prestige_stars": 100,
-			"missions_unlocked": true
-		},
+		"conditions": {"prestige_completed": 3, "prestige_stars": 100, "missions_unlocked": true},
 		"unlocks": ["GemEconomy", "premium_features", "elite_upgrades"],
 		"notification": "¡GEMAS DESBLOQUEADAS! Moneda premium para características élite."
 	}
@@ -186,11 +158,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea bonos de prestigio más poderosos",
 		"phase": GamePhase.LATE,
 		"icon": "⭐⭐",
-		"conditions": {
-			"prestige_completed": 5,
-			"prestige_stars": 250,
-			"gems_earned": 100
-		},
+		"conditions": {"prestige_completed": 5, "prestige_stars": 250, "gems_earned": 100},
 		"unlocks": ["AdvancedPrestigeBonuses", "star_multipliers", "prestige_automation"],
 		"notification": "¡Prestigio Avanzado! Bonos de prestigio mucho más poderosos."
 	}
@@ -201,11 +169,8 @@ func _init_unlock_definitions():
 		"description": "Desbloquea investigaciones permanentes especializadas",
 		"phase": GamePhase.LATE,
 		"icon": "🧬",
-		"conditions": {
-			"advanced_prestige_unlocked": true,
-			"gems_spent": 500,
-			"playtime_minutes": 180
-		},
+		"conditions":
+		{"advanced_prestige_unlocked": true, "gems_spent": 500, "playtime_minutes": 180},
 		"unlocks": ["ResearchTree", "specialized_bonuses", "research_automation"],
 		"notification": "¡Investigación desbloqueada! Especializa tu estrategia."
 	}
@@ -217,11 +182,7 @@ func _init_unlock_definitions():
 		"description": "Desbloquea contratos temporales por recompensas masivas",
 		"phase": GamePhase.ENDGAME,
 		"icon": "📝",
-		"conditions": {
-			"research_unlocked": true,
-			"prestige_completed": 10,
-			"prestige_stars": 500
-		},
+		"conditions": {"research_unlocked": true, "prestige_completed": 10, "prestige_stars": 500},
 		"unlocks": ["ContractSystem", "timed_challenges", "massive_rewards"],
 		"notification": "¡CONTRATOS DISPONIBLES! Desafíos temporales por recompensas masivas."
 	}
@@ -232,11 +193,8 @@ func _init_unlock_definitions():
 		"description": "Desbloquea eventos limitados con bonos especiales",
 		"phase": GamePhase.ENDGAME,
 		"icon": "🎉",
-		"conditions": {
-			"contracts_unlocked": true,
-			"contracts_completed": 3,
-			"total_playtime_hours": 10
-		},
+		"conditions":
+		{"contracts_unlocked": true, "contracts_completed": 3, "total_playtime_hours": 10},
 		"unlocks": ["EventSystem", "limited_bonuses", "seasonal_content"],
 		"notification": "¡EVENTOS DESBLOQUEADOS! Contenido temporal con bonos únicos."
 	}
@@ -377,12 +335,14 @@ func _unlock_feature(feature_id: String):
 
 	# Emitir señales
 	feature_unlocked.emit(feature_id, definition)
-	unlock_notification.emit({
-		"title": "¡Nuevo Desbloqueo!",
-		"message": definition["notification"],
-		"icon": definition["icon"],
-		"feature_id": feature_id
-	})
+	unlock_notification.emit(
+		{
+			"title": "¡Nuevo Desbloqueo!",
+			"message": definition["notification"],
+			"icon": definition["icon"],
+			"feature_id": feature_id
+		}
+	)
 
 	# Actualizar estadísticas
 	if not game_data.statistics.has("features_unlocked"):
@@ -412,6 +372,7 @@ func _update_game_phase():
 
 ## === API PÚBLICAS ===
 
+
 func is_unlocked(feature_id: String) -> bool:
 	"""Verifica si una característica está desbloqueada"""
 	return unlocked_features.get(feature_id, false)
@@ -439,12 +400,14 @@ func get_available_unlocks() -> Array:
 			if conditions_count > 0:
 				var avg_progress = total_progress / conditions_count
 				if avg_progress > 0.1:  # Al menos 10% de progreso
-					available.append({
-						"feature_id": feature_id,
-						"definition": unlock_definitions[feature_id],
-						"progress": avg_progress,
-						"conditions_progress": progress
-					})
+					available.append(
+						{
+							"feature_id": feature_id,
+							"definition": unlock_definitions[feature_id],
+							"progress": avg_progress,
+							"conditions_progress": progress
+						}
+					)
 
 	# Ordenar por progreso descendente
 	available.sort_custom(func(a, b): return a["progress"] > b["progress"])
@@ -475,6 +438,7 @@ func force_unlock(feature_id: String) -> bool:
 
 ## === INTEGRACIÓN CON SAVE SYSTEM ===
 
+
 func to_dict() -> Dictionary:
 	"""Serializa el estado para guardado"""
 	return {
@@ -496,11 +460,14 @@ func from_dict(data: Dictionary) -> void:
 
 ## === UTILIDADES DE DEBUG ===
 
+
 func print_unlock_status():
 	"""Imprime el estado actual de desbloqueos (debug)"""
 	print("🔓 === ESTADO DE DESBLOQUEOS ===")
 	print("Fase actual: ", GamePhase.keys()[current_phase])
-	print("Features desbloqueadas: ", get_unlocked_features().size(), "/", unlock_definitions.size())
+	print(
+		"Features desbloqueadas: ", get_unlocked_features().size(), "/", unlock_definitions.size()
+	)
 
 	for feature_id in unlock_definitions.keys():
 		var status = "✅" if is_unlocked(feature_id) else "❌"

@@ -21,6 +21,7 @@ var economic_labels: Dictionary = {}
 var meta_labels: Dictionary = {}
 var efficiency_labels: Dictionary = {}
 
+
 func _ready():
 	print("📊 StatisticsPanel inicializado (T034)")
 	_create_ui_structure()
@@ -69,27 +70,33 @@ func _create_production_tab():
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	# Sección: Producción General
-	_add_stats_section(vbox, "📈 Producción General", [
-		"total_beers_brewed",
-		"production_streaks_current",
-		"production_streaks_best",
-		"waste_generated"
-	], production_labels)
+	_add_stats_section(
+		vbox,
+		"📈 Producción General",
+		[
+			"total_beers_brewed",
+			"production_streaks_current",
+			"production_streaks_best",
+			"waste_generated"
+		],
+		production_labels
+	)
 
 	# Sección: Por Tipo de Cerveza
-	_add_stats_section(vbox, "🍻 Por Tipo de Cerveza", [
-		"top_beer_type_1",
-		"top_beer_type_2",
-		"top_beer_type_3"
-	], production_labels)
+	_add_stats_section(
+		vbox,
+		"🍻 Por Tipo de Cerveza",
+		["top_beer_type_1", "top_beer_type_2", "top_beer_type_3"],
+		production_labels
+	)
 
 	# Sección: Calidad
-	_add_stats_section(vbox, "⭐ Control de Calidad", [
-		"quality_excellent",
-		"quality_good",
-		"quality_poor",
-		"quality_ratio"
-	], production_labels)
+	_add_stats_section(
+		vbox,
+		"⭐ Control de Calidad",
+		["quality_excellent", "quality_good", "quality_poor", "quality_ratio"],
+		production_labels
+	)
 
 
 func _create_economic_tab():
@@ -103,29 +110,40 @@ func _create_economic_tab():
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	# Sección: Ingresos
-	_add_stats_section(vbox, "💵 Ingresos", [
-		"money_lifetime",
-		"money_session",
-		"money_per_hour_avg",
-		"money_per_hour_peak",
-		"biggest_sale"
-	], economic_labels)
+	_add_stats_section(
+		vbox,
+		"💵 Ingresos",
+		[
+			"money_lifetime",
+			"money_session",
+			"money_per_hour_avg",
+			"money_per_hour_peak",
+			"biggest_sale"
+		],
+		economic_labels
+	)
 
 	# Sección: Tokens y Gemas
-	_add_stats_section(vbox, "💎 Recursos Premium", [
-		"tokens_achievements",
-		"tokens_missions",
-		"tokens_prestige",
-		"gems_spent_upgrades",
-		"gems_spent_automation"
-	], economic_labels)
+	_add_stats_section(
+		vbox,
+		"💎 Recursos Premium",
+		[
+			"tokens_achievements",
+			"tokens_missions",
+			"tokens_prestige",
+			"gems_spent_upgrades",
+			"gems_spent_automation"
+		],
+		economic_labels
+	)
 
 	# Sección: Análisis de Ventas
-	_add_stats_section(vbox, "📊 Análisis de Ventas", [
-		"revenue_by_beer",
-		"customer_value",
-		"profit_margins"
-	], economic_labels)
+	_add_stats_section(
+		vbox,
+		"📊 Análisis de Ventas",
+		["revenue_by_beer", "customer_value", "profit_margins"],
+		economic_labels
+	)
 
 
 func _create_meta_tab():
@@ -139,35 +157,41 @@ func _create_meta_tab():
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	# Sección: Tiempo de Juego
-	_add_stats_section(vbox, "🕐 Tiempo de Juego", [
-		"total_playtime",
-		"sessions_count",
-		"avg_session_length",
-		"longest_session"
-	], meta_labels)
+	_add_stats_section(
+		vbox,
+		"🕐 Tiempo de Juego",
+		["total_playtime", "sessions_count", "avg_session_length", "longest_session"],
+		meta_labels
+	)
 
 	# Sección: Progreso Offline
-	_add_stats_section(vbox, "😴 Progreso Offline", [
-		"offline_time_total",
-		"offline_gains_total",
-		"offline_efficiency"
-	], meta_labels)
+	_add_stats_section(
+		vbox,
+		"😴 Progreso Offline",
+		["offline_time_total", "offline_gains_total", "offline_efficiency"],
+		meta_labels
+	)
 
 	# Sección: Prestigio
-	_add_stats_section(vbox, "🌟 Prestigio", [
-		"prestige_count",
-		"prestige_fastest",
-		"prestige_stars",
-		"prestige_avg_time"
-	], meta_labels)
+	_add_stats_section(
+		vbox,
+		"🌟 Prestigio",
+		["prestige_count", "prestige_fastest", "prestige_stars", "prestige_avg_time"],
+		meta_labels
+	)
 
 	# Sección: Logros
-	_add_stats_section(vbox, "🏆 Progreso", [
-		"achievements_unlocked",
-		"achievements_progress",
-		"missions_completed",
-		"features_unlocked"
-	], meta_labels)
+	_add_stats_section(
+		vbox,
+		"🏆 Progreso",
+		[
+			"achievements_unlocked",
+			"achievements_progress",
+			"missions_completed",
+			"features_unlocked"
+		],
+		meta_labels
+	)
 
 
 func _create_efficiency_tab():
@@ -181,28 +205,38 @@ func _create_efficiency_tab():
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	# Sección: Scores de Optimización
-	_add_stats_section(vbox, "📈 Puntuaciones de Optimización", [
-		"resource_management_score",
-		"automation_setup_score",
-		"timing_efficiency_score",
-		"overall_efficiency"
-	], efficiency_labels)
+	_add_stats_section(
+		vbox,
+		"📈 Puntuaciones de Optimización",
+		[
+			"resource_management_score",
+			"automation_setup_score",
+			"timing_efficiency_score",
+			"overall_efficiency"
+		],
+		efficiency_labels
+	)
 
 	# Sección: Automatización
-	_add_stats_section(vbox, "🤖 Uso de Automatización", [
-		"automation_production_hours",
-		"automation_sales_hours",
-		"automation_total_hours",
-		"automation_vs_manual_ratio"
-	], efficiency_labels)
+	_add_stats_section(
+		vbox,
+		"🤖 Uso de Automatización",
+		[
+			"automation_production_hours",
+			"automation_sales_hours",
+			"automation_total_hours",
+			"automation_vs_manual_ratio"
+		],
+		efficiency_labels
+	)
 
 	# Sección: Idle vs Activo
-	_add_stats_section(vbox, "⚖️ Balance Idle/Activo", [
-		"idle_gains",
-		"active_gains",
-		"idle_vs_active_ratio",
-		"optimal_balance_score"
-	], efficiency_labels)
+	_add_stats_section(
+		vbox,
+		"⚖️ Balance Idle/Activo",
+		["idle_gains", "active_gains", "idle_vs_active_ratio", "optimal_balance_score"],
+		efficiency_labels
+	)
 
 
 func _add_stats_section(parent: Control, title: String, stats: Array, labels_dict: Dictionary):
@@ -255,7 +289,6 @@ func _get_stat_display_name(stat_key: String) -> String:
 		"quality_good": "Calidad Buena",
 		"quality_poor": "Calidad Pobre",
 		"quality_ratio": "Ratio de Calidad",
-
 		# Economic
 		"money_lifetime": "Dinero Total",
 		"money_session": "Dinero Sesión",
@@ -270,7 +303,6 @@ func _get_stat_display_name(stat_key: String) -> String:
 		"revenue_by_beer": "Ingresos por Cerveza",
 		"customer_value": "Valor del Cliente",
 		"profit_margins": "Márgenes",
-
 		# Meta
 		"total_playtime": "Tiempo Total",
 		"sessions_count": "Sesiones",
@@ -287,7 +319,6 @@ func _get_stat_display_name(stat_key: String) -> String:
 		"achievements_progress": "Progreso Logros",
 		"missions_completed": "Misiones",
 		"features_unlocked": "Características",
-
 		# Efficiency
 		"resource_management_score": "Gestión Recursos",
 		"automation_setup_score": "Setup Auto.",
@@ -330,9 +361,19 @@ func _update_production_stats():
 	"""Actualiza stats de producción"""
 	var stats = statistics_manager.get_production_summary()
 
-	_update_label("total_beers_brewed", _format_number(stats.get("total_beers_brewed", 0)), production_labels)
-	_update_label("production_streaks_current", str(stats.get("production_streaks", {}).get("current", 0)), production_labels)
-	_update_label("production_streaks_best", str(stats.get("production_streaks", {}).get("best", 0)), production_labels)
+	_update_label(
+		"total_beers_brewed", _format_number(stats.get("total_beers_brewed", 0)), production_labels
+	)
+	_update_label(
+		"production_streaks_current",
+		str(stats.get("production_streaks", {}).get("current", 0)),
+		production_labels
+	)
+	_update_label(
+		"production_streaks_best",
+		str(stats.get("production_streaks", {}).get("best", 0)),
+		production_labels
+	)
 	_update_label("waste_generated", str(stats.get("waste_generated", 0)), production_labels)
 
 	# Top beer types
@@ -340,7 +381,9 @@ func _update_production_stats():
 	for i in range(3):
 		var key = "top_beer_type_%d" % (i + 1)
 		if i < top_beers.size():
-			var beer_info = "%s (%s)" % [top_beers[i]["type"], _format_number(top_beers[i]["quantity"])]
+			var beer_info = (
+				"%s (%s)" % [top_beers[i]["type"], _format_number(top_beers[i]["quantity"])]
+			)
 			_update_label(key, beer_info, production_labels)
 		else:
 			_update_label(key, "N/A", production_labels)
@@ -351,8 +394,12 @@ func _update_production_stats():
 	_update_label("quality_good", str(quality.get("good", 0)), production_labels)
 	_update_label("quality_poor", str(quality.get("poor", 0)), production_labels)
 
-	var total_quality = quality.get("excellent", 0) + quality.get("good", 0) + quality.get("poor", 0)
-	var ratio = 0.0 if total_quality == 0 else float(quality.get("excellent", 0)) / float(total_quality)
+	var total_quality = (
+		quality.get("excellent", 0) + quality.get("good", 0) + quality.get("poor", 0)
+	)
+	var ratio = (
+		0.0 if total_quality == 0 else float(quality.get("excellent", 0)) / float(total_quality)
+	)
 	_update_label("quality_ratio", "%.1f%%" % (ratio * 100), production_labels)
 
 
@@ -360,10 +407,20 @@ func _update_economic_stats():
 	"""Actualiza stats económicas"""
 	var stats = statistics_manager.get_economic_summary()
 
-	_update_label("money_lifetime", _format_money(stats.get("money_earned_lifetime", 0.0)), economic_labels)
-	_update_label("money_session", _format_money(stats.get("money_earned_session", 0.0)), economic_labels)
-	_update_label("money_per_hour_avg", _format_money(stats.get("money_per_hour_average", 0.0)), economic_labels)
-	_update_label("money_per_hour_peak", _format_money(stats.get("money_per_hour_peak", 0.0)), economic_labels)
+	_update_label(
+		"money_lifetime", _format_money(stats.get("money_earned_lifetime", 0.0)), economic_labels
+	)
+	_update_label(
+		"money_session", _format_money(stats.get("money_earned_session", 0.0)), economic_labels
+	)
+	_update_label(
+		"money_per_hour_avg",
+		_format_money(stats.get("money_per_hour_average", 0.0)),
+		economic_labels
+	)
+	_update_label(
+		"money_per_hour_peak", _format_money(stats.get("money_per_hour_peak", 0.0)), economic_labels
+	)
 
 	var biggest = stats.get("biggest_single_sale", {})
 	_update_label("biggest_sale", _format_money(biggest.get("amount", 0.0)), economic_labels)
@@ -399,8 +456,14 @@ func _update_meta_stats():
 		_update_label("avg_session_length", _format_time(avg_length), meta_labels)
 		_update_label("longest_session", _format_time(session_lengths.max()), meta_labels)
 
-	_update_label("offline_time_total", _format_time(meta_stats.get("offline_time_total", 0)), meta_labels)
-	_update_label("offline_gains_total", _format_money(meta_stats.get("offline_gains_total", 0.0)), meta_labels)
+	_update_label(
+		"offline_time_total", _format_time(meta_stats.get("offline_time_total", 0)), meta_labels
+	)
+	_update_label(
+		"offline_gains_total",
+		_format_money(meta_stats.get("offline_gains_total", 0.0)),
+		meta_labels
+	)
 
 	# Prestige
 	var prestige = meta_stats.get("prestige_statistics", {})
@@ -417,18 +480,42 @@ func _update_efficiency_stats():
 	var stats = statistics_manager.efficiency_stats
 	var scores = stats.get("optimization_scores", {})
 
-	_update_label("resource_management_score", "%.1f%%" % (scores.get("resource_management", 0.0) * 100), efficiency_labels)
-	_update_label("automation_setup_score", "%.1f%%" % (scores.get("automation_setup", 0.0) * 100), efficiency_labels)
-	_update_label("timing_efficiency_score", "%.1f%%" % (scores.get("timing_efficiency", 0.0) * 100), efficiency_labels)
+	_update_label(
+		"resource_management_score",
+		"%.1f%%" % (scores.get("resource_management", 0.0) * 100),
+		efficiency_labels
+	)
+	_update_label(
+		"automation_setup_score",
+		"%.1f%%" % (scores.get("automation_setup", 0.0) * 100),
+		efficiency_labels
+	)
+	_update_label(
+		"timing_efficiency_score",
+		"%.1f%%" % (scores.get("timing_efficiency", 0.0) * 100),
+		efficiency_labels
+	)
 
 	var automation = stats.get("automation_usage", {})
-	_update_label("automation_production_hours", "%.1f h" % automation.get("production", 0.0), efficiency_labels)
-	_update_label("automation_sales_hours", "%.1f h" % automation.get("sales", 0.0), efficiency_labels)
-	_update_label("automation_total_hours", "%.1f h" % automation.get("total_hours", 0.0), efficiency_labels)
+	_update_label(
+		"automation_production_hours",
+		"%.1f h" % automation.get("production", 0.0),
+		efficiency_labels
+	)
+	_update_label(
+		"automation_sales_hours", "%.1f h" % automation.get("sales", 0.0), efficiency_labels
+	)
+	_update_label(
+		"automation_total_hours", "%.1f h" % automation.get("total_hours", 0.0), efficiency_labels
+	)
 
 	var idle_vs_active = stats.get("idle_vs_active_ratio", {})
-	_update_label("idle_gains", _format_money(idle_vs_active.get("idle_gains", 0.0)), efficiency_labels)
-	_update_label("active_gains", _format_money(idle_vs_active.get("active_gains", 0.0)), efficiency_labels)
+	_update_label(
+		"idle_gains", _format_money(idle_vs_active.get("idle_gains", 0.0)), efficiency_labels
+	)
+	_update_label(
+		"active_gains", _format_money(idle_vs_active.get("active_gains", 0.0)), efficiency_labels
+	)
 
 
 func _update_label(key: String, value: String, labels_dict: Dictionary):
@@ -470,6 +557,7 @@ func _format_time(seconds: int) -> String:
 
 
 ## === API PÚBLICAS ===
+
 
 func set_statistics_manager(manager: StatisticsManager):
 	"""Conecta con el StatisticsManager"""

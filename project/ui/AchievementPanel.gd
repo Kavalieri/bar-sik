@@ -24,10 +24,10 @@ signal achievement_category_changed(category: int)
 @onready var notification_reward: Label = $NotificationContainer/NotificationPanel/VBox/RewardLabel
 
 # Referencias al sistema
-@onready var achievement_manager = get_node("/root/AchievementManager")
+@onready var achievement_manager = null  # Se inicializará de forma segura
 
 # Estado del panel
-var current_category: AchievementManager.AchievementCategory = AchievementManager.AchievementCategory.PRODUCTION
+var current_category: int = 0  # Temporal - AchievementCategory.PRODUCTION
 var achievement_items: Array = []
 var category_buttons: Array[Button] = []
 
@@ -71,8 +71,17 @@ var achievement_icons: Dictionary = {
 	"complete_icon": "✅"
 }
 
+
 func _ready():
 	name = "AchievementPanel"
+
+	# Inicializar achievement_manager de forma segura
+	if has_node("/root/AchievementManager"):
+		achievement_manager = get_node("/root/AchievementManager")
+		print("✅ AchievementManager encontrado")
+	else:
+		print("⚠️ AchievementManager no encontrado - panel funcionará sin datos")
+
 	_setup_ui()
 	_connect_signals()
 	_create_category_tabs()
@@ -80,6 +89,7 @@ func _ready():
 
 	# Hide notification initially
 	notification_container.visible = false
+
 
 func _setup_ui():
 	# Configure main panel
@@ -91,6 +101,7 @@ func _setup_ui():
 
 	# Style the panel
 	add_theme_stylebox_override("panel", _create_panel_style())
+
 
 func _create_panel_style() -> StyleBoxFlat:
 	var style = StyleBoxFlat.new()
@@ -106,6 +117,7 @@ func _create_panel_style() -> StyleBoxFlat:
 	style.corner_radius_bottom_right = 10
 	return style
 
+
 func _connect_signals():
 	if close_button:
 		close_button.pressed.connect(_on_close_button_pressed)
@@ -115,22 +127,53 @@ func _connect_signals():
 		achievement_manager.achievement_progress_updated.connect(_on_progress_updated)
 		achievement_manager.achievement_notification.connect(_show_achievement_notification)
 
+
 func _create_category_tabs():
 	var categories = [
-		{"id": AchievementManager.AchievementCategory.PRODUCTION, "name": "📊 Producción", "color": Color.CYAN},
-		{"id": AchievementManager.AchievementCategory.ECONOMIC, "name": "💰 Económicos", "color": Color.GOLD},
-		{"id": AchievementManager.AchievementCategory.META, "name": "⭐ Meta", "color": Color.MAGENTA},
-		{"id": AchievementManager.AchievementCategory.AUTOMATION, "name": "🤖 Automation", "color": Color.GREEN},
-		{"id": AchievementManager.AchievementCategory.PROGRESSION, "name": "📈 Progreso", "color": Color.ORANGE},
-		{"id": AchievementManager.AchievementCategory.SPECIAL, "name": "🎁 Especiales", "color": Color.PURPLE},
-		{"id": AchievementManager.AchievementCategory.COLLECTION, "name": "🎯 Colección", "color": Color.YELLOW}
+		{
+			"id": AchievementManager.AchievementCategory.PRODUCTION,
+			"name": "📊 Producción",
+			"color": Color.CYAN
+		},
+		{
+			"id": AchievementManager.AchievementCategory.ECONOMIC,
+			"name": "💰 Económicos",
+			"color": Color.GOLD
+		},
+		{
+			"id": AchievementManager.AchievementCategory.META,
+			"name": "⭐ Meta",
+			"color": Color.MAGENTA
+		},
+		{
+			"id": AchievementManager.AchievementCategory.AUTOMATION,
+			"name": "🤖 Automation",
+			"color": Color.GREEN
+		},
+		{
+			"id": AchievementManager.AchievementCategory.PROGRESSION,
+			"name": "📈 Progreso",
+			"color": Color.ORANGE
+		},
+		{
+			"id": AchievementManager.AchievementCategory.SPECIAL,
+			"name": "🎁 Especiales",
+			"color": Color.PURPLE
+		},
+		{
+			"id": AchievementManager.AchievementCategory.COLLECTION,
+			"name": "🎯 Colección",
+			"color": Color.YELLOW
+		}
 	]
 
 	for category_data in categories:
 		var button = Button.new()
 		button.text = category_data["name"]
 		button.toggle_mode = true
-		button.button_group = ButtonGroup.new() if category_buttons.is_empty() else category_buttons[0].button_group
+		button.button_group = (
+			ButtonGroup.new() if category_buttons.is_empty() else category_buttons[0].button_group
+		)
 
 		# Style the button
 		var style_normal = StyleBoxFlat.new()
@@ -159,9 +202,11 @@ func _create_category_tabs():
 	if not category_buttons.is_empty():
 		category_buttons[0].button_pressed = true
 
+
 func _load_achievements():
 	_refresh_achievement_display()
 	_update_progress_display()
+
 
 func _refresh_achievement_display():
 	# Clear existing items
@@ -187,6 +232,7 @@ func _refresh_achievement_display():
 		achievement_list.add_child(item)
 		achievement_items.append(item)
 
+
 func _sort_achievements(a: Dictionary, b: Dictionary) -> bool:
 	# Unlocked achievements first
 	if a.get("unlocked", false) != b.get("unlocked", false):
@@ -196,6 +242,7 @@ func _sort_achievements(a: Dictionary, b: Dictionary) -> bool:
 	var progress_a = a.get("progress", 0.0) / a.get("required", 1.0)
 	var progress_b = b.get("progress", 0.0) / b.get("required", 1.0)
 	return progress_a > progress_b
+
 
 func _create_achievement_item(achievement_data: Dictionary) -> PanelContainer:
 	var item = PanelContainer.new()
@@ -312,6 +359,7 @@ func _create_achievement_item(achievement_data: Dictionary) -> PanelContainer:
 
 	return item
 
+
 func _format_number(number: float) -> String:
 	if number >= 1000000:
 		return "%.1fM" % (number / 1000000.0)
@@ -320,29 +368,33 @@ func _format_number(number: float) -> String:
 	else:
 		return "%.0f" % number
 
+
 func _update_progress_display():
 	if not achievement_manager:
 		return
 
 	var progress = achievement_manager.get_total_progress()
-	progress_label.text = "Progreso: %d/%d (%.1f%%)" % [
-		progress["completed"],
-		progress["total"],
-		progress["percentage"]
-	]
+	progress_label.text = (
+		"Progreso: %d/%d (%.1f%%)"
+		% [progress["completed"], progress["total"], progress["percentage"]]
+	)
+
 
 func _on_category_selected(category: AchievementManager.AchievementCategory):
 	current_category = category
 	_refresh_achievement_display()
 	achievement_category_changed.emit(category)
 
+
 func _on_achievement_unlocked(achievement_id: String, achievement_data: Dictionary):
 	_refresh_achievement_display()
 	_update_progress_display()
 
+
 func _on_progress_updated(achievement_id: String, current: float, required: float):
 	# Update progress bars in real-time
 	_refresh_achievement_display()  # Simple refresh for now
+
 
 func _show_achievement_notification(achievement_data: Dictionary):
 	if not notification_container:
@@ -357,7 +409,9 @@ func _show_achievement_notification(achievement_data: Dictionary):
 	if achievement_data.get("reward_tokens", 0) > 0:
 		rewards.append("🪙 %d Tokens" % achievement_data["reward_tokens"])
 	if achievement_data.get("reward_multiplier", 1.0) > 1.0:
-		rewards.append("🚀 +%.0f%% Multiplicador" % ((achievement_data["reward_multiplier"] - 1.0) * 100))
+		rewards.append(
+			"🚀 +%.0f%% Multiplicador" % ((achievement_data["reward_multiplier"] - 1.0) * 100)
+		)
 
 	notification_reward.text = "Recompensas: " + ", ".join(rewards) if rewards.size() > 0 else ""
 
@@ -371,9 +425,11 @@ func _show_achievement_notification(achievement_data: Dictionary):
 	tween.tween_property(notification_container, "modulate", Color.TRANSPARENT, 0.3)
 	tween.tween_callback(func(): notification_container.visible = false)
 
+
 func _on_close_button_pressed():
 	achievement_panel_closed.emit()
 	visible = false
+
 
 # API pública
 func show_panel():
@@ -381,8 +437,10 @@ func show_panel():
 	_refresh_achievement_display()
 	_update_progress_display()
 
+
 func hide_panel():
 	visible = false
+
 
 func set_category(category: AchievementManager.AchievementCategory):
 	current_category = category

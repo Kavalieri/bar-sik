@@ -32,6 +32,7 @@ const MAX_CONTRACTS_AVAILABLE = 4
 const CONTRACT_GENERATION_INTERVAL = 3600  # 1 hora
 const CONTRACT_DURATION_BASE = 1800  # 30 minutos base
 
+
 func _ready():
 	print("📋 ContractManager inicializado (T036)")
 	_initialize_contract_templates()
@@ -44,7 +45,8 @@ func _initialize_contract_templates():
 
 	contract_templates = {
 		# === CONTRATOS DE PRODUCCIÓN ===
-		"production_rush": {
+		"production_rush":
+		{
 			"type": "production",
 			"name": "Fiebre de Producción",
 			"description": "Produce {target} cervezas en {time} minutos",
@@ -52,19 +54,11 @@ func _initialize_contract_templates():
 			"difficulty": "normal",
 			"base_target": 100,
 			"time_limit": CONTRACT_DURATION_BASE,
-			"rewards": {
-				"money": 1000,
-				"tokens": 5,
-				"experience": 50
-			},
-			"scaling": {
-				"target_multiplier": 1.5,
-				"reward_multiplier": 1.3,
-				"time_bonus": 0.9  # Reducir tiempo para mayor dificultad
-			}
+			"rewards": {"money": 1000, "tokens": 5, "experience": 50},
+			"scaling": {"target_multiplier": 1.5, "reward_multiplier": 1.3, "time_bonus": 0.9}  # Reducir tiempo para mayor dificultad
 		},
-
-		"quality_challenge": {
+		"quality_challenge":
+		{
 			"type": "production",
 			"name": "Maestro Cervecero",
 			"description": "Produce {target} cervezas de calidad excelente",
@@ -72,19 +66,11 @@ func _initialize_contract_templates():
 			"difficulty": "hard",
 			"base_target": 25,
 			"time_limit": CONTRACT_DURATION_BASE * 2,
-			"rewards": {
-				"money": 2000,
-				"tokens": 10,
-				"gems": 2
-			},
-			"scaling": {
-				"target_multiplier": 1.3,
-				"reward_multiplier": 1.5,
-				"time_bonus": 0.95
-			}
+			"rewards": {"money": 2000, "tokens": 10, "gems": 2},
+			"scaling": {"target_multiplier": 1.3, "reward_multiplier": 1.5, "time_bonus": 0.95}
 		},
-
-		"speed_brewing": {
+		"speed_brewing":
+		{
 			"type": "production",
 			"name": "Velocidad Extrema",
 			"description": "Produce {target} cervezas en solo {time} minutos",
@@ -92,20 +78,12 @@ func _initialize_contract_templates():
 			"difficulty": "hard",
 			"base_target": 50,
 			"time_limit": CONTRACT_DURATION_BASE * 0.5,  # Tiempo reducido
-			"rewards": {
-				"money": 1500,
-				"tokens": 8,
-				"research_points": 10
-			},
-			"scaling": {
-				"target_multiplier": 1.4,
-				"reward_multiplier": 1.6,
-				"time_bonus": 0.85
-			}
+			"rewards": {"money": 1500, "tokens": 8, "research_points": 10},
+			"scaling": {"target_multiplier": 1.4, "reward_multiplier": 1.6, "time_bonus": 0.85}
 		},
-
 		# === CONTRATOS ECONÓMICOS ===
-		"sales_target": {
+		"sales_target":
+		{
 			"type": "economic",
 			"name": "Objetivo de Ventas",
 			"description": "Gana ${target} en {time} minutos",
@@ -113,19 +91,11 @@ func _initialize_contract_templates():
 			"difficulty": "normal",
 			"base_target": 5000,
 			"time_limit": CONTRACT_DURATION_BASE,
-			"rewards": {
-				"money": 2000,
-				"tokens": 6,
-				"experience": 40
-			},
-			"scaling": {
-				"target_multiplier": 1.4,
-				"reward_multiplier": 1.25,
-				"time_bonus": 0.92
-			}
+			"rewards": {"money": 2000, "tokens": 6, "experience": 40},
+			"scaling": {"target_multiplier": 1.4, "reward_multiplier": 1.25, "time_bonus": 0.92}
 		},
-
-		"premium_customers": {
+		"premium_customers":
+		{
 			"type": "economic",
 			"name": "Clientela VIP",
 			"description": "Atrae {target} clientes premium",
@@ -133,19 +103,11 @@ func _initialize_contract_templates():
 			"difficulty": "hard",
 			"base_target": 15,
 			"time_limit": CONTRACT_DURATION_BASE * 1.5,
-			"rewards": {
-				"money": 3000,
-				"tokens": 12,
-				"gems": 3
-			},
-			"scaling": {
-				"target_multiplier": 1.2,
-				"reward_multiplier": 1.4,
-				"time_bonus": 0.9
-			}
+			"rewards": {"money": 3000, "tokens": 12, "gems": 3},
+			"scaling": {"target_multiplier": 1.2, "reward_multiplier": 1.4, "time_bonus": 0.9}
 		},
-
-		"profit_margin": {
+		"profit_margin":
+		{
 			"type": "economic",
 			"name": "Margen de Beneficio",
 			"description": "Mantén un margen de beneficio del {target}% durante {time} min",
@@ -153,21 +115,12 @@ func _initialize_contract_templates():
 			"difficulty": "expert",
 			"base_target": 75,  # 75% de margen
 			"time_limit": CONTRACT_DURATION_BASE * 2,
-			"rewards": {
-				"money": 4000,
-				"tokens": 15,
-				"gems": 5,
-				"research_points": 20
-			},
-			"scaling": {
-				"target_multiplier": 1.1,  # Incremento pequeño del porcentaje
-				"reward_multiplier": 1.5,
-				"time_bonus": 1.1  # Aumentar tiempo para mayor dificultad
-			}
+			"rewards": {"money": 4000, "tokens": 15, "gems": 5, "research_points": 20},
+			"scaling": {"target_multiplier": 1.1, "reward_multiplier": 1.5, "time_bonus": 1.1}  # Incremento pequeño del porcentaje  # Aumentar tiempo para mayor dificultad
 		},
-
 		# === CONTRATOS DE EFICIENCIA ===
-		"zero_waste": {
+		"zero_waste":
+		{
 			"type": "efficiency",
 			"name": "Desperdicio Cero",
 			"description": "Opera sin desperdicios durante {time} minutos",
@@ -175,20 +128,11 @@ func _initialize_contract_templates():
 			"difficulty": "expert",
 			"base_target": 0,  # 0% desperdicio
 			"time_limit": CONTRACT_DURATION_BASE,
-			"rewards": {
-				"money": 2500,
-				"tokens": 10,
-				"gems": 4,
-				"research_points": 15
-			},
-			"scaling": {
-				"target_multiplier": 1.0,  # No cambia el objetivo
-				"reward_multiplier": 1.4,
-				"time_bonus": 1.2  # Más tiempo para mayor dificultad
-			}
+			"rewards": {"money": 2500, "tokens": 10, "gems": 4, "research_points": 15},
+			"scaling": {"target_multiplier": 1.0, "reward_multiplier": 1.4, "time_bonus": 1.2}  # No cambia el objetivo  # Más tiempo para mayor dificultad
 		},
-
-		"automation_mastery": {
+		"automation_mastery":
+		{
 			"type": "efficiency",
 			"name": "Maestría en Automatización",
 			"description": "Usa automatización para producir {target} cervezas",
@@ -196,20 +140,12 @@ func _initialize_contract_templates():
 			"difficulty": "hard",
 			"base_target": 80,
 			"time_limit": CONTRACT_DURATION_BASE * 1.5,
-			"rewards": {
-				"money": 3000,
-				"tokens": 12,
-				"research_points": 25
-			},
-			"scaling": {
-				"target_multiplier": 1.3,
-				"reward_multiplier": 1.35,
-				"time_bonus": 0.9
-			}
+			"rewards": {"money": 3000, "tokens": 12, "research_points": 25},
+			"scaling": {"target_multiplier": 1.3, "reward_multiplier": 1.35, "time_bonus": 0.9}
 		},
-
 		# === CONTRATOS ESPECIALES/EVENTOS ===
-		"daily_special": {
+		"daily_special":
+		{
 			"type": "special",
 			"name": "Especial del Día",
 			"description": "Completa {target} tareas diversas hoy",
@@ -217,20 +153,11 @@ func _initialize_contract_templates():
 			"difficulty": "normal",
 			"base_target": 3,  # 3 tareas diferentes
 			"time_limit": 86400,  # 24 horas
-			"rewards": {
-				"money": 5000,
-				"tokens": 20,
-				"gems": 5,
-				"experience": 100
-			},
-			"scaling": {
-				"target_multiplier": 1.2,
-				"reward_multiplier": 1.6,
-				"time_bonus": 1.0
-			}
+			"rewards": {"money": 5000, "tokens": 20, "gems": 5, "experience": 100},
+			"scaling": {"target_multiplier": 1.2, "reward_multiplier": 1.6, "time_bonus": 1.0}
 		},
-
-		"prestige_prep": {
+		"prestige_prep":
+		{
 			"type": "special",
 			"name": "Preparación para Prestigio",
 			"description": "Alcanza {target} de dinero para prestigio eficiente",
@@ -238,16 +165,8 @@ func _initialize_contract_templates():
 			"difficulty": "expert",
 			"base_target": 50000,
 			"time_limit": CONTRACT_DURATION_BASE * 3,
-			"rewards": {
-				"prestige_stars": 2,
-				"tokens": 25,
-				"research_points": 50
-			},
-			"scaling": {
-				"target_multiplier": 2.0,
-				"reward_multiplier": 1.8,
-				"time_bonus": 1.1
-			}
+			"rewards": {"prestige_stars": 2, "tokens": 25, "research_points": 50},
+			"scaling": {"target_multiplier": 2.0, "reward_multiplier": 1.8, "time_bonus": 1.1}
 		}
 	}
 
@@ -301,7 +220,9 @@ func _generate_new_contract():
 	var scaling_factor = 1.0 + (player_level * 0.1)
 
 	# Crear contrato
-	var contract_id = "contract_" + str(Time.get_unix_time_from_system()) + "_" + str(randi() % 1000)
+	var contract_id = (
+		"contract_" + str(Time.get_unix_time_from_system()) + "_" + str(randi() % 1000)
+	)
 	var contract = _create_contract_from_template(template, scaling_factor)
 	contract["id"] = contract_id
 	contract["generated_time"] = Time.get_unix_time_from_system()
@@ -318,19 +239,27 @@ func _create_contract_from_template(template: Dictionary, scaling_factor: float)
 	var contract = template.duplicate(true)
 
 	# Aplicar scaling
-	contract["target"] = int(template["base_target"] * scaling_factor * template["scaling"]["target_multiplier"])
+	contract["target"] = int(
+		template["base_target"] * scaling_factor * template["scaling"]["target_multiplier"]
+	)
 	contract["time_limit"] = int(template["time_limit"] * template["scaling"]["time_bonus"])
 
 	# Escalar recompensas
 	for reward_type in contract["rewards"]:
 		contract["rewards"][reward_type] = int(
-			contract["rewards"][reward_type] * scaling_factor * template["scaling"]["reward_multiplier"]
+			(
+				contract["rewards"][reward_type]
+				* scaling_factor
+				* template["scaling"]["reward_multiplier"]
+			)
 		)
 
 	# Formatear descripción
 	var formatted_description = template["description"]
 	formatted_description = formatted_description.replace("{target}", str(contract["target"]))
-	formatted_description = formatted_description.replace("{time}", str(contract["time_limit"] / 60))
+	formatted_description = formatted_description.replace(
+		"{time}", str(contract["time_limit"] / 60)
+	)
 	contract["description"] = formatted_description
 
 	return contract
@@ -359,6 +288,7 @@ func _calculate_player_level() -> int:
 
 ## === GESTIÓN DE CONTRATOS ===
 
+
 func accept_contract(contract_id: String) -> bool:
 	"""Acepta un contrato disponible"""
 	if not available_contracts.has(contract_id):
@@ -377,7 +307,9 @@ func accept_contract(contract_id: String) -> bool:
 
 	# Configurar datos de seguimiento
 	active_contracts[contract_id]["accepted_time"] = Time.get_unix_time_from_system()
-	active_contracts[contract_id]["deadline"] = active_contracts[contract_id]["accepted_time"] + contract["time_limit"]
+	active_contracts[contract_id]["deadline"] = (
+		active_contracts[contract_id]["accepted_time"] + contract["time_limit"]
+	)
 	active_contracts[contract_id]["progress"] = 0.0
 	active_contracts[contract_id]["initial_stats"] = _capture_current_stats(contract["type"])
 
@@ -395,14 +327,25 @@ func _capture_current_stats(contract_type: String) -> Dictionary:
 
 	match contract_type:
 		"production":
-			stats["beers_produced"] = statistics_manager.production_stats.get("total_beers_brewed", 0)
-			stats["quality_excellent"] = statistics_manager.production_stats.get("quality_metrics", {}).get("excellent", 0)
+			stats["beers_produced"] = statistics_manager.production_stats.get(
+				"total_beers_brewed", 0
+			)
+			stats["quality_excellent"] = (
+				statistics_manager.production_stats.get("quality_metrics", {}).get("excellent", 0)
+			)
 		"economic":
-			stats["money_earned"] = statistics_manager.economic_stats.get("money_earned_lifetime", 0.0)
+			stats["money_earned"] = statistics_manager.economic_stats.get(
+				"money_earned_lifetime", 0.0
+			)
 			stats["premium_customers"] = 0  # Esto requeriría tracking específico
 		"efficiency":
 			stats["waste_generated"] = statistics_manager.production_stats.get("waste_generated", 0)
-			stats["automation_usage"] = statistics_manager.efficiency_stats.get("automation_usage", {}).get("total_hours", 0.0)
+			stats["automation_usage"] = (
+				statistics_manager
+				. efficiency_stats
+				. get("automation_usage", {})
+				. get("total_hours", 0.0)
+			)
 
 	return stats
 
@@ -445,7 +388,12 @@ func _calculate_contract_progress(contract: Dictionary) -> float:
 	match contract["type"]:
 		"production":
 			if contract["name"] == "Maestro Cervecero":  # Quality challenge
-				var current_excellent = statistics_manager.production_stats.get("quality_metrics", {}).get("excellent", 0)
+				var current_excellent = (
+					statistics_manager
+					. production_stats
+					. get("quality_metrics", {})
+					. get("excellent", 0)
+				)
 				var initial_excellent = initial_stats.get("quality_excellent", 0)
 				var produced_excellent = current_excellent - initial_excellent
 				progress = float(produced_excellent) / float(contract["target"])
@@ -457,7 +405,9 @@ func _calculate_contract_progress(contract: Dictionary) -> float:
 
 		"economic":
 			if contract["name"] == "Objetivo de Ventas":
-				var current_money = statistics_manager.economic_stats.get("money_earned_lifetime", 0.0)
+				var current_money = statistics_manager.economic_stats.get(
+					"money_earned_lifetime", 0.0
+				)
 				var initial_money = initial_stats.get("money_earned", 0.0)
 				var earned_money = current_money - initial_money
 				progress = earned_money / float(contract["target"])
@@ -557,6 +507,7 @@ func _grant_contract_rewards(rewards: Dictionary):
 
 ## === SAVE/LOAD ===
 
+
 func _save_contract_data():
 	"""Guarda datos de contratos en GameData"""
 	if not game_data:
@@ -594,6 +545,7 @@ func load_contract_data():
 
 
 ## === API PÚBLICAS ===
+
 
 func get_available_contracts() -> Dictionary:
 	"""Obtiene contratos disponibles para aceptar"""
@@ -640,6 +592,7 @@ func force_generate_contract():
 
 
 ## === INTEGRATION ===
+
 
 func set_game_data(data: GameData):
 	"""Conectar con GameData"""

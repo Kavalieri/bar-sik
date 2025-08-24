@@ -361,7 +361,11 @@ func _process_automatic_customer() -> void:
 		base_tokens = int(base_tokens * multi_client_bonus)
 
 	# T014: Aplicar bonus de prestigio (no modificado)
-	var prestige_token_multiplier = game_data.get("prestige_customer_token_multiplier", 1.0)
+	var prestige_token_multiplier = (
+		game_data["prestige_customer_token_multiplier"]
+		if game_data.has("prestige_customer_token_multiplier")
+		else 1.0
+	)
 	if prestige_token_multiplier > 1.0:
 		base_tokens = int(base_tokens * prestige_token_multiplier)
 		print("  ⭐ Prestigio customer bonus: x%.2f tokens" % prestige_token_multiplier)
@@ -436,7 +440,6 @@ func _apply_upgrade_effects(upgrade_id: String) -> void:
 			print("👑 Clientes premium activado (+50% tokens)")
 		"bulk_buyers":
 			print("📦 Compradores mayoristas activado (2-3 productos)")
-	return true
 
 
 ## Obtener upgrades disponibles

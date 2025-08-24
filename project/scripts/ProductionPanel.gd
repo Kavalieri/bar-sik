@@ -10,6 +10,7 @@ signal offer_price_requested(station_index: int)
 
 # Estado específico del panel
 var production_manager_ref: Node = null
+var current_game_data: Dictionary = {}
 
 # Componentes modulares
 var products_cards: Array[Node] = []
@@ -48,7 +49,8 @@ func _connect_panel_signals() -> void:
 
 
 func _update_panel_data(game_data: Dictionary) -> void:
-	"""Actualizar datos específicos del panel"""
+	"""Override - actualización específica de datos del panel"""
+	current_game_data = game_data  # Guardar referencia
 	update_product_displays(game_data)
 	update_station_displays(game_data)
 	update_recipe_displays(game_data)
@@ -165,7 +167,7 @@ func update_product_displays(game_data: Dictionary) -> void:
 	if not is_initialized:
 		return
 
-	var products = game_data.get("products", {})
+	var products = game_data["products"] if game_data.has("products") else {}
 
 	# Actualizar cada tarjeta de producto
 	for i in range(products_cards.size()):
@@ -176,7 +178,7 @@ func update_product_displays(game_data: Dictionary) -> void:
 		var product_configs = ["beer", "light_beer", "wheat_beer", "premium_beer"]
 		if i < product_configs.size():
 			var product_id = product_configs[i]
-			var amount = products.get(product_id, 0)
+			var amount = products[product_id] if products.has(product_id) else 0
 
 			card.update_data(
 				{
@@ -192,7 +194,7 @@ func update_station_displays(game_data: Dictionary) -> void:
 	if not is_initialized or not stations_shop:
 		return
 
-	var money = game_data.get("money", 0.0)
+	var money = game_data["money"] if game_data.has("money") else 0.0
 
 	# Actualizar dinero disponible en la tienda
 	stations_shop.update_player_money(money)
@@ -217,7 +219,7 @@ func update_recipe_displays(game_data: Dictionary) -> void:
 	if not is_initialized:
 		return
 
-	var active_recipes = game_data.get("active_recipes", {})
+	var active_recipes = game_data["active_recipes"] if game_data.has("active_recipes") else {}
 
 	# Actualizar cada tarjeta de receta
 	for i in range(recipes_cards.size()):
@@ -230,11 +232,13 @@ func update_recipe_displays(game_data: Dictionary) -> void:
 			var recipe_id = recipe_configs[i]
 			var is_active = active_recipes.has(recipe_id)
 
+			var recipe_data = active_recipes[recipe_id] if active_recipes.has(recipe_id) else {}
 			card.update_data(
 				{
 					id = recipe_id,
 					status = "Activa" if is_active else "Inactiva",
-					progress = str(active_recipes.get(recipe_id, {}).get("progress", 0)) + "%"
+					progress =
+					str(recipe_data["progress"] if recipe_data.has("progress") else 0) + "%"
 				}
 			)
 
@@ -284,7 +288,11 @@ func _on_recipe_action(item_id: String, action: String) -> void:
 			var recipe_index = recipe_configs.find(item_id)
 
 			if recipe_index >= 0:
-				var current_recipes = current_game_data.get("active_recipes", {})
+				var current_recipes = (
+					current_game_data["active_recipes"]
+					if current_game_data.has("active_recipes")
+					else {}
+				)
 				if current_recipes.has(item_id):
 					# Pausar receta activa
 					print("⏸️ Pausando receta: ", item_id)

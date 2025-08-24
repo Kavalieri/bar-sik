@@ -11,6 +11,7 @@ var benchmark_results: Dictionary = {}
 
 ## === MAIN BENCHMARK SUITE ===
 
+
 func run_all_benchmarks(game_data: GameData) -> Dictionary:
 	"""Ejecuta todos los benchmarks de calidad"""
 	print("🎯 === BAR-SIK PROFESSIONAL BENCHMARKS ===")
@@ -40,6 +41,7 @@ func run_all_benchmarks(game_data: GameData) -> Dictionary:
 
 
 ## === PERFORMANCE BENCHMARKS ===
+
 
 func _run_performance_benchmarks() -> Dictionary:
 	"""Benchmarks de performance del juego"""
@@ -225,6 +227,7 @@ func _benchmark_game_logic() -> Dictionary:
 
 ## === MEMORY BENCHMARKS ===
 
+
 func _run_memory_benchmarks() -> Dictionary:
 	"""Benchmarks de uso de memoria"""
 	print("🧠 Running Memory Benchmarks...")
@@ -371,6 +374,7 @@ func _benchmark_garbage_collection() -> Dictionary:
 
 ## === UI RESPONSIVENESS BENCHMARKS ===
 
+
 func _run_ui_benchmarks() -> Dictionary:
 	"""Benchmarks de UI responsiveness"""
 	print("🖱️ Running UI Responsiveness Benchmarks...")
@@ -507,6 +511,7 @@ func _benchmark_scrolling() -> Dictionary:
 
 
 ## === LOAD TIME BENCHMARKS ===
+
 
 func _run_load_time_benchmarks(game_data: GameData) -> Dictionary:
 	"""Benchmarks de tiempos de carga"""
@@ -645,6 +650,7 @@ func _benchmark_save_load_times(game_data: GameData) -> Dictionary:
 
 
 ## === STABILITY BENCHMARKS ===
+
 
 func _run_stability_benchmarks() -> Dictionary:
 	"""Benchmarks de estabilidad del juego"""
@@ -802,6 +808,7 @@ func _benchmark_resource_management() -> Dictionary:
 
 
 ## === REPORT GENERATION ===
+
 
 func _generate_benchmark_report() -> Dictionary:
 	"""Genera reporte final de benchmarks"""

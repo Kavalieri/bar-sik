@@ -8,18 +8,14 @@ signal qa_progress_updated(step: String, progress: float)
 signal qa_issue_found(category: String, issue: String, severity: String)
 signal qa_completed(passed: bool, total_issues: int)
 
-enum Severity {
-	CRITICAL,    # Bloquea release
-	MAJOR,       # Impacta experiencia significativamente
-	MINOR,       # Mejoras deseables
-	INFO         # Información/sugerencias
-}
+enum Severity { CRITICAL, MAJOR, MINOR, INFO }  # Bloquea release  # Impacta experiencia significativamente  # Mejoras deseables  # Información/sugerencias
 
 var qa_results: Dictionary = {}
 var total_issues: int = 0
 var critical_issues: int = 0
 
 ## === MAIN QA VALIDATION ENTRY POINT ===
+
 
 func run_complete_qa_pass(game_data: GameData) -> Dictionary:
 	"""Ejecuta el QA pass completo de Bar-Sik"""
@@ -66,6 +62,7 @@ func run_complete_qa_pass(game_data: GameData) -> Dictionary:
 
 ## === SAVE/LOAD SYSTEM VALIDATION ===
 
+
 func _validate_save_load_system(game_data: GameData) -> Dictionary:
 	"""Valida la integridad completa del sistema save/load"""
 	var results = {"category": "Save/Load System", "issues": []}
@@ -78,7 +75,9 @@ func _validate_save_load_system(game_data: GameData) -> Dictionary:
 	# Test 2: Data Integrity with Complex State
 	var integrity_test = _test_save_data_integrity(game_data)
 	if not integrity_test.passed:
-		_add_issue(results, "Data integrity compromised: " + str(integrity_test.details), Severity.CRITICAL)
+		_add_issue(
+			results, "Data integrity compromised: " + str(integrity_test.details), Severity.CRITICAL
+		)
 
 	# Test 3: Backwards Compatibility
 	var compatibility_test = _test_save_compatibility()
@@ -136,15 +135,18 @@ func _test_save_data_integrity(game_data: GameData) -> Dictionary:
 	"""Test integridad de datos complejos"""
 	# Crear estado complejo
 	var complex_state = {
-		"stations": {
+		"stations":
+		{
 			"lager_station": {"level": 10, "production_rate": 5.5, "active": true},
 			"ale_station": {"level": 7, "production_rate": 3.2, "active": false}
 		},
-		"upgrades": {
+		"upgrades":
+		{
 			"better_hops": {"purchased": true, "effect": 1.5},
 			"faster_brewing": {"purchased": false, "cost": 1000.0}
 		},
-		"achievements": {
+		"achievements":
+		{
 			"first_brew": {"unlocked": true, "timestamp": 1692000000},
 			"millionaire": {"unlocked": false, "progress": 0.65}
 		}
@@ -152,11 +154,23 @@ func _test_save_data_integrity(game_data: GameData) -> Dictionary:
 
 	# Validar que todas las estructuras se mantienen
 	var stations_valid = complex_state.has("stations") and complex_state["stations"].size() == 2
-	var upgrades_valid = complex_state.has("upgrades") and complex_state["upgrades"].has("better_hops")
-	var achievements_valid = complex_state.has("achievements") and complex_state["achievements"]["first_brew"]["unlocked"] == true
+	var upgrades_valid = (
+		complex_state.has("upgrades") and complex_state["upgrades"].has("better_hops")
+	)
+	var achievements_valid = (
+		complex_state.has("achievements")
+		and complex_state["achievements"]["first_brew"]["unlocked"] == true
+	)
 
 	var passed = stations_valid and upgrades_valid and achievements_valid
-	var details = "Stations: " + str(stations_valid) + ", Upgrades: " + str(upgrades_valid) + ", Achievements: " + str(achievements_valid)
+	var details = (
+		"Stations: "
+		+ str(stations_valid)
+		+ ", Upgrades: "
+		+ str(upgrades_valid)
+		+ ", Achievements: "
+		+ str(achievements_valid)
+	)
 
 	return {"passed": passed, "details": details}
 
@@ -178,10 +192,7 @@ func _test_save_compatibility() -> Dictionary:
 
 	var passed = (money == 1000.0) and (prestige_tokens == 0) and (gems == 0)
 
-	return {
-		"passed": passed,
-		"details": "Backwards compatibility with version migration"
-	}
+	return {"passed": passed, "details": "Backwards compatibility with version migration"}
 
 
 func _test_corruption_recovery() -> Dictionary:
@@ -204,7 +215,8 @@ func _test_corruption_recovery() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(recovery_passed) + "/" + str(corrupt_scenarios.size()) + " scenarios recovered"
+		"details":
+		str(recovery_passed) + "/" + str(corrupt_scenarios.size()) + " scenarios recovered"
 	}
 
 
@@ -228,11 +240,13 @@ func _test_large_save_files(game_data: GameData) -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": "Load time: " + str(load_time) + "s (max: " + str(max_acceptable_load_time) + "s)"
+		"details":
+		"Load time: " + str(load_time) + "s (max: " + str(max_acceptable_load_time) + "s)"
 	}
 
 
 ## === UI/UX RESPONSIVENESS VALIDATION ===
+
 
 func _validate_ui_responsiveness() -> Dictionary:
 	"""Valida responsiveness y usabilidad de la UI"""
@@ -241,7 +255,9 @@ func _validate_ui_responsiveness() -> Dictionary:
 	# Test 1: Screen Size Compatibility
 	var screen_test = _test_screen_size_compatibility()
 	if not screen_test.passed:
-		_add_issue(results, "Screen size compatibility issues: " + screen_test.details, Severity.MAJOR)
+		_add_issue(
+			results, "Screen size compatibility issues: " + screen_test.details, Severity.MAJOR
+		)
 
 	# Test 2: UI Element Accessibility
 	var accessibility_test = _test_ui_accessibility()
@@ -291,10 +307,10 @@ func _test_screen_size_compatibility() -> Dictionary:
 func _test_ui_accessibility() -> Dictionary:
 	"""Test elementos de accesibilidad"""
 	var accessibility_checks = {
-		"button_min_size": true,      # Botones ≥44px
-		"contrast_ratio": true,       # Contraste adecuado
-		"text_readability": true,     # Texto legible
-		"focus_indicators": false,    # Indicadores de foco (podría mejorarse)
+		"button_min_size": true,  # Botones ≥44px
+		"contrast_ratio": true,  # Contraste adecuado
+		"text_readability": true,  # Texto legible
+		"focus_indicators": false,  # Indicadores de foco (podría mejorarse)
 		"keyboard_navigation": false  # Navegación con teclado (mobile-first)
 	}
 
@@ -333,17 +349,19 @@ func _test_animation_performance() -> Dictionary:
 func _test_input_responsiveness() -> Dictionary:
 	"""Test responsiveness de input"""
 	var max_input_delay_ms = 100  # 100ms máximo
-	var simulated_delay_ms = 45   # Simulamos buena responsiveness
+	var simulated_delay_ms = 45  # Simulamos buena responsiveness
 
 	var passed = simulated_delay_ms <= max_input_delay_ms
 
 	return {
 		"passed": passed,
-		"details": "Input delay: " + str(simulated_delay_ms) + "ms (max: " + str(max_input_delay_ms) + "ms)"
+		"details":
+		"Input delay: " + str(simulated_delay_ms) + "ms (max: " + str(max_input_delay_ms) + "ms)"
 	}
 
 
 ## === PERFORMANCE STABILITY VALIDATION ===
+
 
 func _validate_performance_stability() -> Dictionary:
 	"""Valida estabilidad de performance en sesiones extendidas"""
@@ -386,7 +404,8 @@ func _test_memory_stability() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": "Memory growth: " + str(memory_growth) + "MB (max: " + str(acceptable_growth_mb) + "MB)"
+		"details":
+		"Memory growth: " + str(memory_growth) + "MB (max: " + str(acceptable_growth_mb) + "MB)"
 	}
 
 
@@ -403,21 +422,23 @@ func _test_extended_session_performance() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": "FPS degradation: " + str(fps_degradation) + " (max: " + str(acceptable_degradation) + ")"
+		"details":
+		"FPS degradation: " + str(fps_degradation) + " (max: " + str(acceptable_degradation) + ")"
 	}
 
 
 func _test_cpu_usage() -> Dictionary:
 	"""Test uso de CPU"""
-	var idle_cpu_percent = 2.0      # En idle
-	var active_cpu_percent = 8.0    # Durante gameplay
-	var max_acceptable_cpu = 15.0   # 15% máximo
+	var idle_cpu_percent = 2.0  # En idle
+	var active_cpu_percent = 8.0  # Durante gameplay
+	var max_acceptable_cpu = 15.0  # 15% máximo
 
 	var passed = active_cpu_percent <= max_acceptable_cpu
 
 	return {
 		"passed": passed,
-		"details": "CPU usage: " + str(active_cpu_percent) + "% (max: " + str(max_acceptable_cpu) + "%)"
+		"details":
+		"CPU usage: " + str(active_cpu_percent) + "% (max: " + str(max_acceptable_cpu) + "%)"
 	}
 
 
@@ -438,6 +459,7 @@ func _test_frame_rate_stability() -> Dictionary:
 
 ## === BALANCE VALIDATION ===
 
+
 func _validate_game_balance(game_data: GameData) -> Dictionary:
 	"""Valida balance económico y progresión del juego"""
 	var results = {"category": "Game Balance", "issues": []}
@@ -445,7 +467,9 @@ func _validate_game_balance(game_data: GameData) -> Dictionary:
 	# Test 1: Early Game Progression
 	var early_game_test = _test_early_game_balance()
 	if not early_game_test.passed:
-		_add_issue(results, "Early game progression issues: " + early_game_test.details, Severity.MAJOR)
+		_add_issue(
+			results, "Early game progression issues: " + early_game_test.details, Severity.MAJOR
+		)
 
 	# Test 2: Mid Game Balance
 	var mid_game_test = _test_mid_game_balance()
@@ -469,9 +493,9 @@ func _test_early_game_balance() -> Dictionary:
 	"""Test balance del early game (primeros 30 minutos)"""
 	# Simular progreso early game
 	var progression_milestones = {
-		"first_upgrade_time_min": 2.0,    # Primer upgrade en 2 min
-		"first_automation_time_min": 10.0, # Primera automatización en 10 min
-		"prestige_ready_time_min": 25.0   # Listo para prestigio en 25 min
+		"first_upgrade_time_min": 2.0,  # Primer upgrade en 2 min
+		"first_automation_time_min": 10.0,  # Primera automatización en 10 min
+		"prestige_ready_time_min": 25.0  # Listo para prestigio en 25 min
 	}
 
 	var ideal_ranges = {
@@ -497,7 +521,14 @@ func _test_early_game_balance() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(balanced_count) + "/" + str(total_milestones) + " milestones balanced. Issues: " + str(issues)
+		"details":
+		(
+			str(balanced_count)
+			+ "/"
+			+ str(total_milestones)
+			+ " milestones balanced. Issues: "
+			+ str(issues)
+		)
 	}
 
 
@@ -516,16 +547,20 @@ func _test_mid_game_balance() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(acceptable_walls) + "/" + str(wall_durations_min.size()) + " walls within acceptable range"
+		"details":
+		(
+			str(acceptable_walls)
+			+ "/"
+			+ str(wall_durations_min.size())
+			+ " walls within acceptable range"
+		)
 	}
 
 
 func _test_prestige_balance() -> Dictionary:
 	"""Test balance del sistema de prestigio"""
 	var prestige_scenarios = {
-		"optimal_prestige_time_min": 30,     # Tiempo óptimo para prestigio
-		"recovery_time_min": 8,              # Tiempo de recovery post-prestigio
-		"benefit_multiplier": 2.5            # Multiplicador de beneficio
+		"optimal_prestige_time_min": 30, "recovery_time_min": 8, "benefit_multiplier": 2.5  # Tiempo óptimo para prestigio  # Tiempo de recovery post-prestigio  # Multiplicador de beneficio
 	}
 
 	var targets = {
@@ -545,7 +580,8 @@ func _test_prestige_balance() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(balanced_count) + "/" + str(prestige_scenarios.size()) + " prestige metrics balanced"
+		"details":
+		str(balanced_count) + "/" + str(prestige_scenarios.size()) + " prestige metrics balanced"
 	}
 
 
@@ -553,9 +589,7 @@ func _test_currency_economy() -> Dictionary:
 	"""Test economía de monedas"""
 	# Validar ratios entre currencies
 	var currency_ratios = {
-		"money_to_tokens": 100000.0,    # 100k money = 1 token
-		"tokens_to_gems": 50.0,         # 50 tokens = 1 gem
-		"gem_value_multiplier": 10.0    # 1 gem vale como 10 tokens de boost
+		"money_to_tokens": 100000.0, "tokens_to_gems": 50.0, "gem_value_multiplier": 10.0  # 100k money = 1 token  # 50 tokens = 1 gem  # 1 gem vale como 10 tokens de boost
 	}
 
 	var balanced_ratios = {
@@ -575,11 +609,13 @@ func _test_currency_economy() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(balanced_count) + "/" + str(currency_ratios.size()) + " currency ratios balanced"
+		"details":
+		str(balanced_count) + "/" + str(currency_ratios.size()) + " currency ratios balanced"
 	}
 
 
 ## === AUDIO/VISUAL POLISH VALIDATION ===
+
 
 func _validate_audio_visual_polish() -> Dictionary:
 	"""Valida polish audio y visual del juego"""
@@ -611,11 +647,11 @@ func _validate_audio_visual_polish() -> Dictionary:
 func _test_audio_system() -> Dictionary:
 	"""Test funcionalidad del sistema de audio"""
 	var audio_features = {
-		"background_music": true,      # Música de fondo
-		"sfx_feedback": true,          # Efectos de sonido
-		"volume_controls": true,       # Controles de volumen
-		"audio_settings_save": true,   # Guardado de configuración
-		"dynamic_audio": false         # Audio dinámico (podría mejorarse)
+		"background_music": true,  # Música de fondo
+		"sfx_feedback": true,  # Efectos de sonido
+		"volume_controls": true,  # Controles de volumen
+		"audio_settings_save": true,  # Guardado de configuración
+		"dynamic_audio": false  # Audio dinámico (podría mejorarse)
 	}
 
 	var working_features = 0
@@ -628,18 +664,19 @@ func _test_audio_system() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(working_features) + "/" + str(audio_features.size()) + " audio features working"
+		"details":
+		str(working_features) + "/" + str(audio_features.size()) + " audio features working"
 	}
 
 
 func _test_visual_effects() -> Dictionary:
 	"""Test calidad de efectos visuales"""
 	var effects_quality = {
-		"button_feedback": true,       # Feedback visual de botones
-		"currency_animations": true,   # Animaciones de monedas
-		"transition_effects": true,    # Efectos de transición
-		"particle_effects": false,    # Efectos de partículas (podría mejorarse)
-		"screen_shake": false         # Screen shake effects (podría agregarse)
+		"button_feedback": true,  # Feedback visual de botones
+		"currency_animations": true,  # Animaciones de monedas
+		"transition_effects": true,  # Efectos de transición
+		"particle_effects": false,  # Efectos de partículas (podría mejorarse)
+		"screen_shake": false  # Screen shake effects (podría agregarse)
 	}
 
 	var quality_score = 0
@@ -652,7 +689,8 @@ func _test_visual_effects() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(quality_score) + "/" + str(effects_quality.size()) + " visual effects implemented"
+		"details":
+		str(quality_score) + "/" + str(effects_quality.size()) + " visual effects implemented"
 	}
 
 
@@ -660,10 +698,10 @@ func _test_animation_quality() -> Dictionary:
 	"""Test suavidad y calidad de animaciones"""
 	# Simular evaluación de animation quality
 	var animation_metrics = {
-		"smooth_transitions": 85,      # % de transiciones suaves
-		"consistent_timing": 90,       # % de timing consistente
-		"easing_curves": 75,          # % uso de easing apropiado
-		"performance_impact": 15       # % impacto en performance (menor es mejor)
+		"smooth_transitions": 85,  # % de transiciones suaves
+		"consistent_timing": 90,  # % de timing consistente
+		"easing_curves": 75,  # % uso de easing apropiado
+		"performance_impact": 15  # % impacto en performance (menor es mejor)
 	}
 
 	var quality_thresholds = {
@@ -689,18 +727,19 @@ func _test_animation_quality() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(passing_metrics) + "/" + str(animation_metrics.size()) + " animation metrics passed"
+		"details":
+		str(passing_metrics) + "/" + str(animation_metrics.size()) + " animation metrics passed"
 	}
 
 
 func _test_ui_polish() -> Dictionary:
 	"""Test nivel de polish de la UI"""
 	var polish_aspects = {
-		"consistent_styling": 90,      # % consistencia de estilo
-		"intuitive_navigation": 85,    # % navegación intuitiva
-		"visual_hierarchy": 80,        # % jerarquía visual clara
-		"responsive_feedback": 88,     # % feedback responsivo
-		"accessibility": 65            # % accesibilidad (podría mejorarse)
+		"consistent_styling": 90,  # % consistencia de estilo
+		"intuitive_navigation": 85,  # % navegación intuitiva
+		"visual_hierarchy": 80,  # % jerarquía visual clara
+		"responsive_feedback": 88,  # % feedback responsivo
+		"accessibility": 65  # % accesibilidad (podría mejorarse)
 	}
 
 	var minimum_polish_score = 75  # Mínimo 75% en cada aspecto
@@ -714,11 +753,13 @@ func _test_ui_polish() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(passing_aspects) + "/" + str(polish_aspects.size()) + " polish aspects meet standards"
+		"details":
+		str(passing_aspects) + "/" + str(polish_aspects.size()) + " polish aspects meet standards"
 	}
 
 
 ## === SYSTEM INTEGRATION VALIDATION ===
+
 
 func _validate_system_integration() -> Dictionary:
 	"""Valida integración entre todos los sistemas del juego"""
@@ -750,12 +791,12 @@ func _validate_system_integration() -> Dictionary:
 func _test_manager_integration() -> Dictionary:
 	"""Test integración entre managers"""
 	var manager_connections = {
-		"production_to_sales": true,       # ProductionManager → SalesManager
-		"sales_to_economy": true,          # SalesManager → Economy updates
-		"prestige_to_bonuses": true,       # PrestigeManager → Bonus application
-		"achievement_to_rewards": true,    # Achievement → Reward distribution
-		"mission_to_progress": true,       # Mission → Progress tracking
-		"automation_to_production": false # AutomationManager integration (podría mejorarse)
+		"production_to_sales": true,  # ProductionManager → SalesManager
+		"sales_to_economy": true,  # SalesManager → Economy updates
+		"prestige_to_bonuses": true,  # PrestigeManager → Bonus application
+		"achievement_to_rewards": true,  # Achievement → Reward distribution
+		"mission_to_progress": true,  # Mission → Progress tracking
+		"automation_to_production": false  # AutomationManager integration (podría mejorarse)
 	}
 
 	var working_connections = 0
@@ -768,7 +809,13 @@ func _test_manager_integration() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(working_connections) + "/" + str(manager_connections.size()) + " manager connections working"
+		"details":
+		(
+			str(working_connections)
+			+ "/"
+			+ str(manager_connections.size())
+			+ " manager connections working"
+		)
 	}
 
 
@@ -776,11 +823,11 @@ func _test_data_consistency() -> Dictionary:
 	"""Test consistencia de datos entre sistemas"""
 	# Simular verificación de consistencia de datos
 	var consistency_checks = {
-		"currency_sync": true,         # Currencies sincronizadas entre UI y data
-		"progression_sync": true,      # Progresión sincronizada
-		"save_load_sync": true,        # Save/load mantiene consistencia
-		"ui_data_binding": true,       # UI refleja datos correctamente
-		"manager_state_sync": false    # Estado entre managers (podría mejorarse)
+		"currency_sync": true,  # Currencies sincronizadas entre UI y data
+		"progression_sync": true,  # Progresión sincronizada
+		"save_load_sync": true,  # Save/load mantiene consistencia
+		"ui_data_binding": true,  # UI refleja datos correctamente
+		"manager_state_sync": false  # Estado entre managers (podría mejorarse)
 	}
 
 	var consistent_systems = 0
@@ -793,18 +840,19 @@ func _test_data_consistency() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(consistent_systems) + "/" + str(consistency_checks.size()) + " systems consistent"
+		"details":
+		str(consistent_systems) + "/" + str(consistency_checks.size()) + " systems consistent"
 	}
 
 
 func _test_event_system() -> Dictionary:
 	"""Test sistema de eventos y signals"""
 	var event_flows = {
-		"ui_to_managers": true,        # UI events → Manager actions
-		"manager_to_ui": true,         # Manager updates → UI refresh
-		"cross_manager": true,         # Manager → Manager communication
-		"error_handling": true,        # Error events handled properly
-		"performance_events": false    # Performance event optimization (podría mejorarse)
+		"ui_to_managers": true,  # UI events → Manager actions
+		"manager_to_ui": true,  # Manager updates → UI refresh
+		"cross_manager": true,  # Manager → Manager communication
+		"error_handling": true,  # Error events handled properly
+		"performance_events": false  # Performance event optimization (podría mejorarse)
 	}
 
 	var working_flows = 0
@@ -824,11 +872,11 @@ func _test_event_system() -> Dictionary:
 func _test_system_dependencies() -> Dictionary:
 	"""Test dependencias entre sistemas"""
 	var dependency_health = {
-		"initialization_order": true,   # Sistemas se inicializan en orden correcto
+		"initialization_order": true,  # Sistemas se inicializan en orden correcto
 		"circular_dependencies": true,  # No hay dependencias circulares
 		"optional_dependencies": true,  # Dependencias opcionales manejadas
 		"graceful_degradation": false,  # Degradación graceful (podría mejorarse)
-		"hot_reload_support": false     # Hot reload support (desarrollo)
+		"hot_reload_support": false  # Hot reload support (desarrollo)
 	}
 
 	var healthy_dependencies = 0
@@ -841,20 +889,19 @@ func _test_system_dependencies() -> Dictionary:
 
 	return {
 		"passed": passed,
-		"details": str(healthy_dependencies) + "/" + str(dependency_health.size()) + " dependencies healthy"
+		"details":
+		str(healthy_dependencies) + "/" + str(dependency_health.size()) + " dependencies healthy"
 	}
 
 
 ## === HELPER METHODS ===
 
+
 func _add_issue(results: Dictionary, description: String, severity: Severity):
 	"""Agrega un issue al resultado de QA"""
 	var severity_text = ["CRITICAL", "MAJOR", "MINOR", "INFO"][severity]
 
-	results.issues.append({
-		"description": description,
-		"severity": severity_text
-	})
+	results.issues.append({"description": description, "severity": severity_text})
 
 	total_issues += 1
 	if severity == Severity.CRITICAL:
@@ -876,6 +923,7 @@ func _calculate_time_diff(start_time: Dictionary, end_time: Dictionary) -> float
 
 
 ## === QA REPORT GENERATION ===
+
 
 func _generate_qa_report() -> Dictionary:
 	"""Genera reporte final de QA"""
@@ -949,8 +997,8 @@ func _calculate_quality_score(issues_by_severity: Dictionary) -> float:
 
 	# Penalizar por issues
 	base_score -= issues_by_severity.get("CRITICAL", 0) * 25  # -25 por critical
-	base_score -= issues_by_severity.get("MAJOR", 0) * 10     # -10 por major
-	base_score -= issues_by_severity.get("MINOR", 0) * 3      # -3 por minor
+	base_score -= issues_by_severity.get("MAJOR", 0) * 10  # -10 por major
+	base_score -= issues_by_severity.get("MINOR", 0) * 3  # -3 por minor
 
 	return max(0.0, base_score)
 

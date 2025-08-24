@@ -2,6 +2,7 @@ extends "res://addons/gut/test.gd"
 
 ## Test simple para verificar que nuestro sistema GUT funciona
 
+
 func test_gut_assertions_work():
 	"""Test básico de assertions GUT"""
 	print("🧪 Probando assertions básicas...")
@@ -66,12 +67,7 @@ func test_dictionary_operations():
 	"""Test operaciones con diccionarios"""
 	print("📚 Probando operaciones de diccionarios...")
 
-	var player_data = {
-		"name": "TestPlayer",
-		"level": 1,
-		"money": 100.0,
-		"active": true
-	}
+	var player_data = {"name": "TestPlayer", "level": 1, "money": 100.0, "active": true}
 
 	assert_eq(player_data["name"], "TestPlayer", "Nombre del jugador correcto")
 	assert_eq(player_data["level"], 1, "Nivel del jugador correcto")

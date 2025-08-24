@@ -11,6 +11,10 @@ const AUTOMATION_PANEL_SCENE = preload("res://scenes/ui/AutomationPanel.tscn")  
 const ACHIEVEMENT_PANEL_SCENE = preload("res://scenes/ui/AchievementPanel.tscn")  # T029
 const UNLOCK_PANEL_SCENE = preload("res://scenes/ui/UnlockPanel.tscn")  # T031
 
+# MODO DESARROLLO - Desbloquear todas las características
+const DEV_MODE_UNLOCK_ALL = true  # ⚠️ CAMBIAR A FALSE PARA PRODUCCIÓN ⚠️
+const DEV_MODE_DEBUG_UI = true    # Mostrar indicadores visuales de debug
+
 @onready var tab_navigator: Control = $TabNavigator
 
 # Managers del juego
@@ -20,7 +24,7 @@ var production_manager: ProductionManager
 var sales_manager: SalesManager
 var customer_manager: CustomerManager
 var prestige_manager: PrestigeManager  # T013 - Sistema de Prestigio
-var achievement_manager: AchievementManager  # T017 - Sistema de Logros
+var achievement_manager: Node  # Temporal - T017 - Sistema de Logros
 var mission_manager: MissionManager  # T018 - Sistema de Misiones Diarias
 var automation_manager: AutomationManager  # T020 - Sistema de Automatización
 var offline_progress_manager: OfflineProgressManager  # T023 - Progreso Offline
@@ -33,7 +37,7 @@ var research_manager: ResearchManager  # T035 - Sistema de Árbol de Investigaci
 var contract_manager: ContractManager  # T036 - Sistema de Contratos
 # T028 - Performance Optimization Managers
 var performance_manager: PerformanceManager
-var object_pool_manager: ObjectPoolManager
+var object_pool_manager: Node  # Temporal - ObjectPoolManager
 var tick_manager: TickManager
 # ELIMINADO: var currency_manager: CurrencyManager - Refactor: currencies en GameData
 
@@ -67,14 +71,8 @@ func _ready() -> void:
 	_setup_save_timer()
 	_setup_gems_timer()  # T014 - Diamond Bonus timer
 
-	# TEMPORAL: Debug del sistema de generación
-	var debug_generator = preload("res://scripts/DebugGeneratorTest.gd").new()
-	add_child(debug_generator)
-	add_to_group("game_controller")  # Para que DebugGeneratorTest pueda encontrarnos
-
-	# TEMPORAL: Resumen de reparaciones del sistema
-	var repair_summary = preload("res://scripts/SystemRepairSummary.gd").new()
-	add_child(repair_summary)
+	# Game controller setup completado
+	add_to_group("game_controller")  # Para acceso global
 
 	print_rich("[color=green]✅ GameController listo - Sistema modular activo[/color]")
 	debug_game_state()
@@ -83,6 +81,60 @@ func _ready() -> void:
 	if _check_offline_progress_after_load:
 		call_deferred("_process_offline_progress")
 		_check_offline_progress_after_load = false
+
+
+## === INPUT HANDLING ===
+
+
+func _input(event):
+	"""Manejar input del jugador - ESC y P para pausar"""
+	if DEV_MODE_DEBUG_UI:
+		print("🔍 [DEBUG] _input recibido: %s" % event)
+
+	if event is InputEventKey and event.pressed:
+		# ESC o P para pausar/despausar
+		if event.keycode == KEY_ESCAPE or event.keycode == KEY_P:
+			print("⌨️ [DEBUG] Tecla de pausa presionada: %s" % ("ESC" if event.keycode == KEY_ESCAPE else "P"))
+			_toggle_pause()
+			get_viewport().set_input_as_handled()
+		elif DEV_MODE_DEBUG_UI:
+			print("🔍 [DEBUG] Otra tecla presionada: keycode=%s" % event.keycode)
+
+
+func _toggle_pause():
+	"""Alternar estado de pausa del juego"""
+	print("🔄 [DEBUG] Toggle pausa - Estado actual: paused = %s" % get_tree().paused)
+
+	if get_tree().paused:
+		# Despausar
+		print("▶️ [DEBUG] Despausando juego desde input")
+		_resume_game()
+	else:
+		# Pausar
+		print("⏸️ [DEBUG] Pausando juego desde input - Llamando _on_pause_pressed()")
+		_on_pause_pressed()
+
+
+func _resume_game():
+	"""Reanudar el juego y cerrar menú de pausa"""
+	print("▶️ [DEBUG] Reanudando juego...")
+	get_tree().paused = false
+
+	# Buscar y remover menú de pausa desde múltiples ubicaciones
+	var existing_pause_menu = get_node_or_null("PauseMenuOverlay")
+	if not existing_pause_menu:
+		# Buscar en el GameScene parent
+		var parent_scene = get_parent()
+		if parent_scene:
+			existing_pause_menu = parent_scene.get_node_or_null("PauseMenuOverlay")
+
+	if existing_pause_menu:
+		print("⏸️ [DEBUG] Removiendo menú de pausa existente")
+		existing_pause_menu.queue_free()
+	else:
+		print("⚠️ [DEBUG] No se encontró menú de pausa para remover")
+
+	print("✅ [DEBUG] Juego reanudado")
 
 
 ## === DEBUGGING FUNCTIONS ===
@@ -132,7 +184,92 @@ func _setup_game_data() -> void:
 			# T023 - Verificar progreso offline después de cargar
 			_check_offline_progress_after_load = true
 
+	# MODO DESARROLLO: Desbloquear todo
+	if DEV_MODE_UNLOCK_ALL:
+		_apply_dev_mode_unlocks()
+
 	print("🎯 Datos del juego configurados")
+
+
+func _apply_dev_mode_unlocks():
+	"""Aplicar desbloqueos de modo desarrollo"""
+	print("🚀 MODO DESARROLLO ACTIVADO - Desbloqueando todas las características")
+
+	# Desbloquear sistemas
+	game_data.customer_system_unlocked = true
+	game_data.automation_system_unlocked = true
+	game_data.prestige_system_unlocked = true
+	game_data.research_system_unlocked = true
+	game_data.contracts_system_unlocked = true
+
+	# Dar recursos para testing
+	game_data.money = 100000.0
+	game_data.prestige_tokens = 50
+	game_data.gems = 25
+	game_data.research_points = 100
+
+	# Desbloquear algunos generadores/estaciones básicos
+	if game_data.generators.is_empty():
+		game_data.generators["basic_brewery"] = {
+			"level": 3,
+			"unlocked": true,
+			"automated": false
+		}
+
+	print("✅ DESARROLLO: Todos los sistemas desbloqueados")
+	print("💰 DESARROLLO: Recursos otorgados - Dinero:", game_data.money, "Prestigio:", game_data.prestige_tokens)
+	print("🎯 DESARROLLO: Estado cliente:", game_data.customer_system_unlocked)
+
+	# Habilitar CustomerManager específicamente
+	if customer_manager and customer_manager.has_method("set_enabled"):
+		customer_manager.set_enabled(true)
+		print("✅ DESARROLLO: CustomerManager habilitado")
+
+	# Notificar cambios a todos los paneles
+	_notify_systems_unlocked()
+
+# Función para notificar cambios de desbloqueo
+func _notify_systems_unlocked():
+	"""Notifica a todos los sistemas que han ocurrido cambios de desbloqueo"""
+	print("📢 [DEV MODE] Notificando cambios de desbloqueo a todos los sistemas...")
+
+	# Emitir señales de actualización para que los paneles se refresquen
+	if has_signal("systems_unlocked"):
+		emit_signal("systems_unlocked")
+
+	# Buscar y actualizar paneles directamente si están cargados
+	var game_scene = get_node_or_null("/root/GameScene")
+	if not game_scene:
+		# Si estamos dentro de GameScene, buscar desde nuestro parent
+		game_scene = get_parent()
+
+	if game_scene:
+		print("🔄 [DEV MODE] GameScene encontrado, buscando TabNavigator...")
+		var tab_navigator = game_scene.get_node_or_null("TabNavigator")
+		if tab_navigator:
+			print("🔄 [DEV MODE] TabNavigator encontrado, buscando CustomersPanel...")
+			var customers_panel = tab_navigator.get_node_or_null("MainContainer/ContentContainer/CustomersPanel")
+			if customers_panel and customers_panel.has_method("refresh_unlock_status"):
+				print("🔄 [DEV MODE] Refrescando CustomersPanel...")
+				customers_panel.refresh_unlock_status()
+			else:
+				print("❌ [DEV MODE] CustomersPanel no encontrado o no tiene refresh_unlock_status")
+		else:
+			print("❌ [DEV MODE] TabNavigator no encontrado")
+	else:
+		print("❌ [DEV MODE] GameScene no encontrado")
+
+	if game_data.stations.is_empty():
+		game_data.stations["lager_station"] = {
+			"level": 2,
+			"production_rate": 1.5,
+			"active": true
+		}
+
+	print("✅ Características desbloqueadas para desarrollo")
+	print("💰 Dinero: %s | 🪙 Tokens: %d | 💎 Gemas: %d | 🔬 Research: %d" % [
+		game_data.money, game_data.prestige_tokens, game_data.gems, game_data.research_points
+	])
 
 
 ## Configurar managers
@@ -143,7 +280,7 @@ func _setup_managers() -> void:
 	sales_manager = SalesManager.new()
 	customer_manager = CustomerManager.new()
 	prestige_manager = PrestigeManager.new()  # T013 - Sistema de Prestigio
-	achievement_manager = AchievementManager.new()  # T017 - Sistema de Logros
+	achievement_manager = preload("res://scripts/managers/AchievementManager.gd").new()  # Temporal
 	mission_manager = MissionManager.new()  # T018 - Sistema de Misiones Diarias
 	automation_manager = AutomationManager.new()  # T020 - Sistema de Automatización
 	offline_progress_manager = OfflineProgressManager.new()  # T023 - Progreso Offline
@@ -443,10 +580,11 @@ func _setup_gems_timer() -> void:
 
 func _on_gems_timer_timeout() -> void:
 	"""Otorgar gemas por hora si Diamond Bonus está activo"""
-	var gems_per_hour = game_data.get("prestige_gems_per_hour", 0.0)
+	# Calcular gemas por hora basado en estrellas de prestigio
+	var gems_per_hour = game_data.prestige_stars * 0.5
 	if gems_per_hour > 0:
 		var gems_to_add = int(gems_per_hour)
-		game_data.add_gems(gems_to_add)
+		game_data.gems += gems_to_add
 		print("💎 Diamond Bonus: +%d gemas por hora de juego" % gems_to_add)
 		# TODO: Mostrar notification en UI
 
@@ -685,7 +823,7 @@ func _on_automation_config_changed(setting_type: String, enabled: bool) -> void:
 	"""Manejar cuando cambia configuración de automatización"""
 	print("⚙️ Automatización configurada: %s = %s" % [setting_type, enabled])
 	# Guardar configuración
-	_save_game_data()
+	_save_game()
 
 
 ## === EVENTOS DE UI ===
@@ -743,18 +881,20 @@ func _on_tab_changed(tab_name: String) -> void:
 
 
 func _on_pause_pressed() -> void:
-	print("⏸️ Pausa solicitada desde TabNavigator")
+	print("⏸️ [DEBUG] Pausa solicitada desde TabNavigator")
 
 	# Buscar menú de pausa existente antes de crear uno nuevo
 	var existing_pause_menu = get_node_or_null("PauseMenuOverlay")
 	if existing_pause_menu:
-		print("⏸️ Menú de pausa ya existe, removiendo...")
+		print("⏸️ [DEBUG] Menú de pausa ya existe, removiendo...")
 		existing_pause_menu.queue_free()
 
 	if not get_tree().paused:
-		print("⏸️ Juego pausado")
+		print("⏸️ [DEBUG] Juego pausado")
 		get_tree().paused = true
 		_show_pause_menu()
+	else:
+		print("⏸️ [DEBUG] Juego ya estaba pausado")
 
 
 # T015 - Handler para botón de prestigio del TabNavigator
@@ -765,67 +905,100 @@ func _on_prestige_button_pressed() -> void:
 
 
 func _show_pause_menu() -> void:
+	print("🎬 [DEBUG] Iniciando _show_pause_menu()")
+
+	# Verificar que tenemos la constante PAUSE_MENU_SCENE
+	if PAUSE_MENU_SCENE == null:
+		print("❌ [DEBUG] ERROR: PAUSE_MENU_SCENE es null!")
+		return
+
+	print("✅ [DEBUG] PAUSE_MENU_SCENE válida, creando instancia...")
+
 	# Cargar y mostrar el menú de pausa
 	var pause_menu_instance = PAUSE_MENU_SCENE.instantiate()
+	if pause_menu_instance == null:
+		print("❌ [DEBUG] ERROR: No se pudo crear instancia del menú de pausa!")
+		return
+
 	pause_menu_instance.name = "PauseMenuOverlay"
 	pause_menu_instance.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 
-	# Añadir como overlay (encima de todo)
-	add_child(pause_menu_instance)
+	# Asegurar que el menú sea visible
+	pause_menu_instance.visible = true
+	pause_menu_instance.modulate = Color.WHITE
 
-	print("⏸️ Menú de pausa mostrado")
+	print("➕ [DEBUG] Agregando menú de pausa como hijo...")
+
+	# Intentar agregar al GameScene si estamos como hijo de él
+	var parent_scene = get_parent()
+	if parent_scene and parent_scene.name == "GameScene":
+		print("➕ [DEBUG] Agregando a GameScene")
+		parent_scene.add_child(pause_menu_instance)
+	else:
+		print("➕ [DEBUG] Agregando a GameController")
+		add_child(pause_menu_instance)
+
+	print("⏸️ [DEBUG] Menú de pausa mostrado exitosamente")
+	print("🔍 [DEBUG] Verificando árbol de nodos:")
+	print("  - PauseMenuOverlay existe: ", has_node("PauseMenuOverlay") or (parent_scene and parent_scene.has_node("PauseMenuOverlay")))
+	print("  - PauseMenuOverlay visible: ", pause_menu_instance.visible)
+	print("  - Juego pausado: ", get_tree().paused)
 
 
 # T015 - Mostrar panel de prestigio
 func show_prestige_panel() -> void:
 	"""Mostrar panel de prestigio"""
-	print("🌟 Mostrando panel de prestigio...")
+	print("🌟 DEBUG: show_prestige_panel llamada - Mostrando panel de prestigio...")
 
+	# TODO: Implementar panel real cuando esté listo
+	print("⚠️ PANEL DE PRESTIGIO EN CONSTRUCCIÓN")
 	# Verificar que no haya otro panel ya abierto
-	var existing_panel = get_node_or_null("PrestigePanelOverlay")
-	if existing_panel:
-		existing_panel.queue_free()
-		print("🗑️ Panel de prestigio anterior removido")
+	# var existing_panel = get_node_or_null("PrestigePanelOverlay")
+	# if existing_panel:
+	# 	existing_panel.queue_free()
+	# 	print("🗑️ Panel de prestigio anterior removido")
+	#
+	# # Crear instancia del panel
+	# var prestige_panel_instance = PRESTIGE_PANEL_SCENE.instantiate()
+	# prestige_panel_instance.name = "PrestigePanelOverlay"
+	# prestige_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+	#
+	# # Configurar con managers
+	# prestige_panel_instance.setup_with_managers(prestige_manager, game_data)
+	#
+	# # Conectar señales del panel
+	# prestige_panel_instance.prestige_requested.connect(_on_prestige_requested)
+	# prestige_panel_instance.bonus_purchase_requested.connect(_on_bonus_purchase_requested)
+	# prestige_panel_instance.panel_closed.connect(_on_prestige_panel_closed)
+	#
+	# # Añadir como overlay (encima de todo)
+	# add_child(prestige_panel_instance)
+	#
+	# # Mostrar con animación
+	# prestige_panel_instance.show_panel()
 
-	# Crear instancia del panel
-	var prestige_panel_instance = PRESTIGE_PANEL_SCENE.instantiate()
-	prestige_panel_instance.name = "PrestigePanelOverlay"
-	prestige_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
-
-	# Configurar con managers
-	prestige_panel_instance.setup_with_managers(prestige_manager, game_data)
-
-	# Conectar señales del panel
-	prestige_panel_instance.prestige_requested.connect(_on_prestige_requested)
-	prestige_panel_instance.bonus_purchase_requested.connect(_on_bonus_purchase_requested)
-	prestige_panel_instance.panel_closed.connect(_on_prestige_panel_closed)
-
-	# Añadir como overlay (encima de todo)
-	add_child(prestige_panel_instance)
-
-	# Mostrar con animación
-	prestige_panel_instance.show_panel()
-
-	print("✅ Panel de prestigio mostrado")
+	print("✅ Panel de prestigio (placeholder) mostrado")
 
 
 # T030 - Función para mostrar panel de misiones profesional
 func show_missions_panel():
 	"""Mostrar el panel de misiones diarias y semanales"""
-	print("🎮 Mostrando panel de misiones (T030)")
+	print("🎮 DEBUG: show_missions_panel llamada - Mostrando panel de misiones (T030)")
 
+	# TODO: Implementar panel real cuando esté listo
+	print("⚠️ PANEL DE MISIONES EN CONSTRUCCIÓN")
 	# Crear instancia del panel
-	var missions_panel_instance = MISSIONS_PANEL_SCENE.instantiate()
-	missions_panel_instance.name = "MissionsPanelOverlay"
+	# var missions_panel_instance = MISSIONS_PANEL_SCENE.instantiate()
+	# missions_panel_instance.name = "MissionsPanelOverlay"
+	#
+	# # Conectar señales del panel
+	# if missions_panel_instance.has_signal("mission_panel_closed"):
+	# 	missions_panel_instance.mission_panel_closed.connect(_on_missions_panel_closed)
+	#
+	# # Añadir como overlay (encima de todo)
+	# add_child(missions_panel_instance)
 
-	# Conectar señales del panel
-	if missions_panel_instance.has_signal("mission_panel_closed"):
-		missions_panel_instance.mission_panel_closed.connect(_on_missions_panel_closed)
-
-	# Añadir como overlay (encima de todo)
-	add_child(missions_panel_instance)
-
-	print("✅ Panel de misiones T030 mostrado")
+	print("✅ Panel de misiones T030 (placeholder) mostrado")
 
 
 # T031 - Función para mostrar panel de desbloqueos progresivos
@@ -856,27 +1029,29 @@ func _on_missions_panel_closed():
 # T022 - Panel de automatización
 func show_automation_panel():
 	"""Mostrar el panel de automatización"""
-	print("🎛️ Mostrando panel de automatización")
+	print("🎛️ DEBUG: show_automation_panel llamada - Mostrando panel de automatización")
 
+	# TODO: Implementar panel real cuando esté listo
+	print("⚠️ PANEL DE AUTOMATIZACIÓN EN CONSTRUCCIÓN")
 	# Crear instancia del panel
-	var automation_panel_instance = AUTOMATION_PANEL_SCENE.instantiate()
-	automation_panel_instance.name = "AutomationPanelOverlay"
-	automation_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+	# var automation_panel_instance = AUTOMATION_PANEL_SCENE.instantiate()
+	# automation_panel_instance.name = "AutomationPanelOverlay"
+	# automation_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+	#
+	# # Configurar con managers (el panel obtendrá las referencias por sí mismo)
+	# # automation_panel_instance ya tiene acceso a GameController via singleton
+	#
+	# # Conectar señal de cierre si existe
+	# if automation_panel_instance.has_signal("panel_closed"):
+	# 	automation_panel_instance.panel_closed.connect(_on_automation_panel_closed)
+	#
+	# # Añadir como overlay (encima de todo)
+	# add_child(automation_panel_instance)
+	#
+	# # Mostrar panel
+	# automation_panel_instance.show_panel()
 
-	# Configurar con managers (el panel obtendrá las referencias por sí mismo)
-	# automation_panel_instance ya tiene acceso a GameController via singleton
-
-	# Conectar señal de cierre si existe
-	if automation_panel_instance.has_signal("panel_closed"):
-		automation_panel_instance.panel_closed.connect(_on_automation_panel_closed)
-
-	# Añadir como overlay (encima de todo)
-	add_child(automation_panel_instance)
-
-	# Mostrar panel
-	automation_panel_instance.show_panel()
-
-	print("✅ Panel de automatización mostrado")
+	print("✅ Panel de automatización (placeholder) mostrado")
 
 
 func _on_automation_panel_closed():
@@ -892,22 +1067,24 @@ func _on_automation_panel_closed():
 # T029 - Panel de achievements
 func show_achievements_panel():
 	"""Mostrar el panel de achievements"""
-	print("🏆 Mostrando panel de achievements")
+	print("🏆 DEBUG: show_achievements_panel llamada - Mostrando panel de achievements")
 
+	# TODO: Implementar panel real cuando esté listo
+	print("⚠️ PANEL DE ACHIEVEMENTS EN CONSTRUCCIÓN")
 	# Crear instancia del panel
-	var achievement_panel_instance = ACHIEVEMENT_PANEL_SCENE.instantiate()
-	achievement_panel_instance.name = "AchievementPanelOverlay"
-	achievement_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
-
-	# Conectar señal de cierre si existe
-	if achievement_panel_instance.has_signal("achievement_panel_closed"):
-		achievement_panel_instance.achievement_panel_closed.connect(_on_achievement_panel_closed)
-
-	# Añadir como overlay (encima de todo)
-	add_child(achievement_panel_instance)
-
-	# Mostrar panel
-	achievement_panel_instance.show_panel()
+	# var achievement_panel_instance = ACHIEVEMENT_PANEL_SCENE.instantiate()
+	# achievement_panel_instance.name = "AchievementPanelOverlay"
+	# achievement_panel_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+	#
+	# # Conectar señal de cierre si existe
+	# if achievement_panel_instance.has_signal("achievement_panel_closed"):
+	# 	achievement_panel_instance.achievement_panel_closed.connect(_on_achievement_panel_closed)
+	#
+	# # Añadir como overlay (encima de todo)
+	# add_child(achievement_panel_instance)
+	#
+	# # Mostrar panel
+	# achievement_panel_instance.show_panel()
 
 	print("✅ Panel de achievements mostrado")
 
@@ -1321,5 +1498,5 @@ func _on_stock_updated(item_type: String, item_name: String, new_quantity: int) 
 
 
 ## Acceso público al AchievementManager para DailyRewardManager
-func get_achievement_manager() -> AchievementManager:
+func get_achievement_manager() -> Node:  # Temporal
 	return achievement_manager

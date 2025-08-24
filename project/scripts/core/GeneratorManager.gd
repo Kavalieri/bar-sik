@@ -80,13 +80,21 @@ func _generate_resources() -> void:
 	var total_generated = 0
 
 	for generator_def in generator_definitions:
-		var owned_count = game_data.generators.get(generator_def.id, 0)
+		var owned_count = (
+			game_data.generators[generator_def.id]
+			if game_data.generators.has(generator_def.id)
+			else 0
+		)
 		if owned_count > 0:
 			var resource_type = generator_def.produces
 			var amount = int(generator_def.production_rate * owned_count)
 
 			# T014 - Aplicar Speed Boost de prestigio
-			var prestige_speed_multiplier = game_data.get("prestige_speed_multiplier", 1.0)
+			var prestige_speed_multiplier = (
+				game_data["prestige_speed_multiplier"]
+				if game_data.has("prestige_speed_multiplier")
+				else 1.0
+			)
 			if prestige_speed_multiplier > 1.0:
 				amount = int(amount * prestige_speed_multiplier)
 				# Solo imprimir ocasionalmente para evitar spam

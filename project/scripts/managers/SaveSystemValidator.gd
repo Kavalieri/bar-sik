@@ -46,11 +46,13 @@ var validation_stats = {
 	"backups_created": 0
 }
 
+
 func _ready():
 	print("💾 SaveSystemValidator inicializado para Launch Readiness")
 
 	# Conectar con GameData
 	call_deferred("_connect_to_game_data")
+
 
 func _connect_to_game_data():
 	"""Conectar con el sistema GameData"""
@@ -63,6 +65,7 @@ func _connect_to_game_data():
 		if game_data.has_signal("after_load"):
 			game_data.after_load.connect(_on_after_load)
 
+
 func _on_before_save():
 	"""Validar datos antes del guardado"""
 	if validation_enabled:
@@ -74,10 +77,12 @@ func _on_before_save():
 		if auto_backup_enabled:
 			create_automatic_backup()
 
+
 func _on_after_load():
 	"""Validar datos después de la carga"""
 	if validation_enabled:
 		call_deferred("validate_loaded_data")
+
 
 func validate_save_data_integrity() -> bool:
 	"""
@@ -124,6 +129,7 @@ func validate_save_data_integrity() -> bool:
 	save_validation_completed.emit(is_valid, errors)
 	return is_valid
 
+
 func _validate_save_structure(save_data: Dictionary) -> Array:
 	"""Validar que existe la estructura mínima requerida"""
 	var errors = []
@@ -133,6 +139,7 @@ func _validate_save_structure(save_data: Dictionary) -> Array:
 			errors.append("Falta campo requerido: " + key)
 
 	return errors
+
 
 func _validate_data_types(save_data: Dictionary) -> Array:
 	"""Validar tipos de datos correctos"""
@@ -144,10 +151,15 @@ func _validate_data_types(save_data: Dictionary) -> Array:
 			var actual_value = save_data[key]
 
 			if not _is_correct_type(actual_value, expected_type):
-				errors.append("Tipo incorrecto en %s: esperado %s, encontrado %s" %
-					[key, expected_type, typeof(actual_value)])
+				errors.append(
+					(
+						"Tipo incorrecto en %s: esperado %s, encontrado %s"
+						% [key, expected_type, typeof(actual_value)]
+					)
+				)
 
 	return errors
+
 
 func _validate_data_ranges(save_data: Dictionary) -> Array:
 	"""Validar que los valores están en rangos sensatos"""
@@ -175,6 +187,7 @@ func _validate_data_ranges(save_data: Dictionary) -> Array:
 
 	return errors
 
+
 func _validate_system_consistency(save_data: Dictionary) -> Array:
 	"""Validar consistencia entre diferentes sistemas"""
 	var errors = []
@@ -183,6 +196,7 @@ func _validate_system_consistency(save_data: Dictionary) -> Array:
 	# Esto se puede expandir según la lógica específica del juego
 
 	return errors
+
 
 func _validate_checksums(save_data: Dictionary) -> Array:
 	"""Validar checksums de integridad si existen"""
@@ -194,12 +208,12 @@ func _validate_checksums(save_data: Dictionary) -> Array:
 
 		if stored_checksum != calculated_checksum:
 			errors.append("Checksum mismatch - posible corrupción de datos")
-			save_corruption_detected.emit("checksum_mismatch", {
-				"stored": stored_checksum,
-				"calculated": calculated_checksum
-			})
+			save_corruption_detected.emit(
+				"checksum_mismatch", {"stored": stored_checksum, "calculated": calculated_checksum}
+			)
 
 	return errors
+
 
 func _is_correct_type(value, expected_type_string: String) -> bool:
 	"""Verificar si el valor tiene el tipo esperado"""
@@ -219,6 +233,7 @@ func _is_correct_type(value, expected_type_string: String) -> bool:
 		_:
 			return true
 
+
 func _attempt_auto_fix(save_data: Dictionary, errors: Array):
 	"""Intentar reparar automáticamente errores detectados"""
 	var fixes_applied = 0
@@ -232,11 +247,15 @@ func _attempt_auto_fix(save_data: Dictionary, errors: Array):
 		validation_stats.auto_fixes_applied += fixes_applied
 		print("🔧 Auto-fix aplicado: %d errores reparados" % fixes_applied)
 
+
 func _can_auto_fix_error(error: String) -> bool:
 	"""Determinar si un error se puede reparar automáticamente"""
-	return error.begins_with("Falta campo requerido:") or \
-		   error.begins_with("Tipo incorrecto en") or \
-		   error.contains("no puede ser negativo")
+	return (
+		error.begins_with("Falta campo requerido:")
+		or error.begins_with("Tipo incorrecto en")
+		or error.contains("no puede ser negativo")
+	)
+
 
 func _apply_auto_fix(save_data: Dictionary, error: String) -> bool:
 	"""Aplicar fix específico para un error"""
@@ -255,6 +274,7 @@ func _apply_auto_fix(save_data: Dictionary, error: String) -> bool:
 
 	return false
 
+
 func _get_default_value_for_field(field: String):
 	"""Obtener valor por defecto para un campo faltante"""
 	match field:
@@ -272,6 +292,7 @@ func _get_default_value_for_field(field: String):
 			return {}
 		_:
 			return null
+
 
 func create_automatic_backup() -> String:
 	"""Crear backup automático del save actual"""
@@ -304,6 +325,7 @@ func create_automatic_backup() -> String:
 
 	return ""
 
+
 func _cleanup_old_backups():
 	"""Eliminar backups antiguos para mantener solo los más recientes"""
 	var backup_dir = DirAccess.open("user://saves/backups/")
@@ -331,6 +353,7 @@ func _cleanup_old_backups():
 			backup_dir.remove(backup_files[i])
 			print("🗑️ Backup eliminado: " + backup_files[i])
 
+
 func _calculate_save_checksum(save_data: Dictionary) -> String:
 	"""Calcular checksum para validación de integridad"""
 	# Crear una copia sin el checksum para calcularlo
@@ -341,10 +364,12 @@ func _calculate_save_checksum(save_data: Dictionary) -> String:
 	var json_string = JSON.stringify(data_copy)
 	return json_string.sha256_text()
 
+
 func validate_loaded_data():
 	"""Validar datos después de cargar"""
 	print("🔍 Validando datos cargados...")
 	validate_save_data_integrity()
+
 
 func _record_validation_failure(errors: Array):
 	"""Registrar fallo de validación"""
@@ -355,18 +380,27 @@ func _record_validation_failure(errors: Array):
 	for error in errors:
 		print("  - " + error)
 
+
 func get_validation_report() -> Dictionary:
 	"""Obtener reporte completo de validación"""
 	var success_rate = 0.0
 	if validation_stats.total_validations > 0:
-		success_rate = float(validation_stats.successful_validations) / validation_stats.total_validations
+		success_rate = (
+			float(validation_stats.successful_validations) / validation_stats.total_validations
+		)
 
 	return {
 		"validation_stats": validation_stats,
 		"success_rate": success_rate,
-		"system_health": "excellent" if success_rate >= 0.95 else "good" if success_rate >= 0.8 else "needs_attention",
+		"system_health":
+		(
+			"excellent"
+			if success_rate >= 0.95
+			else "good" if success_rate >= 0.8 else "needs_attention"
+		),
 		"recommendations": _generate_recommendations(success_rate)
 	}
+
 
 func _generate_recommendations(success_rate: float) -> Array:
 	"""Generar recomendaciones basadas en el rendimiento"""
@@ -385,7 +419,9 @@ func _generate_recommendations(success_rate: float) -> Array:
 
 	return recommendations
 
+
 # INTERFAZ PÚBLICA PARA LAUNCH READINESS
+
 
 func run_full_system_test() -> Dictionary:
 	"""
@@ -415,15 +451,20 @@ func run_full_system_test() -> Dictionary:
 	var backup_test = _test_backup_system()
 
 	# Compilar resultados
-	var all_tests_passed = current_validation and corruption_test and performance_test and backup_test
+	var all_tests_passed = (
+		current_validation and corruption_test and performance_test and backup_test
+	)
 
 	test_results.overall_status = "pass" if all_tests_passed else "fail"
 	test_results.performance_metrics = _get_performance_metrics()
-	test_results.recommendations = _generate_recommendations(validation_stats.successful_validations / max(1, validation_stats.total_validations))
+	test_results.recommendations = _generate_recommendations(
+		validation_stats.successful_validations / max(1, validation_stats.total_validations)
+	)
 
 	print("🏁 Test completo finalizado: %s" % test_results.overall_status.to_upper())
 
 	return test_results
+
 
 func _test_corruption_recovery() -> bool:
 	"""Test de recuperación ante corrupción"""
@@ -431,17 +472,20 @@ func _test_corruption_recovery() -> bool:
 	# Implementar test simulado de corrupción
 	return true
 
+
 func _test_save_load_performance() -> bool:
 	"""Test de rendimiento de save/load"""
 	print("  🧪 Testing save/load performance...")
 	# Implementar test de performance
 	return true
 
+
 func _test_backup_system() -> bool:
 	"""Test del sistema de backup"""
 	print("  🧪 Testing backup system...")
 	var backup_path = create_automatic_backup()
 	return backup_path != ""
+
 
 func _get_performance_metrics() -> Dictionary:
 	"""Obtener métricas de rendimiento del sistema"""

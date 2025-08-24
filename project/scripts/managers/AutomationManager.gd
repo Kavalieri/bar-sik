@@ -177,7 +177,7 @@ func _trigger_auto_production(station_id: String, product: String):
 	if production_manager and production_manager.has_method("manual_production"):
 		var success = production_manager.manual_production(station_id, 1)
 		if success:
-			auto_production_triggered.emit(station_id, product, 1)
+			auto_production_started.emit(station_id, product, 1)
 			print("🤖 Auto-producción: %s en %s" % [product, station_id])
 
 
@@ -353,7 +353,7 @@ func _get_customer_demand_factor(product: String) -> float:
 func enable_auto_production(station_id: String, enabled: bool = true):
 	"""Habilitar/deshabilitar auto-producción para una estación"""
 	auto_production_enabled[station_id] = enabled
-	automation_settings_changed.emit("auto_production_" + station_id, enabled)
+	automation_config_changed.emit("auto_production_" + station_id, enabled)
 	print(
 		"🤖 Auto-producción %s para %s" % ["habilitada" if enabled else "deshabilitada", station_id]
 	)
@@ -362,20 +362,20 @@ func enable_auto_production(station_id: String, enabled: bool = true):
 func enable_auto_sell(product: String, enabled: bool = true):
 	"""Habilitar/deshabilitar auto-venta para un producto"""
 	auto_sell_enabled[product] = enabled
-	automation_settings_changed.emit("auto_sell_" + product, enabled)
+	automation_config_changed.emit("auto_sell_" + product, enabled)
 	print("🤖 Auto-venta %s para %s" % ["habilitada" if enabled else "deshabilitada", product])
 
 
 func set_smart_production_priority(enabled: bool):
 	"""Habilitar/deshabilitar priorización inteligente"""
 	smart_production_priority = enabled
-	automation_settings_changed.emit("smart_priority", enabled)
+	automation_config_changed.emit("smart_priority", enabled)
 
 
 func set_auto_sell_threshold(threshold: float):
 	"""Configurar threshold para auto-venta (0.0-1.0)"""
 	auto_sell_threshold = clamp(threshold, 0.1, 1.0)
-	automation_settings_changed.emit("sell_threshold", threshold > 0.5)
+	automation_config_changed.emit("sell_threshold", threshold > 0.5)
 
 
 # T021 - ADVANCED CONFIGURATION FUNCTIONS

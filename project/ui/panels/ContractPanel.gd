@@ -28,11 +28,9 @@ var update_timer: Timer
 
 # Constantes UI
 const DIFFICULTY_COLORS = {
-	"normal": Color.GREEN,
-	"hard": Color.ORANGE,
-	"expert": Color.RED,
-	"legendary": Color.PURPLE
+	"normal": Color.GREEN, "hard": Color.ORANGE, "expert": Color.RED, "legendary": Color.PURPLE
 }
+
 
 func _ready():
 	print("📋 ContractPanel inicializado (T036)")
@@ -138,7 +136,9 @@ func _create_completed_tab():
 	completed_tab.add_child(completed_container)
 
 
-func _create_contract_card(contract_id: String, contract_data: Dictionary, is_active: bool = false) -> Control:
+func _create_contract_card(
+	contract_id: String, contract_data: Dictionary, is_active: bool = false
+) -> Control:
 	"""Crea una tarjeta visual para un contrato"""
 
 	# Panel principal de la tarjeta
@@ -246,13 +246,20 @@ func _create_contract_card(contract_id: String, contract_data: Dictionary, is_ac
 func _get_reward_icon(reward_type: String) -> String:
 	"""Obtiene el icono para un tipo de recompensa"""
 	match reward_type:
-		"money": return "💰"
-		"tokens": return "🪙"
-		"gems": return "💎"
-		"experience": return "⭐"
-		"research_points": return "🔬"
-		"prestige_stars": return "🌟"
-		_: return "🎁"
+		"money":
+			return "💰"
+		"tokens":
+			return "🪙"
+		"gems":
+			return "💎"
+		"experience":
+			return "⭐"
+		"research_points":
+			return "🔬"
+		"prestige_stars":
+			return "🌟"
+		_:
+			return "🎁"
 
 
 func _format_time(seconds: int) -> String:
@@ -383,11 +390,10 @@ func _update_summary_info():
 
 	var progress = contract_manager.get_contract_progress_summary()
 
-	summary_label.text = "📊 Disponibles: %d | Activos: %d | Completados: %d" % [
-		progress["available"],
-		progress["active"],
-		progress["completed"]
-	]
+	summary_label.text = (
+		"📊 Disponibles: %d | Activos: %d | Completados: %d"
+		% [progress["available"], progress["active"], progress["completed"]]
+	)
 
 	var next_in = progress["next_generation_in"]
 	timer_label.text = "⏰ Próximo contrato en: %s" % _format_time(next_in)
@@ -403,6 +409,7 @@ func _setup_update_timer():
 
 
 ## === MANEJO DE SEÑALES ===
+
 
 func _on_contract_available(contract_id: String, contract_data: Dictionary):
 	"""Maneja cuando un nuevo contrato está disponible"""
@@ -463,6 +470,7 @@ func _show_contract_notification(title: String, message: String):
 
 ## === API PÚBLICAS ===
 
+
 func set_contract_manager(manager: ContractManager):
 	"""Conecta con el ContractManager"""
 	contract_manager = manager
@@ -484,7 +492,8 @@ func show_contract_details(contract_id: String):
 	if contract_info.is_empty():
 		return
 
-	var details = """
+	var details = (
+		"""
 📋 %s
 
 📝 %s
@@ -493,12 +502,14 @@ func show_contract_details(contract_id: String):
 🎯 Dificultad: %s
 
 🎁 Recompensas:
-""" % [
-	contract_info["name"],
-	contract_info["description"],
-	_format_time(contract_info.get("time_limit", 0)),
-	contract_info.get("difficulty", "normal").capitalize()
-]
+"""
+		% [
+			contract_info["name"],
+			contract_info["description"],
+			_format_time(contract_info.get("time_limit", 0)),
+			contract_info.get("difficulty", "normal").capitalize()
+		]
+	)
 
 	var rewards = contract_info.get("rewards", {})
 	for reward_type in rewards:

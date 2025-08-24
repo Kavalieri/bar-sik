@@ -7,12 +7,13 @@ extends "res://addons/gut/test.gd"
 var test_results: Dictionary = {}
 var coverage_report: Dictionary = {}
 
+
 func before_all():
 	"""Configuración inicial antes de todos los tests"""
 	print("=== BAR-SIK AUTOMATED TEST SUITE v1.0 ===")
 	print("Iniciando tests comprehensivos del sistema...")
 	print("Objetivo: >80% cobertura de código crítico")
-	print("=" * 50)
+	print("=".repeat(50))
 
 	# Inicializar tracking de cobertura
 	_initialize_coverage_tracking()
@@ -20,7 +21,7 @@ func before_all():
 
 func after_all():
 	"""Reporte final después de todos los tests"""
-	print("=" * 50)
+	print("=".repeat(50))
 	print("=== REPORTE FINAL DE TESTING ===")
 
 	var total_tests = _count_total_tests()
@@ -30,13 +31,14 @@ func after_all():
 	print("Total de Tests: " + str(total_tests))
 	print("Tests Exitosos: " + str(passed_tests) + " ✅")
 	print("Tests Fallidos: " + str(failed_tests) + " ❌")
-	print("Tasa de Éxito: " + str((float(passed_tests) / total_tests * 100.0)) + "%")
+	print("Tasa de Éxito: " + str(float(passed_tests) / total_tests * 100.0) + "%")
 
 	_generate_coverage_report()
-	print("=" * 50)
+	print("=".repeat(50))
 
 
 ## === COMPREHENSIVE TEST ORCHESTRATION ===
+
 
 func test_run_economy_tests():
 	"""Test: Ejecutar suite completa de tests económicos"""
@@ -53,8 +55,7 @@ func test_run_economy_tests():
 
 	# Verificar que los tests principales pasaron
 	for test_category in economy_test_results:
-		assert_true(economy_test_results[test_category],
-			"Test de " + test_category + " falló")
+		assert_true(economy_test_results[test_category], "Test de " + test_category + " falló")
 
 	print("✅ Tests Económicos Completados")
 
@@ -74,8 +75,9 @@ func test_run_gamedata_tests():
 	test_results["gamedata"] = gamedata_test_results
 
 	for test_category in gamedata_test_results:
-		assert_true(gamedata_test_results[test_category],
-			"Test de GameData " + test_category + " falló")
+		assert_true(
+			gamedata_test_results[test_category], "Test de GameData " + test_category + " falló"
+		)
 
 	print("✅ Tests de GameData Completados")
 
@@ -95,8 +97,7 @@ func test_run_ui_tests():
 	test_results["ui_systems"] = ui_test_results
 
 	for test_category in ui_test_results:
-		assert_true(ui_test_results[test_category],
-			"Test de UI " + test_category + " falló")
+		assert_true(ui_test_results[test_category], "Test de UI " + test_category + " falló")
 
 	print("✅ Tests de UI Completados")
 
@@ -117,27 +118,31 @@ func test_run_integration_tests():
 	test_results["integration"] = integration_test_results
 
 	for test_category in integration_test_results:
-		assert_true(integration_test_results[test_category],
-			"Test de Integración " + test_category + " falló")
+		assert_true(
+			integration_test_results[test_category],
+			"Test de Integración " + test_category + " falló"
+		)
 
 	print("✅ Tests de Integración Completados")
 
 
 ## === SYSTEM HEALTH CHECKS ===
 
+
 func test_memory_usage_validation():
 	"""Test: Validación de uso de memoria durante testing"""
-	var initial_memory = OS.get_static_memory_usage_by_type()
+	var initial_memory = OS.get_static_memory_peak_usage()
 
 	# Simular operaciones intensivas
 	_simulate_intensive_operations()
 
-	var final_memory = OS.get_static_memory_usage_by_type()
+	var final_memory = OS.get_static_memory_peak_usage()
 
 	# Verificar que no hay leaks masivos de memoria
 	var memory_increase = final_memory - initial_memory
-	assert_lt(memory_increase, 50 * 1024 * 1024, # 50MB threshold
-		"Uso de memoria excede límites esperados durante testing")
+	assert_lt(
+		memory_increase, 50 * 1024 * 1024, "Uso de memoria excede límites esperados durante testing"  # 50MB threshold
+	)
 
 	print("✅ Validación de Memoria Exitosa")
 
@@ -183,14 +188,14 @@ func test_compatibility_validation():
 	}
 
 	for check_name in compatibility_checks:
-		assert_true(compatibility_checks[check_name],
-			"Compatibilidad " + check_name + " falló")
+		assert_true(compatibility_checks[check_name], "Compatibilidad " + check_name + " falló")
 
 	test_results["compatibility"] = compatibility_checks
 	print("✅ Validación de Compatibilidad Completada")
 
 
 ## === COVERAGE AND REPORTING ===
+
 
 func test_code_coverage_analysis():
 	"""Test: Análisis de cobertura de código"""
@@ -214,13 +219,17 @@ func test_code_coverage_analysis():
 		if area_covered:
 			coverage_percentage += (100.0 / total_areas)
 
-	assert_gt(coverage_percentage, 80.0,
-		"Cobertura de código (" + str(coverage_percentage) + "%) < objetivo 80%")
+	assert_gt(
+		coverage_percentage,
+		80.0,
+		"Cobertura de código (" + str(coverage_percentage) + "%) < objetivo 80%"
+	)
 
 	print("📊 Cobertura de Código: " + str(coverage_percentage) + "%")
 
 
 ## === HELPER FUNCTIONS ===
+
 
 func _initialize_coverage_tracking():
 	"""Inicializa el sistema de tracking de cobertura"""

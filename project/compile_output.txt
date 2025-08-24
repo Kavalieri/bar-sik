@@ -1,0 +1,20 @@
+Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
+
+🎮 AppConfig inicializado
+📱 Plataforma: Windows
+🏗️ Build: 
+🐛 Debug: true
+🧭 Router inicializado
+🎯 GameEvents inicializado - Sistema de eventos BAR-SIK
+💾 SaveSystem inicializado
+📦 StockManager inicializado
+ComponentsPreloader: Scene Composition components loaded
+🔄 GameStateManager inicializado - Sistema reactivo activo
+[93m🎬 SplashScreen iniciado - Versión responsive[39m[0m
+⏳ SplashScreen: Iniciando carga...
+✅ Carga completada - Transicionando al menú principal
+🔄 Cambiando a escena: res://scenes/MainMenu.tscn
+📱 MainMenu cargado - Aplicando tema profesional
+🎯 MainMenu configurado con tema profesional cervecería
+✅ Escena cargada exitosamente
+✨ Animación fade-in completada

@@ -28,7 +28,7 @@ extends Resource
 ## Estado del tutorial y sistemas
 @export var tutorial_completed: bool = false
 @export var first_generator_bought: bool = false
-@export var customer_system_unlocked: bool = false  # NUEVO - sistema de clientes
+@export var customer_system_unlocked: bool = true  # HABILITADO PARA PRUEBAS
 
 ## Recursos disponibles
 @export var resources: Dictionary = {"barley": 0, "hops": 0, "water": 0, "yeast": 0}
@@ -125,36 +125,44 @@ func to_dict() -> Dictionary:
 
 ## Cargar desde diccionario
 func from_dict(data: Dictionary) -> void:
-	money = data.get("money", 50.0)
-	tokens = data.get("tokens", 0)  # NUEVO - backward compatibility
-	gems = data.get("gems", 100)  # NUEVO - backward compatibility
-	customer_system_unlocked = data.get("customer_system_unlocked", false)  # NUEVO
+	money = data["money"] if data.has("money") else 50.0
+	tokens = data["tokens"] if data.has("tokens") else 0  # NUEVO - backward compatibility
+	gems = data["gems"] if data.has("gems") else 100  # NUEVO - backward compatibility
+	customer_system_unlocked = (
+		data["customer_system_unlocked"] if data.has("customer_system_unlocked") else false
+	)  # NUEVO
 	# T013 - Sistema de Prestigio
-	prestige_stars = data.get("prestige_stars", 0)
-	prestige_count = data.get("prestige_count", 0)
-	active_star_bonuses = data.get("active_star_bonuses", [])
-	total_cash_earned = data.get("total_cash_earned", 0.0)
+	prestige_stars = data["prestige_stars"] if data.has("prestige_stars") else 0
+	prestige_count = data["prestige_count"] if data.has("prestige_count") else 0
+	active_star_bonuses = data["active_star_bonuses"] if data.has("active_star_bonuses") else []
+	total_cash_earned = data["total_cash_earned"] if data.has("total_cash_earned") else 0.0
 	# T017 - Sistema de Logros
-	unlocked_achievements = data.get("unlocked_achievements", [])
-	achievement_progress = data.get("achievement_progress", {})
-	lifetime_stats = data.get("lifetime_stats", {})
+	unlocked_achievements = (
+		data["unlocked_achievements"] if data.has("unlocked_achievements") else []
+	)
+	achievement_progress = data["achievement_progress"] if data.has("achievement_progress") else {}
+	lifetime_stats = data["lifetime_stats"] if data.has("lifetime_stats") else {}
 	# T018/T030 - Sistema de Misiones Diarias y Semanales
-	active_missions = data.get("active_missions", {})
-	active_weekly_missions = data.get("active_weekly_missions", {})
-	last_mission_reset = data.get("last_mission_reset", 0)
-	last_weekly_mission_reset = data.get("last_weekly_mission_reset", 0)
+	active_missions = data["active_missions"] if data.has("active_missions") else {}
+	active_weekly_missions = (
+		data["active_weekly_missions"] if data.has("active_weekly_missions") else {}
+	)
+	last_mission_reset = data["last_mission_reset"] if data.has("last_mission_reset") else 0
+	last_weekly_mission_reset = (
+		data["last_weekly_mission_reset"] if data.has("last_weekly_mission_reset") else 0
+	)
 	# Datos del juego
-	resources = data.get("resources", resources)
-	products = data.get("products", products)
-	generators = data.get("generators", generators)
-	stations = data.get("stations", stations)
-	offers = data.get("offers", offers)
-	upgrades = data.get("upgrades", upgrades)
-	milestones = data.get("milestones", milestones)
-	statistics = data.get("statistics", statistics)
+	resources = data["resources"] if data.has("resources") else resources
+	products = data["products"] if data.has("products") else products
+	generators = data["generators"] if data.has("generators") else generators
+	stations = data["stations"] if data.has("stations") else stations
+	offers = data["offers"] if data.has("offers") else offers
+	upgrades = data["upgrades"] if data.has("upgrades") else upgrades
+	milestones = data["milestones"] if data.has("milestones") else milestones
+	statistics = data["statistics"] if data.has("statistics") else statistics
 
 	# T031 - Sistema de Desbloqueos Progresivos (carga diferida)
-	unlock_data = data.get("unlock_data", {})
+	unlock_data = data["unlock_data"] if data.has("unlock_data") else {}
 
 
 ## === T031 - UNLOCK MANAGER INTEGRATION ===
@@ -162,20 +170,17 @@ func from_dict(data: Dictionary) -> void:
 # Variable para almacenar los datos de unlock temporal
 var unlock_data: Dictionary = {}
 
+
 func _get_unlock_manager_data() -> Dictionary:
 	"""Obtiene los datos del UnlockManager para guardado"""
-	var unlock_manager = get_node_or_null("/root/GameController/UnlockManager")
-	if unlock_manager and unlock_manager.has_method("to_dict"):
-		return unlock_manager.to_dict()
-	return unlock_data  # Fallback a datos almacenados
+	# GameData es Resource, no puede acceder al árbol de nodos directamente
+	return unlock_data  # Usar datos almacenados
 
 
 func load_unlock_data_to_manager():
 	"""Carga los datos de desbloqueos al UnlockManager"""
-	var unlock_manager = get_node_or_null("/root/GameController/UnlockManager")
-	if unlock_manager and unlock_manager.has_method("from_dict"):
-		unlock_manager.from_dict(unlock_data)
-		print("🔓 Datos de desbloqueos cargados al UnlockManager")
+	# Esta función será llamada desde GameController que tiene acceso al árbol
+	print("🔓 Datos de desbloqueos disponibles para cargar")
 
 
 ## === CURRENCY METHODS - Refactorizado desde CurrencyManager ===

@@ -1,23 +1,63 @@
 # 🧪 Bar-Sik Automated Testing Suite
 
-## T037 - Sistema de Testing Automatizado Completo
+## Sistema de Testing Completamente Unificado
 
-Este directorio contiene la suite completa de tests automatizados para Bar-Sik, diseñada para garantizar calidad AAA y más del 80% de cobertura de código.
+Este directorio contiene **TODA** la suite de testing, debug y validación para Bar-Sik, completamente reorganizada y unificada siguiendo las mejores prácticas.
 
-## 📋 Estructura de Tests
+## � Estructura Completa de Tests
 
-### Core Test Files
-- **`test_economy.gd`** - Tests del sistema económico y cálculos de producción
-- **`test_gamedata.gd`** - Tests del core GameData y persistencia
-- **`test_ui_systems.gd`** - Tests de componentes UI y interacciones
-- **`test_integration.gd`** - Tests de integración entre sistemas
-- **`test_main_suite.gd`** - Orchestrador principal y reportes
+### 📂 Unit Tests (`unit/`)
+Tests de componentes individuales:
+- `test_gamedata.gd` - GameData core y persistencia
+- `test_economy.gd` - Sistema económico y cálculos
+- `test_prestige_system.gd` - Sistema de prestigio
+- `test_save_system.gd` - Sistema de guardado
+- `test_currency_system.gd` - Sistema de monedas
+- `test_generator_*` - Tests de generadores
+- `test_customer_unlock.gd` - Desbloqueo de clientes
+- Y 10+ tests unitarios más...
 
-### Configuración
-- **`TestRunner.tscn`** - Escena para ejecutar tests en editor
-- **`README.md`** - Esta documentación
+### 📂 Integration Tests (`integration/`)
+Tests de interacción entre sistemas:
+- `test_integration.gd` - Integración principal
+- `test_core_integration.gd` - Core del juego
+- `test_customer_system.gd` - Sistema completo de clientes
+- `test_data_integration.gd` - Integración de datos
+- `test_final_verification.gd` - Verificación final
+- `test_verify_customer_system.gd` - Verificación de clientes
 
-## 🚀 Cómo Ejecutar Tests
+### 📂 UI Tests (`ui/`)
+Tests de interfaz de usuario:
+- `test_ui_systems.gd` - Sistemas de UI
+- `test_currency_display.gd` - Display de monedas
+
+### 📂 Performance Tests (`performance/`)
+Tests de rendimiento:
+- `test_performance_optimization.gd` - Optimización general
+- `test_mathematical_optimization.gd` - Optimización matemática
+
+### 📂 Debug Tools (`debug/`)
+Herramientas de debugging y análisis:
+- `debug_persistence.gd` - Debug de persistencia
+- `production_panel_*.gd` - Versiones de ProductionPanel
+- `system_repair_summary.gd` - Resumen de reparaciones
+- `save_system_analysis.gd` - Análisis del sistema de guardado
+- `test_fixes_validation.py` - Validación de correcciones (Python)
+- `test_production_*.py` - Tests de producción (Python)
+
+### 📂 Fixtures (`fixtures/`)
+Datos y utilidades de prueba:
+- `test_data.gd` - Fixtures de datos estandarizados
+- `test_utils.gd` - Utilidades comunes para testing
+
+### 📂 Runners (`runners/`)
+Ejecutores de tests:
+- `test_runner.gd` - Runner principal
+- `simple_test_runner.gd` - Runner simple
+- `basic_test_*.gd` - Runners básicos
+- `TestRunner.tscn` - Escena del runner
+
+## 🚀 Formas de Ejecutar Tests
 
 ### Método 1: VS Code (Recomendado)
 1. Usar `Ctrl+Shift+P` → "Tasks: Run Task"

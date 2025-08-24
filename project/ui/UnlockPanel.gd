@@ -14,10 +14,12 @@ extends Control
 @onready var unlocked_tab: VBoxContainer = $TabContainer/Desbloqueadas
 
 @onready var available_scroll: ScrollContainer = $TabContainer/Disponibles/AvailableScroll
-@onready var available_content: VBoxContainer = $TabContainer/Disponibles/AvailableScroll/AvailableContent
+@onready
+var available_content: VBoxContainer = $TabContainer/Disponibles/AvailableScroll/AvailableContent
 
 @onready var unlocked_scroll: ScrollContainer = $TabContainer/Desbloqueadas/UnlockedScroll
-@onready var unlocked_content: VBoxContainer = $TabContainer/Desbloqueadas/UnlockedScroll/UnlockedContent
+@onready
+var unlocked_content: VBoxContainer = $TabContainer/Desbloqueadas/UnlockedScroll/UnlockedContent
 
 # Referencias a managers
 var unlock_manager: UnlockManager
@@ -45,7 +47,8 @@ func _ready():
 
 	# Referencias
 	unlock_manager = get_node("/root/UnlockManager")
-	game_data = get_node("/root/GameData")
+	var gd_node = get_node("/root/GameData")
+	game_data = gd_node as GameData
 
 	if unlock_manager:
 		# Conectar señales del UnlockManager
@@ -364,11 +367,14 @@ func _create_unlocked_feature_item(feature_id: String) -> Control:
 	item_container.add_child(main_hbox)
 
 	# Obtener datos de definición si existe
-	var definition = unlock_manager.unlock_definitions.get(feature_id, {
-		"name": feature_id.replace("_", " ").capitalize(),
-		"description": "Característica desbloqueada",
-		"icon": "✅"
-	})
+	var definition = unlock_manager.unlock_definitions.get(
+		feature_id,
+		{
+			"name": feature_id.replace("_", " ").capitalize(),
+			"description": "Característica desbloqueada",
+			"icon": "✅"
+		}
+	)
 
 	# Icono
 	var icon_label = Label.new()
@@ -416,6 +422,7 @@ func _clear_container(container: Node):
 
 ## === EVENT HANDLERS ===
 
+
 func _on_close_pressed():
 	"""Cierra el panel"""
 	hide_panel()
@@ -450,6 +457,7 @@ func _show_unlock_celebration(feature_data: Dictionary):
 
 
 ## === API PÚBLICAS ===
+
 
 func show_panel():
 	"""Muestra el panel de desbloqueos"""

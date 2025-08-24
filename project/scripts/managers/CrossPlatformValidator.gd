@@ -12,42 +12,48 @@ signal cross_platform_validation_finished(overall_results: Dictionary)
 
 # Configuración de plataformas soportadas
 var supported_platforms = {
-	"windows": {
+	"windows":
+	{
 		"name": "Windows Desktop",
 		"min_resolution": Vector2(1024, 768),
 		"max_resolution": Vector2(3840, 2160),
 		"required_features": ["file_system", "threading", "audio"],
 		"test_resolutions": [Vector2(1920, 1080), Vector2(1366, 768), Vector2(2560, 1440)]
 	},
-	"linux": {
+	"linux":
+	{
 		"name": "Linux Desktop",
 		"min_resolution": Vector2(1024, 768),
 		"max_resolution": Vector2(3840, 2160),
 		"required_features": ["file_system", "threading", "audio"],
 		"test_resolutions": [Vector2(1920, 1080), Vector2(1366, 768)]
 	},
-	"macos": {
+	"macos":
+	{
 		"name": "macOS Desktop",
 		"min_resolution": Vector2(1280, 800),
 		"max_resolution": Vector2(5120, 2880),
 		"required_features": ["file_system", "threading", "audio"],
 		"test_resolutions": [Vector2(2560, 1600), Vector2(1920, 1080)]
 	},
-	"android": {
+	"android":
+	{
 		"name": "Android Mobile",
 		"min_resolution": Vector2(480, 800),
 		"max_resolution": Vector2(1440, 3200),
 		"required_features": ["touch", "sensors", "audio"],
 		"test_resolutions": [Vector2(1080, 1920), Vector2(720, 1280), Vector2(1440, 2960)]
 	},
-	"ios": {
+	"ios":
+	{
 		"name": "iOS Mobile",
 		"min_resolution": Vector2(640, 1136),
 		"max_resolution": Vector2(1284, 2778),
 		"required_features": ["touch", "sensors", "audio"],
 		"test_resolutions": [Vector2(1170, 2532), Vector2(828, 1792), Vector2(1080, 1920)]
 	},
-	"web": {
+	"web":
+	{
 		"name": "Web Browser",
 		"min_resolution": Vector2(800, 600),
 		"max_resolution": Vector2(1920, 1080),
@@ -66,6 +72,7 @@ var game_data: GameData
 var ui_manager: Node
 var save_system: Node
 
+
 func _ready():
 	print("🌐 CrossPlatformValidator iniciado - Launch Readiness")
 
@@ -75,6 +82,7 @@ func _ready():
 
 	# Conectar con sistemas
 	_connect_to_systems()
+
 
 func _detect_current_platform() -> String:
 	"""Detectar la plataforma actual de ejecución"""
@@ -93,6 +101,7 @@ func _detect_current_platform() -> String:
 	else:
 		return "unknown"
 
+
 func _connect_to_systems():
 	"""Conectar con sistemas del juego para validación"""
 	game_data = get_node_or_null("/root/GameData")
@@ -104,9 +113,11 @@ func _connect_to_systems():
 	if ui_manager:
 		print("🔗 Conectado con UIManager")
 
+
 # =============================================================================
 # VALIDACIÓN PRINCIPAL
 # =============================================================================
+
 
 func run_full_cross_platform_validation() -> Dictionary:
 	"""
@@ -149,7 +160,9 @@ func run_full_cross_platform_validation() -> Dictionary:
 				overall_results.platforms_failed += 1
 
 	# Calcular score de compatibilidad
-	overall_results.compatibility_score = float(overall_results.platforms_passed) / overall_results.platforms_tested
+	overall_results.compatibility_score = (
+		float(overall_results.platforms_passed) / overall_results.platforms_tested
+	)
 
 	# Determinar launch readiness
 	if overall_results.compatibility_score >= 0.9:
@@ -161,10 +174,15 @@ func run_full_cross_platform_validation() -> Dictionary:
 
 	cross_platform_validation_finished.emit(overall_results)
 
-	print("🏁 Validación cross-platform completada: %s (%.1f%%)" %
-		  [overall_results.launch_readiness, overall_results.compatibility_score * 100])
+	print(
+		(
+			"🏁 Validación cross-platform completada: %s (%.1f%%)"
+			% [overall_results.launch_readiness, overall_results.compatibility_score * 100]
+		)
+	)
 
 	return overall_results
+
 
 func validate_current_platform() -> Dictionary:
 	"""Validar la plataforma actual en detalle"""
@@ -237,19 +255,17 @@ func validate_current_platform() -> Dictionary:
 
 	return results
 
+
 # =============================================================================
 # TESTS ESPECÍFICOS
 # =============================================================================
+
 
 func _test_screen_resolutions(platform: String) -> Dictionary:
 	"""Test de compatibilidad con diferentes resoluciones"""
 	print("  📐 Testing screen resolutions...")
 
-	var test_result = {
-		"passed": true,
-		"issues": [],
-		"supported_resolutions": []
-	}
+	var test_result = {"passed": true, "issues": [], "supported_resolutions": []}
 
 	if not supported_platforms.has(platform):
 		test_result.passed = false
@@ -260,7 +276,10 @@ func _test_screen_resolutions(platform: String) -> Dictionary:
 	var current_screen_size = get_viewport().get_visible_rect().size
 
 	# Verificar que la resolución actual está en rango soportado
-	if current_screen_size.x < platform_config.min_resolution.x or current_screen_size.y < platform_config.min_resolution.y:
+	if (
+		current_screen_size.x < platform_config.min_resolution.x
+		or current_screen_size.y < platform_config.min_resolution.y
+	):
 		test_result.passed = false
 		test_result.issues.append("Current resolution below minimum supported")
 
@@ -272,21 +291,19 @@ func _test_screen_resolutions(platform: String) -> Dictionary:
 
 	return test_result
 
+
 func _test_specific_resolution(resolution: Vector2) -> bool:
 	"""Test de una resolución específica"""
 	# En un entorno real, esto cambiaría la resolución y verificaría que UI se adapta correctamente
 	# Por ahora simulamos que funciona
 	return true
 
+
 func _test_required_features(platform: String) -> Dictionary:
 	"""Test de características requeridas por plataforma"""
 	print("  🔧 Testing required features...")
 
-	var test_result = {
-		"passed": true,
-		"issues": [],
-		"support_details": {}
-	}
+	var test_result = {"passed": true, "issues": [], "support_details": {}}
 
 	if not supported_platforms.has(platform):
 		test_result.passed = false
@@ -304,6 +321,7 @@ func _test_required_features(platform: String) -> Dictionary:
 			test_result.issues.append("Required feature not available: " + feature)
 
 	return test_result
+
 
 func _check_feature_availability(feature: String) -> bool:
 	"""Verificar disponibilidad de una característica específica"""
@@ -327,6 +345,7 @@ func _check_feature_availability(feature: String) -> bool:
 		_:
 			return true
 
+
 func _test_adaptive_ui(platform: String) -> Dictionary:
 	"""Test de UI adaptativo para la plataforma"""
 	print("  🎨 Testing adaptive UI...")
@@ -334,7 +353,8 @@ func _test_adaptive_ui(platform: String) -> Dictionary:
 	var test_result = {
 		"passed": true,
 		"warnings": [],
-		"details": {
+		"details":
+		{
 			"touch_friendly": false,
 			"keyboard_friendly": false,
 			"gamepad_friendly": false,
@@ -360,26 +380,31 @@ func _test_adaptive_ui(platform: String) -> Dictionary:
 
 	return test_result
 
+
 func _check_touch_ui_compatibility() -> bool:
 	"""Verificar si UI es compatible con touch"""
 	# Verificar que botones tienen tamaño mínimo para touch (44x44 px)
 	# En un entorno real, esto recorrería todos los elementos UI
 	return true
 
+
 func _check_keyboard_ui_compatibility() -> bool:
 	"""Verificar compatibilidad con navegación por teclado"""
 	# Verificar que UI permite navegación con Tab, Enter, etc.
 	return true
+
 
 func _check_gamepad_ui_compatibility() -> bool:
 	"""Verificar compatibilidad con gamepad"""
 	# Verificar que UI permite navegación con gamepad
 	return Input.get_connected_joypads().size() >= 0
 
+
 func _check_ui_scaling() -> bool:
 	"""Verificar que UI escala apropiadamente"""
 	# Verificar que elementos UI mantienen proporciones correctas
 	return true
+
 
 func _test_platform_performance() -> Dictionary:
 	"""Test de rendimiento específico de plataforma"""
@@ -388,12 +413,8 @@ func _test_platform_performance() -> Dictionary:
 	var test_result = {
 		"passed": true,
 		"warnings": [],
-		"metrics": {
-			"avg_fps": 60.0,
-			"min_fps": 45.0,
-			"memory_usage_mb": 150.0,
-			"load_time_ms": 2500.0
-		}
+		"metrics":
+		{"avg_fps": 60.0, "min_fps": 45.0, "memory_usage_mb": 150.0, "load_time_ms": 2500.0}
 	}
 
 	# Simular métricas según plataforma
@@ -419,14 +440,12 @@ func _test_platform_performance() -> Dictionary:
 
 	return test_result
 
+
 func _test_cross_platform_saves() -> Dictionary:
 	"""Test de compatibilidad del sistema de guardado entre plataformas"""
 	print("  💾 Testing cross-platform save compatibility...")
 
-	var test_result = {
-		"passed": true,
-		"issues": []
-	}
+	var test_result = {"passed": true, "issues": []}
 
 	# Verificar que paths de guardado son válidos para la plataforma
 	var save_path = "user://save_game.dat"
@@ -442,15 +461,18 @@ func _test_cross_platform_saves() -> Dictionary:
 
 	return test_result
 
+
 func _is_valid_save_path_for_platform(path: String, platform: String) -> bool:
 	"""Verificar si el path de guardado es válido para la plataforma"""
 	# user:// es válido en todas las plataformas de Godot
 	return path.begins_with("user://")
 
+
 func _is_save_format_cross_platform() -> bool:
 	"""Verificar si el formato de guardado es cross-platform"""
 	# JSON es cross-platform, binario puede tener problemas de endianness
 	return true
+
 
 func _simulate_platform_validation(platform: String) -> Dictionary:
 	"""Simular validación de una plataforma específica"""
@@ -473,20 +495,25 @@ func _simulate_platform_validation(platform: String) -> Dictionary:
 			simulated_results.warnings.append("WebGL performance may vary by browser")
 			simulated_results.warnings.append("File access limited to user:// directory")
 		"android":
-			simulated_results.warnings.append("Battery optimization may affect background processing")
+			simulated_results.warnings.append(
+				"Battery optimization may affect background processing"
+			)
 		"ios":
 			simulated_results.warnings.append("App Store guidelines must be followed")
 
 	return simulated_results
 
+
 # =============================================================================
 # REPORTES Y ANÁLISIS
 # =============================================================================
 
+
 func get_compatibility_report() -> Dictionary:
 	"""Generar reporte completo de compatibilidad"""
 	var report = {
-		"summary": {
+		"summary":
+		{
 			"total_platforms": supported_platforms.size(),
 			"validated_platforms": validation_results.size(),
 			"compatibility_score": 0.0,
@@ -511,10 +538,7 @@ func get_compatibility_report() -> Dictionary:
 		# Recopilar blockers críticos
 		if result.has("critical_issues"):
 			for issue in result.critical_issues:
-				report.critical_blockers.append({
-					"platform": platform,
-					"issue": issue
-				})
+				report.critical_blockers.append({"platform": platform, "issue": issue})
 
 	if total_platforms > 0:
 		report.summary.compatibility_score = float(total_passed) / total_platforms
@@ -524,6 +548,7 @@ func get_compatibility_report() -> Dictionary:
 	report.recommendations = _generate_compatibility_recommendations(report)
 
 	return report
+
 
 func _generate_compatibility_recommendations(report: Dictionary) -> Array:
 	"""Generar recomendaciones basadas en resultados de validación"""
@@ -543,7 +568,9 @@ func _generate_compatibility_recommendations(report: Dictionary) -> Array:
 
 	return recommendations
 
+
 # INTERFAZ PÚBLICA PARA LAUNCH READINESS
+
 
 func execute_launch_readiness_validation() -> Dictionary:
 	"""
@@ -580,7 +607,15 @@ func execute_launch_readiness_validation() -> Dictionary:
 		launch_readiness.certification = "NEEDS_MAJOR_WORK"
 
 	print("🏆 Launch Readiness Certification: %s" % launch_readiness.certification)
-	print("📊 Platform Compatibility: %d/%d platforms ready (%.1f%%)" %
-		  [launch_readiness.platforms_ready, launch_readiness.platforms_total, launch_readiness.compatibility_score * 100])
+	print(
+		(
+			"📊 Platform Compatibility: %d/%d platforms ready (%.1f%%)"
+			% [
+				launch_readiness.platforms_ready,
+				launch_readiness.platforms_total,
+				launch_readiness.compatibility_score * 100
+			]
+		)
+	)
 
 	return launch_readiness

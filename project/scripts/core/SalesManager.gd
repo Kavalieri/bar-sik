@@ -47,7 +47,11 @@ func sell_item(item_type: String, item_name: String, quantity: int) -> bool:
 	var total_earned = actual_quantity * price
 
 	# T014 - Aplicar Income Multiplier de prestigio (ventas manuales)
-	var prestige_multiplier = game_data.get("prestige_income_multiplier", 1.0)
+	var prestige_multiplier = (
+		game_data["prestige_income_multiplier"]
+		if game_data.has("prestige_income_multiplier")
+		else 1.0
+	)
 	if prestige_multiplier > 1.0:
 		total_earned *= prestige_multiplier
 		print("   - ⭐ Bonus prestigio aplicado: x%.2f" % prestige_multiplier)

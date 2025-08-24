@@ -41,13 +41,6 @@ size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 18
 text = "💾 Guardado"
 
-[node name="PrestigeButton" type="Button" parent="MainContainer/TopPanel"]
-custom_minimum_size = Vector2(140, 60)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 18
-text = "⭐ Prestigio"
-
 [node name="MissionsButton" type="Button" parent="MainContainer/TopPanel"]
 custom_minimum_size = Vector2(140, 60)
 layout_mode = 2
@@ -161,3 +154,10 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 32
 toggle_mode = true
 text = "👥"
+
+[node name="PrestigeTab" type="Button" parent="MainContainer/BottomNavigation"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "⭐ Prestigio"

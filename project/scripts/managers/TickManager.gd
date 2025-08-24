@@ -404,14 +404,14 @@ func print_tick_status():
 
 	var stats = get_tick_stats()
 	print("\n⏰ TICK SYSTEM STATUS:")
-	print("=" * 40)
+	print("=".repeat(40))
 	print("Total Callbacks: %d" % stats.total_callbacks)
 	print("Fast Ticks: %d callbacks (60 FPS)" % stats.callback_counts.fast)
 	print("Normal Ticks: %d callbacks (30 FPS)" % stats.callback_counts.normal)
 	print("Slow Ticks: %d callbacks (10 FPS)" % stats.callback_counts.slow)
 	print("Very Slow Ticks: %d callbacks (1 FPS)" % stats.callback_counts.very_slow)
 	print("Batched Signals: %d queued" % stats.batched_signals)
-	print("=" * 40)
+	print("=".repeat(40))
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════

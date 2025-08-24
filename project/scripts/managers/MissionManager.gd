@@ -404,6 +404,7 @@ func _check_daily_reset():
 # 📅 WEEKLY MISSIONS SYSTEM
 # ============================================================================
 
+
 func _load_or_generate_weekly_missions():
 	"""Cargar misiones semanales guardadas o generar nuevas si es necesario"""
 	if not game_data:
@@ -413,7 +414,11 @@ func _load_or_generate_weekly_missions():
 	var current_time = Time.get_unix_time_from_system()
 	var should_reset = _should_reset_weekly_missions(current_time)
 
-	if should_reset or not game_data.has("active_weekly_missions") or game_data.active_weekly_missions.is_empty():
+	if (
+		should_reset
+		or not game_data.has("active_weekly_missions")
+		or game_data.active_weekly_missions.is_empty()
+	):
 		print("📅 Generando nuevas misiones semanales")
 		_generate_weekly_missions()
 		game_data.last_weekly_mission_reset = current_time
@@ -524,7 +529,12 @@ func _update_all_weekly_mission_progress():
 	# Actualizar GameData si hubo cambios
 	if not missions_completed.is_empty():
 		game_data.active_weekly_missions = active_weekly_missions.duplicate(true)
-		print("📅 %d misiones semanales completadas: %s" % [missions_completed.size(), missions_completed])
+		print(
+			(
+				"📅 %d misiones semanales completadas: %s"
+				% [missions_completed.size(), missions_completed]
+			)
+		)
 
 
 func _update_weekly_mission_progress(mission_id: String):
@@ -557,7 +567,9 @@ func _complete_weekly_mission(mission_id: String):
 	# Otorgar recompensa de tokens
 	if mission.token_reward > 0:
 		game_data.add_tokens(mission.token_reward)
-		print("🪙 +%d tokens por misión semanal completada: %s" % [mission.token_reward, mission.name])
+		print(
+			"🪙 +%d tokens por misión semanal completada: %s" % [mission.token_reward, mission.name]
+		)
 
 	# Otorgar recompensa de gems
 	if mission.gem_reward > 0:
@@ -709,6 +721,7 @@ func load_mission_data(data: Dictionary):
 # 📊 T030 ENHANCED PUBLIC API
 # ============================================================================
 
+
 func get_all_active_missions() -> Array:
 	"""Obtener todas las misiones activas (diarias + semanales)"""
 	var all_missions = []
@@ -760,23 +773,22 @@ func get_mission_statistics() -> Dictionary:
 			weekly_completed += 1
 
 	return {
-		"daily": {
+		"daily":
+		{
 			"completed": daily_completed,
 			"total": daily_total,
-			"percentage": 0.0 if daily_total == 0 else float(daily_completed) / float(daily_total) * 100.0
+			"percentage":
+			0.0 if daily_total == 0 else float(daily_completed) / float(daily_total) * 100.0
 		},
-		"weekly": {
+		"weekly":
+		{
 			"completed": weekly_completed,
 			"total": weekly_total,
-			"percentage": 0.0 if weekly_total == 0 else float(weekly_completed) / float(weekly_total) * 100.0
+			"percentage":
+			0.0 if weekly_total == 0 else float(weekly_completed) / float(weekly_total) * 100.0
 		},
-		"streaks": {
-			"daily": daily_streak,
-			"weekly": weekly_streak
-		},
-		"lifetime": {
-			"total_completed": total_missions_completed
-		}
+		"streaks": {"daily": daily_streak, "weekly": weekly_streak},
+		"lifetime": {"total_completed": total_missions_completed}
 	}
 
 
@@ -794,12 +806,7 @@ func get_time_until_weekly_reset() -> Dictionary:
 	var hours = (int(time_diff) % 86400) / 3600
 	var minutes = (int(time_diff) % 3600) / 60
 
-	return {
-		"days": days,
-		"hours": hours,
-		"minutes": minutes,
-		"total_seconds": time_diff
-	}
+	return {"days": days, "hours": hours, "minutes": minutes, "total_seconds": time_diff}
 
 
 func force_refresh_daily_missions():
@@ -830,17 +837,37 @@ func debug_print_all_missions():
 	for mission_id in active_missions:
 		var mission = active_missions[mission_id]
 		var status = "✅" if mission.completed else "⏳"
-		print("%s %s: %d/%d (%s)" % [status, mission.name, mission.progress, mission.target, mission_id])
+		print(
+			(
+				"%s %s: %d/%d (%s)"
+				% [status, mission.name, mission.progress, mission.target, mission_id]
+			)
+		)
 
 	print("=== MISIONES SEMANALES ===")
 	for mission_id in active_weekly_missions:
 		var mission = active_weekly_missions[mission_id]
 		var status = "✅" if mission.completed else "⏳"
-		print("%s %s: %d/%d (%s)" % [status, mission.name, mission.progress, mission.target, mission_id])
+		print(
+			(
+				"%s %s: %d/%d (%s)"
+				% [status, mission.name, mission.progress, mission.target, mission_id]
+			)
+		)
 
 	var stats = get_mission_statistics()
 	print("=== ESTADÍSTICAS ===")
-	print("Diarias: %d/%d (%.1f%%)" % [stats.daily.completed, stats.daily.total, stats.daily.percentage])
-	print("Semanales: %d/%d (%.1f%%)" % [stats.weekly.completed, stats.weekly.total, stats.weekly.percentage])
+	print(
+		(
+			"Diarias: %d/%d (%.1f%%)"
+			% [stats.daily.completed, stats.daily.total, stats.daily.percentage]
+		)
+	)
+	print(
+		(
+			"Semanales: %d/%d (%.1f%%)"
+			% [stats.weekly.completed, stats.weekly.total, stats.weekly.percentage]
+		)
+	)
 	print("Racha diaria: %d | Racha semanal: %d" % [stats.streaks.daily, stats.streaks.weekly])
 	print("Total completadas: %d" % stats.lifetime.total_completed)

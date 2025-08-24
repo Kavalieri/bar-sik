@@ -1,27 +1,21 @@
 extends Control
-
 class_name AutomationPanel
 
 ## T022 - Panel de Control de Automatización
 ## UI completa para configurar auto-producción y auto-venta
 
-# Referencias a nodos UI
-@onready
-var auto_production_container: VBoxContainer = $MainContainer/ScrollContainer/VBoxContainer/AutoProductionSection/ProductionContainer
-@onready
-var auto_sell_container: VBoxContainer = $MainContainer/ScrollContainer/VBoxContainer/AutoSellSection/SellContainer
-@onready
-var global_settings_container: VBoxContainer = $MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer
+# Referencias a nodos UI (se inicializarán en _ready())
+
+# Referencias a nodos UI (se inicializarán en _ready())
+var auto_production_container: VBoxContainer
+var auto_sell_container: VBoxContainer
+var global_settings_container: VBoxContainer
 
 # Referencias a controles globales
-@onready
-var smart_priority_toggle: CheckBox = $MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/SmartPriorityToggle
-@onready
-var smart_pricing_toggle: CheckBox = $MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/SmartPricingToggle
-@onready
-var threshold_slider: HSlider = $MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/ThresholdContainer/ThresholdSlider
-@onready
-var threshold_label: Label = $MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/ThresholdContainer/ThresholdLabel
+var smart_priority_toggle: CheckBox
+var smart_pricing_toggle: CheckBox
+var threshold_slider: HSlider
+var threshold_label: Label
 
 # Referencias a managers
 var automation_manager: AutomationManager
@@ -45,7 +39,16 @@ func _ready():
 
 
 func _setup_references():
-	"""Obtener referencias a managers"""
+	"""Obtener referencias a managers y nodos UI"""
+	# Inicializar referencias a nodos UI
+	auto_production_container = get_node_or_null("MainContainer/ScrollContainer/VBoxContainer/AutoProductionSection/ProductionContainer")
+	auto_sell_container = get_node_or_null("MainContainer/ScrollContainer/VBoxContainer/AutoSellSection/SellContainer")
+	global_settings_container = get_node_or_null("MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer")
+	smart_priority_toggle = get_node_or_null("MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/SmartPriorityToggle")
+	smart_pricing_toggle = get_node_or_null("MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/SmartPricingToggle")
+	threshold_slider = get_node_or_null("MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/ThresholdContainer/ThresholdSlider")
+	threshold_label = get_node_or_null("MainContainer/ScrollContainer/VBoxContainer/GlobalSection/SettingsContainer/ThresholdContainer/ThresholdLabel")
+
 	# El AutomationPanel busca GameController en el árbol de nodos
 	var current = get_parent()
 	while current and not current is GameController:
@@ -74,9 +77,14 @@ func _create_production_toggles():
 		var station_control = _create_station_toggle(station_id)
 		auto_production_container.add_child(station_control)
 
+		# Buscar el toggle de manera segura
 		var toggle = station_control.get_node("Toggle")
-		station_toggles[station_id] = toggle
-		toggle.toggled.connect(_on_production_toggle_changed.bind(station_id))
+		if toggle and toggle is CheckBox:
+			station_toggles[station_id] = toggle
+			toggle.toggled.connect(_on_production_toggle_changed.bind(station_id))
+			print("✅ Toggle para %s conectado" % station_id)
+		else:
+			print("❌ No se pudo encontrar Toggle para %s" % station_id)
 
 
 func _create_sell_toggles():
@@ -87,9 +95,16 @@ func _create_sell_toggles():
 		var product_control = _create_product_toggle(product)
 		auto_sell_container.add_child(product_control)
 
-		var toggle = product_control.get_node("Toggle")
-		product_toggles[product] = toggle
-		toggle.toggled.connect(_on_sell_toggle_changed.bind(product))
+		# El toggle está dentro del header, no directamente en product_control
+		var header = product_control.get_child(0)  # Primer hijo es el header
+		var toggle = header.get_node("Toggle") if header.has_node("Toggle") else null
+
+		if toggle and toggle is CheckBox:
+			product_toggles[product] = toggle
+			toggle.toggled.connect(_on_sell_toggle_changed.bind(product))
+			print("✅ Toggle para %s conectado" % product)
+		else:
+			print("❌ No se pudo encontrar Toggle para %s" % product)
 
 
 func _create_station_toggle(station_id: String) -> Control:
@@ -238,7 +253,7 @@ func _load_current_settings():
 # =============================================================================
 
 
-func _on_production_toggle_changed(station_id: String, enabled: bool):
+func _on_production_toggle_changed(enabled: bool, station_id: String):
 	"""Manejar cambio en toggle de producción"""
 	if automation_manager:
 		automation_manager.enable_auto_production(station_id, enabled)
@@ -246,7 +261,7 @@ func _on_production_toggle_changed(station_id: String, enabled: bool):
 		print("🏭 Auto-producción %s: %s" % [station_id, "ON" if enabled else "OFF"])
 
 
-func _on_sell_toggle_changed(product: String, enabled: bool):
+func _on_sell_toggle_changed(enabled: bool, product: String):
 	"""Manejar cambio en toggle de venta"""
 	if automation_manager:
 		automation_manager.enable_auto_sell(product, enabled)

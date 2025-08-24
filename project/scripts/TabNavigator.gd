@@ -3,21 +3,21 @@ extends Control
 ## Maneja la navegación entre GenerationPanel, ProductionPanel y SalesPanel
 
 # Preloads
-const CurrencyDisplay = preload("res://scripts/ui/CurrencyDisplay.gd")
+const CurrencyDisplayScene = preload("res://scenes/ui/CurrencyDisplay.tscn")
 
 @onready var pause_button: Button = $MainContainer/TopPanel/PauseButton
 @onready var save_menu_button: MenuButton = $MainContainer/TopPanel/SaveMenuButton
-@onready var prestige_button: Button = $MainContainer/TopPanel/PrestigeButton
 @onready var missions_button: Button = $MainContainer/TopPanel/MissionsButton  # T019
 @onready var automation_button: Button = $MainContainer/TopPanel/AutomationButton  # T022
 @onready var achievements_button: Button = $MainContainer/TopPanel/AchievementsButton  # T029
 @onready var currency_container: HBoxContainer = $MainContainer/TopPanel/CurrencyContainer
 
-# Botones de pestañas (ahora en la parte inferior)
+# Botones de pestañas (ahora en la parte inferior) + Prestigio movido aquí
 @onready var generation_tab: Button = $MainContainer/BottomNavigation/GenerationTab
 @onready var production_tab: Button = $MainContainer/BottomNavigation/ProductionTab
 @onready var sales_tab: Button = $MainContainer/BottomNavigation/SalesTab
 @onready var customers_tab: Button = $MainContainer/BottomNavigation/CustomersTab
+@onready var prestige_button: Button = $MainContainer/BottomNavigation/PrestigeTab  # Movido del top
 
 # Paneles de contenido
 @onready var generation_panel: Control = $MainContainer/ContentContainer/GenerationPanel
@@ -85,20 +85,20 @@ func _setup_currency_displays() -> void:
 		child.queue_free()
 
 	# Crear displays usando el componente CurrencyDisplay
-	cash_display = CurrencyDisplay.new()
-	cash_display.setup_currency("cash")
+	cash_display = CurrencyDisplayScene.instantiate()
 	cash_display.show_label = false  # Solo mostrar icono y cantidad para ahorrar espacio
 	currency_container.add_child(cash_display)
+	cash_display.setup_currency("cash")  # Configurar después de agregar al árbol
 
-	tokens_display = CurrencyDisplay.new()
-	tokens_display.setup_currency("tokens")
+	tokens_display = CurrencyDisplayScene.instantiate()
 	tokens_display.show_label = false
 	currency_container.add_child(tokens_display)
+	tokens_display.setup_currency("tokens")  # Configurar después de agregar al árbol
 
-	gems_display = CurrencyDisplay.new()
-	gems_display.setup_currency("gems")
+	gems_display = CurrencyDisplayScene.instantiate()
 	gems_display.show_label = false
 	currency_container.add_child(gems_display)
+	gems_display.setup_currency("gems")  # Configurar después de agregar al árbol
 
 	# Mantener money_label legacy para compatibilidad
 	money_label = Label.new()
@@ -117,6 +117,11 @@ func _setup_mobile_friendly_tabs() -> void:
 		if button:
 			button.set_custom_minimum_size(Vector2(0, 60))  # Altura móvil
 			button.add_theme_font_size_override("font_size", 16)  # Fuente móvil
+
+	# Configurar botón de prestigio (más pequeño que tabs principales)
+	if prestige_button:
+		prestige_button.set_custom_minimum_size(Vector2(0, 60))
+		prestige_button.add_theme_font_size_override("font_size", 14)
 
 	# Botón de pausa más grande
 	pause_button.set_custom_minimum_size(Vector2(50, 50))

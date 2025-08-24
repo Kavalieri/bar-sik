@@ -16,11 +16,18 @@ var current_amount: float = 0.0
 
 
 func _ready() -> void:
+	# Asegurar que los nodos estén listos antes de configurar
+	await get_tree().process_frame
 	setup_currency(currency_type)
 
 
 func setup_currency(type: String) -> void:
 	currency_type = type
+
+	# Verificar que los nodos existan antes de usarlos
+	if not currency_icon or not currency_label:
+		print("WARNING: CurrencyDisplay nodes not ready yet")
+		return
 
 	# Configurar icono y etiqueta según el tipo
 	match currency_type:
@@ -48,7 +55,7 @@ func setup_currency(type: String) -> void:
 
 
 func update_display() -> void:
-	if !is_node_ready():
+	if !is_node_ready() or not currency_amount:
 		return
 
 	# Por ahora mostrar valor placeholder

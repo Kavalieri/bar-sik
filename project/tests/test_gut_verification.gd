@@ -3,6 +3,7 @@ extends "res://addons/gut/test.gd"
 ## Test básico para verificar que GUT funciona
 class_name GutTestBasic
 
+
 func test_gut_framework_works():
 	"""Test básico para verificar que GUT está funcionando"""
 	assert_true(true, "Este test siempre debe pasar")
@@ -16,7 +17,7 @@ func test_godot_environment():
 	assert_not_null(Time, "Time singleton debe estar disponible")
 
 	var version_info = Engine.get_version_info()
-	assert_ge(version_info.major, 4, "Debe ser Godot 4.x o superior")
+	assert_gte(version_info.major, 4, "Debe ser Godot 4.x o superior")
 	print("✅ Entorno Godot validado: v" + str(version_info.major) + "." + str(version_info.minor))
 
 

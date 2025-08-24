@@ -3,7 +3,7 @@ extends BasePanel
 ## Implementa Scene Composition con BuyCard y ItemListCard
 
 # Helpers
-const LayoutFixHelper = preload("res://scripts/ui/LayoutFixHelper.gd")
+# const LayoutFixHelper = preload("res://scripts/ui/LayoutFixHelper.gd")  # TODO: Create file
 
 # Señales específicas del panel
 signal generator_purchased(generator_index: int, quantity: int)
@@ -70,7 +70,7 @@ func _setup_modular_resources() -> void:
 	resources_cards.clear()
 
 	# Configurar contenedor padre para layout mobile (horizontal)
-	LayoutFixHelper.configure_parent_container(resources_container)
+	# LayoutFixHelper.configure_parent_container(resources_container)  # TODO: Implementar
 
 	# Usar datos reales de GameConfig en lugar de hardcoded
 	var resource_configs = []
@@ -89,13 +89,13 @@ func _setup_modular_resources() -> void:
 		card.action_requested.connect(_on_resource_action)
 
 		# Aplicar fix de layout
-		LayoutFixHelper.configure_dynamic_component(card)
+		# LayoutFixHelper.configure_dynamic_component(card)  # TODO: Implementar
 
 		resources_container.add_child(card)
 		resources_cards.append(card)
 
 	# Forzar actualización de layout
-	LayoutFixHelper.force_layout_update(resources_container)
+	# LayoutFixHelper.force_layout_update(resources_container)  # TODO: Implementar
 
 
 func _setup_modular_generators() -> void:
@@ -105,7 +105,7 @@ func _setup_modular_generators() -> void:
 		child.queue_free()
 
 	# Configurar contenedor padre como VERTICAL para mobile
-	LayoutFixHelper.configure_parent_container(generators_container)
+	# LayoutFixHelper.configure_parent_container(generators_container)  # TODO: Implementar
 	# Forzar orientación vertical para mobile
 	if generators_container is VBoxContainer:
 		generators_container.add_theme_constant_override("separation", 12)
@@ -115,7 +115,7 @@ func _setup_modular_generators() -> void:
 	generators_shop.setup("Generadores Disponibles", "buy")
 
 	# Aplicar fix de layout para ShopContainer
-	LayoutFixHelper.configure_dynamic_component(generators_shop)
+	# LayoutFixHelper.configure_dynamic_component(generators_shop)  # TODO: Implementar
 
 	# Usar datos reales de GameConfig en lugar de hardcoded
 	for generator_id in GameConfig.GENERATOR_DATA.keys():
@@ -144,7 +144,7 @@ func _setup_modular_generators() -> void:
 	generators_container.add_child(generators_shop)
 
 	# Forzar actualización de layout
-	LayoutFixHelper.force_layout_update(generators_container)
+	# LayoutFixHelper.force_layout_update(generators_container)  # TODO: Implementar
 
 
 func update_resource_displays(game_data: Dictionary) -> void:

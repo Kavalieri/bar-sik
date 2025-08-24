@@ -16,6 +16,7 @@ signal error_occurred(message: String)
 var manager_ref: Node = null
 var button_states: Dictionary = {}
 var update_in_progress: bool = false
+var is_initialized: bool = false
 
 
 func _ready():
@@ -31,6 +32,7 @@ func _ready():
 	initialize_specific_content()
 	post_initialization()
 
+	is_initialized = true
 	panel_ready.emit()
 	print("✅ %s inicializado correctamente" % name)
 
@@ -80,11 +82,11 @@ func create_section_title(text: String, color: Color = Color.GOLD, size: int = 2
 	return label
 
 
-func create_standard_button(text: String, size: Vector2 = Vector2(120, 40)) -> Button:
+func create_standard_button(text: String, button_size: Vector2 = Vector2(120, 40)) -> Button:
 	"""Botón estandarizado - elimina duplicación de Button creation"""
 	var button = Button.new()
 	button.text = text
-	button.custom_minimum_size = size
+	button.custom_minimum_size = button_size
 	button.add_theme_font_size_override("font_size", 16)
 	return button
 

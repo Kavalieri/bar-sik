@@ -25,6 +25,7 @@ var last_stats_save: int = 0
 # Constantes
 const STATS_SAVE_INTERVAL = 60  # Guardar stats cada minuto
 
+
 func _ready():
 	print("📊 StatisticsManager inicializado (T034)")
 	session_start_time = Time.get_unix_time_from_system()
@@ -68,12 +69,8 @@ func _initialize_stats_structure():
 		"session_lengths": [],  # Histórico de duración de sesiones
 		"offline_time_total": 0,
 		"offline_gains_total": 0.0,
-		"prestige_statistics": {
-			"count": 0,
-			"fastest_run": 0,
-			"total_stars_earned": 0,
-			"average_time_between": 0
-		},
+		"prestige_statistics":
+		{"count": 0, "fastest_run": 0, "total_stars_earned": 0, "average_time_between": 0},
 		"achievements_progress": {"unlocked": 0, "total": 30},
 		"missions_completed": {"daily": 0, "weekly": 0},
 		"features_unlocked_timeline": []
@@ -83,11 +80,8 @@ func _initialize_stats_structure():
 	efficiency_stats = {
 		"automation_usage": {"production": 0, "sales": 0, "total_hours": 0},
 		"idle_vs_active_ratio": {"idle_gains": 0.0, "active_gains": 0.0},
-		"optimization_scores": {
-			"resource_management": 0.0,
-			"timing_efficiency": 0.0,
-			"automation_setup": 0.0
-		},
+		"optimization_scores":
+		{"resource_management": 0.0, "timing_efficiency": 0.0, "automation_setup": 0.0},
 		"bottlenecks_identified": [],
 		"performance_trends": []
 	}
@@ -110,6 +104,7 @@ func _setup_periodic_updates():
 
 ## === PRODUCTION STATISTICS ===
 
+
 func record_beer_produced(beer_type: String, quantity: int, quality: String = "good"):
 	"""Registra cerveza producida"""
 	production_stats["total_beers_brewed"] += quantity
@@ -125,7 +120,10 @@ func record_beer_produced(beer_type: String, quantity: int, quality: String = "g
 
 	# Actualizar streak
 	production_stats["production_streaks"]["current"] += quantity
-	if production_stats["production_streaks"]["current"] > production_stats["production_streaks"]["best"]:
+	if (
+		production_stats["production_streaks"]["current"]
+		> production_stats["production_streaks"]["best"]
+	):
 		production_stats["production_streaks"]["best"] = production_stats["production_streaks"]["current"]
 
 	stat_updated.emit("production", "beers_brewed", production_stats["total_beers_brewed"])
@@ -152,6 +150,7 @@ func update_production_efficiency(efficiency_score: float):
 
 ## === ECONOMIC STATISTICS ===
 
+
 func record_money_earned(amount: float, source: String = "sales"):
 	"""Registra dinero ganado"""
 	economic_stats["money_earned_lifetime"] += amount
@@ -160,8 +159,7 @@ func record_money_earned(amount: float, source: String = "sales"):
 	# Verificar si es la venta más grande
 	if amount > economic_stats["biggest_single_sale"]["amount"]:
 		economic_stats["biggest_single_sale"] = {
-			"amount": amount,
-			"timestamp": Time.get_unix_time_from_system()
+			"amount": amount, "timestamp": Time.get_unix_time_from_system()
 		}
 
 	stat_updated.emit("economic", "money_lifetime", economic_stats["money_earned_lifetime"])
@@ -210,6 +208,7 @@ func _update_money_per_hour():
 
 ## === META STATISTICS ===
 
+
 func update_playtime():
 	"""Actualiza tiempo total de juego"""
 	if game_data and game_data.statistics.has("total_playtime"):
@@ -237,7 +236,10 @@ func record_prestige_completed(time_taken: int, stars_earned: int):
 	meta_stats["prestige_statistics"]["count"] += 1
 	meta_stats["prestige_statistics"]["total_stars_earned"] += stars_earned
 
-	if time_taken < meta_stats["prestige_statistics"]["fastest_run"] or meta_stats["prestige_statistics"]["fastest_run"] == 0:
+	if (
+		time_taken < meta_stats["prestige_statistics"]["fastest_run"]
+		or meta_stats["prestige_statistics"]["fastest_run"] == 0
+	):
 		meta_stats["prestige_statistics"]["fastest_run"] = time_taken
 
 
@@ -259,6 +261,7 @@ func record_feature_unlocked(feature_name: String):
 
 ## === EFFICIENCY STATISTICS ===
 
+
 func record_automation_usage(automation_type: String, hours_active: float):
 	"""Registra uso de automatización"""
 	if efficiency_stats["automation_usage"].has(automation_type):
@@ -274,6 +277,7 @@ func update_idle_vs_active_ratio(idle_gains: float, active_gains: float):
 
 ## === REAL-TIME UPDATES ===
 
+
 func _update_realtime_stats():
 	"""Actualiza estadísticas en tiempo real"""
 	update_playtime()
@@ -286,16 +290,21 @@ func _calculate_efficiency_scores():
 	# Resource management (basado en waste vs production)
 	var total_production = production_stats.get("total_beers_brewed", 1)
 	var waste = production_stats.get("waste_generated", 0)
-	efficiency_stats["optimization_scores"]["resource_management"] = 1.0 - (float(waste) / float(total_production))
+	efficiency_stats["optimization_scores"]["resource_management"] = (
+		1.0 - (float(waste) / float(total_production))
+	)
 
 	# Automation setup (basado en uso de automatización)
 	var automation_hours = efficiency_stats["automation_usage"]["total_hours"]
 	var total_hours = meta_stats["total_playtime"] / 3600.0
 	if total_hours > 0:
-		efficiency_stats["optimization_scores"]["automation_setup"] = min(automation_hours / total_hours, 1.0)
+		efficiency_stats["optimization_scores"]["automation_setup"] = min(
+			automation_hours / total_hours, 1.0
+		)
 
 
 ## === MILESTONE CHECKS ===
+
 
 func _check_production_milestones():
 	"""Verifica hitos de producción"""
@@ -308,6 +317,7 @@ func _check_production_milestones():
 
 
 ## === REPORTS GENERATION ===
+
 
 func generate_session_report() -> Dictionary:
 	"""Genera reporte de la sesión actual"""
@@ -340,11 +350,14 @@ func generate_lifetime_report() -> Dictionary:
 func _calculate_overall_efficiency() -> float:
 	"""Calcula puntuación general de eficiencia"""
 	var scores = efficiency_stats["optimization_scores"]
-	var total = scores["resource_management"] + scores["timing_efficiency"] + scores["automation_setup"]
+	var total = (
+		scores["resource_management"] + scores["timing_efficiency"] + scores["automation_setup"]
+	)
 	return total / 3.0
 
 
 ## === SAVE/LOAD INTEGRATION ===
+
 
 func _save_stats_to_game_data():
 	"""Guarda estadísticas en GameData"""
@@ -385,6 +398,7 @@ func load_stats_from_game_data():
 
 ## === API PÚBLICAS ===
 
+
 func get_production_summary() -> Dictionary:
 	"""Obtiene resumen de estadísticas de producción"""
 	return production_stats.duplicate(true)
@@ -404,16 +418,16 @@ func get_top_beer_types(limit: int = 5) -> Array:
 	"""Obtiene tipos de cerveza más producidos"""
 	var beer_types = []
 	for beer_type in production_stats["beer_types_produced"]:
-		beer_types.append({
-			"type": beer_type,
-			"quantity": production_stats["beer_types_produced"][beer_type]
-		})
+		beer_types.append(
+			{"type": beer_type, "quantity": production_stats["beer_types_produced"][beer_type]}
+		)
 
 	beer_types.sort_custom(func(a, b): return a["quantity"] > b["quantity"])
 	return beer_types.slice(0, limit)
 
 
 ## === INTEGRATION ===
+
 
 func set_game_data(data: GameData):
 	"""Conectar con GameData"""

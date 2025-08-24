@@ -144,9 +144,11 @@ func _connect_achievement_system():
 
 ## Buscar AchievementManager en el árbol de nodos
 func _find_achievement_manager() -> Node:
-	# Buscar en GameController primero
-	if GameController and GameController.has_method("get_achievement_manager"):
-		return GameController.get_achievement_manager()
+	# Buscar en GameController primero - verificar si existe como singleton
+	if has_node("/root/GameController"):
+		var game_controller = get_node("/root/GameController")
+		if game_controller.has_method("get_achievement_manager"):
+			return game_controller.get_achievement_manager()
 
 	# Buscar en el árbol de la escena actual
 	var scene_tree = get_tree()
@@ -256,8 +258,8 @@ func get_gems_stats() -> Dictionary:
 
 	return {
 		"current_gems": game_data.gems,
-		"total_daily_earned": game_data.gameplay_data.get("total_daily_gems_earned", 0),
+		"total_daily_earned": game_data.gameplay_data.get("total_daily_gems_earned") if game_data.gameplay_data.has("total_daily_gems_earned") else 0,
 		"current_streak": get_current_streak(),
-		"longest_streak": game_data.gameplay_data.get("longest_daily_streak", 0),
-		"prestige_gems_rate": game_data.get("prestige_gems_per_hour", 0.0)
+		"longest_streak": game_data.gameplay_data.get("longest_daily_streak") if game_data.gameplay_data.has("longest_daily_streak") else 0,
+		"prestige_gems_rate": game_data.get("prestige_gems_per_hour") if game_data.has("prestige_gems_per_hour") else 0.0
 	}

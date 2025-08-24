@@ -11,7 +11,9 @@ signal offline_summary_shown
 signal offline_bonus_earned(bonus_type: String, amount: float)
 
 # Referencias a managers
-var game_data: GameDatafunc load_offline_data(data: Dictionary):
+var game_data: GameData
+
+func load_offline_data(data: Dictionary):
 	"""Cargar datos offline desde guardado"""
 	last_save_time = data.get("last_save_time", Time.get_unix_time_from_system())
 
@@ -107,7 +109,10 @@ func _apply_surprise_bonus(progress_data: Dictionary, bonus_amount: float):
 		"description": "¡Surprise bonus! Has recibido recompensas extra"
 	}
 
-	print("🎁 SURPRISE BONUS: +%.0f%% en %d categorías" % [bonus_amount * 100, bonus_types.size()])r automation_manager: AutomationManager
+	print("🎁 SURPRISE BONUS: +%.0f%% en %d categorías" % [bonus_amount * 100, bonus_types.size()])
+
+# Referencias a managers
+var automation_manager: AutomationManager
 var customer_manager: CustomerManager
 var generator_manager: GeneratorManager
 
@@ -141,11 +146,11 @@ func _ready():
 func _load_offline_session_data():
 	"""NUEVO: Carga datos de sesiones offline para calcular bonuses"""
 	if game_data and game_data.save_data.has("offline_sessions"):
-	var offline_data = game_data.save_data["offline_sessions"]
-	offline_sessions_count = offline_data.get("count", 0)
-	total_offline_time = offline_data.get("total_time", 0.0)
-	var hours = total_offline_time / 3600.0
-	print("📴 Offline data: %d sessions, %.1fh total" % [offline_sessions_count, hours])
+		var offline_data = game_data.save_data["offline_sessions"]
+		offline_sessions_count = offline_data.get("count", 0)
+		total_offline_time = offline_data.get("total_time", 0.0)
+		var hours = total_offline_time / 3600.0
+		print("📴 Offline data: %d sessions, %.1fh total" % [offline_sessions_count, hours])
 
 func _save_offline_session_data():
 	"""NUEVO: Guarda datos de sesión offline"""
@@ -177,8 +182,9 @@ func check_offline_progress() -> Dictionary:
 	"""Verificar y calcular progreso offline al abrir el juego"""
 	var current_time = Time.get_unix_time_from_system()
 
-	# Obtener tiempo de último guardado
-	last_save_time = game_data.get("last_save_time", current_time)
+	# Obtener tiempo de último guardado (usar tiempo actual si no hay datos)
+	if not last_save_time:
+		last_save_time = current_time
 
 	# Calcular tiempo offline en segundos
 	var offline_seconds = current_time - last_save_time
@@ -612,8 +618,8 @@ func save_offline_data() -> Dictionary:
 	}
 
 
-func load_offline_data(data: Dictionary):
-	"""Cargar datos offline desde archivo"""
+func load_offline_data_legacy(data: Dictionary):
+	"""Cargar datos offline desde archivo - Legacy"""
 	last_save_time = data.get("last_save_time", Time.get_unix_time_from_system())
 	session_start_time = data.get("session_start_time", Time.get_unix_time_from_system())
 

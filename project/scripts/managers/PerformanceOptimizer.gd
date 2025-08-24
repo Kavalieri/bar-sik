@@ -27,8 +27,8 @@ var performance_thresholds = {
 	"fps_critical": 30.0,
 	"frame_time_warning": 22.0,  # ms
 	"frame_time_critical": 33.0,  # ms
-	"memory_warning": 512.0,     # MB
-	"memory_critical": 1024.0,   # MB
+	"memory_warning": 512.0,  # MB
+	"memory_critical": 1024.0,  # MB
 	"draw_calls_warning": 2000,
 	"draw_calls_critical": 5000
 }
@@ -40,21 +40,24 @@ var current_quality_level = "high"  # high, medium, low
 
 # Configuración específica por plataforma
 var platform_configs = {
-	"mobile": {
+	"mobile":
+	{
 		"target_fps": 60,
 		"max_draw_calls": 1500,
 		"max_memory_mb": 300,
 		"texture_quality": "medium",
 		"shadow_quality": "low"
 	},
-	"desktop": {
+	"desktop":
+	{
 		"target_fps": 60,
 		"max_draw_calls": 3000,
 		"max_memory_mb": 800,
 		"texture_quality": "high",
 		"shadow_quality": "high"
 	},
-	"web": {
+	"web":
+	{
 		"target_fps": 30,
 		"max_draw_calls": 1000,
 		"max_memory_mb": 256,
@@ -67,6 +70,7 @@ var platform_configs = {
 var performance_timer: Timer
 var memory_cleanup_timer: Timer
 
+
 func _ready():
 	print("⚡ PerformanceOptimizer iniciado - Launch Readiness")
 
@@ -78,6 +82,7 @@ func _ready():
 
 	# Aplicar optimizaciones iniciales
 	_apply_initial_optimizations()
+
 
 func _detect_and_configure_platform():
 	"""Detectar plataforma actual y aplicar configuración apropiada"""
@@ -95,6 +100,7 @@ func _detect_and_configure_platform():
 	var config = platform_configs[platform]
 	_apply_platform_config(config)
 
+
 func _apply_platform_config(config: Dictionary):
 	"""Aplicar configuración específica de plataforma"""
 	# Configurar target FPS
@@ -108,8 +114,13 @@ func _apply_platform_config(config: Dictionary):
 	if config.has("shadow_quality"):
 		_set_shadow_quality(config.shadow_quality)
 
-	print("⚙️ Platform config applied: target_fps=%d, memory_limit=%dMB" %
-		  [config.target_fps, config.max_memory_mb])
+	print(
+		(
+			"⚙️ Platform config applied: target_fps=%d, memory_limit=%dMB"
+			% [config.target_fps, config.max_memory_mb]
+		)
+	)
+
 
 func _setup_monitoring_timers():
 	"""Configurar timers para monitoreo continuo"""
@@ -127,6 +138,7 @@ func _setup_monitoring_timers():
 	memory_cleanup_timer.autostart = true
 	add_child(memory_cleanup_timer)
 
+
 func _apply_initial_optimizations():
 	"""Aplicar optimizaciones iniciales para mejor rendimiento"""
 	# Optimizaciones de rendering
@@ -140,6 +152,7 @@ func _apply_initial_optimizations():
 		RenderingServer.render_loop_enabled = true
 
 	print("🚀 Optimizaciones iniciales aplicadas")
+
 
 func _update_performance_metrics():
 	"""Actualizar métricas de rendimiento en tiempo real"""
@@ -159,9 +172,14 @@ func _update_performance_metrics():
 	# Verificar thresholds y aplicar optimizaciones si es necesario
 	_check_performance_thresholds()
 
+
 func _count_active_nodes() -> int:
 	"""Contar nodos activos en la escena"""
-	return get_tree().get_node_count_in_group("active_ui") + get_tree().get_node_count_in_group("game_objects")
+	return (
+		get_tree().get_node_count_in_group("active_ui")
+		+ get_tree().get_node_count_in_group("game_objects")
+	)
+
 
 func _estimate_draw_calls() -> int:
 	"""Estimar número de draw calls activos"""
@@ -177,6 +195,7 @@ func _estimate_draw_calls() -> int:
 	draw_calls += 50
 
 	return draw_calls
+
 
 func _check_performance_thresholds():
 	"""Verificar thresholds de rendimiento y aplicar optimizaciones"""
@@ -196,7 +215,9 @@ func _check_performance_thresholds():
 		if auto_optimization_enabled:
 			_perform_aggressive_memory_cleanup()
 	elif performance_metrics.memory_usage_mb > performance_thresholds.memory_warning:
-		performance_warning.emit("memory", performance_metrics.memory_usage_mb, performance_thresholds.memory_warning)
+		performance_warning.emit(
+			"memory", performance_metrics.memory_usage_mb, performance_thresholds.memory_warning
+		)
 		if auto_optimization_enabled:
 			_perform_memory_cleanup()
 
@@ -205,6 +226,7 @@ func _check_performance_thresholds():
 		performance_critical.emit("draw_calls", performance_metrics.draw_calls)
 		if auto_optimization_enabled:
 			_optimize_draw_calls()
+
 
 func _apply_mild_optimizations():
 	"""Aplicar optimizaciones ligeras"""
@@ -215,6 +237,7 @@ func _apply_mild_optimizations():
 
 		optimization_applied.emit("quality_reduction", 10.0)
 		print("🔧 Optimización aplicada: Calidad reducida a medium")
+
 
 func _apply_emergency_optimizations():
 	"""Aplicar optimizaciones de emergencia para performance crítico"""
@@ -233,6 +256,7 @@ func _apply_emergency_optimizations():
 	optimization_applied.emit("emergency_optimization", 25.0)
 	print("🚨 Optimización de emergencia aplicada")
 
+
 func _optimize_draw_calls():
 	"""Optimizar draw calls cuando están muy altos"""
 	# Combinar sprites similares
@@ -243,6 +267,7 @@ func _optimize_draw_calls():
 
 	optimization_applied.emit("draw_call_optimization", 15.0)
 	print("🎨 Draw calls optimizados")
+
 
 func _perform_memory_cleanup():
 	"""Realizar limpieza de memoria regular"""
@@ -258,6 +283,7 @@ func _perform_memory_cleanup():
 	var memory_before = performance_metrics.memory_usage_mb
 	call_deferred("_check_memory_cleanup_effectiveness", memory_before)
 
+
 func _perform_aggressive_memory_cleanup():
 	"""Realizar limpieza agresiva de memoria en situación crítica"""
 	print("🧹 Realizando limpieza agresiva de memoria...")
@@ -270,6 +296,7 @@ func _perform_aggressive_memory_cleanup():
 		print("⚠️ Memoria crítica: considerando reload de escena")
 		_prepare_scene_reload()
 
+
 func _check_memory_cleanup_effectiveness(memory_before: float):
 	"""Verificar efectividad de la limpieza de memoria"""
 	var memory_after = OS.get_static_memory_usage_mb()
@@ -279,6 +306,7 @@ func _check_memory_cleanup_effectiveness(memory_before: float):
 		print("🧹 Memoria liberada: %.1f MB" % memory_freed)
 	else:
 		print("⚠️ Limpieza de memoria no fue efectiva")
+
 
 func _set_texture_quality(quality: String):
 	"""Configurar calidad de texturas"""
@@ -292,6 +320,7 @@ func _set_texture_quality(quality: String):
 		"low":
 			# Reducir resolución de texturas al 50%
 			pass
+
 
 func _set_shadow_quality(quality: String):
 	"""Configurar calidad de sombras"""
@@ -309,6 +338,7 @@ func _set_shadow_quality(quality: String):
 			# Sin sombras
 			pass
 
+
 func _disable_non_essential_effects():
 	"""Desabilitar efectos no esenciales para mejorar performance"""
 	# Desabilitar partículas no críticas
@@ -317,10 +347,12 @@ func _disable_non_essential_effects():
 		if particle.has_method("set_emitting"):
 			particle.set_emitting(false)
 
+
 func _batch_similar_sprites():
 	"""Combinar sprites similares para reducir draw calls"""
 	# Esta función se implementaría según el sistema específico de sprites
 	pass
+
 
 func _hide_non_critical_ui_elements():
 	"""Ocultar elementos UI no críticos temporalmente"""
@@ -329,17 +361,21 @@ func _hide_non_critical_ui_elements():
 		if ui_element.has_method("set_visible"):
 			ui_element.set_visible(false)
 
+
 func _cleanup_audio_streams():
 	"""Limpiar audio streams no utilizados"""
 	# Implementar limpieza de audio streams
 	pass
+
 
 func _prepare_scene_reload():
 	"""Preparar reload de escena en caso crítico"""
 	# Esta sería una medida extrema para liberar memoria
 	print("🔄 Preparando reload de escena por memoria crítica...")
 
+
 # INTERFAZ PÚBLICA PARA LAUNCH READINESS
+
 
 func run_performance_stress_test(duration_seconds: int = 60) -> Dictionary:
 	"""
@@ -383,15 +419,18 @@ func run_performance_stress_test(duration_seconds: int = 60) -> Dictionary:
 
 	return test_results
 
+
 func _start_stress_conditions():
 	"""Iniciar condiciones de estrés para el test"""
 	# Crear carga artificial
 	pass
 
+
 func _stop_stress_conditions():
 	"""Detener condiciones de estrés"""
 	# Remover carga artificial
 	pass
+
 
 func _calculate_performance_grade(results: Dictionary) -> String:
 	"""Calcular calificación de performance basada en resultados"""
@@ -419,6 +458,7 @@ func _calculate_performance_grade(results: Dictionary) -> String:
 	else:
 		return "F"
 
+
 func get_current_performance_report() -> Dictionary:
 	"""Obtener reporte actual de performance para Launch Readiness"""
 	return {
@@ -426,10 +466,17 @@ func get_current_performance_report() -> Dictionary:
 		"quality_level": current_quality_level,
 		"optimizations_applied": optimization_history.size(),
 		"platform_optimized": true,
-		"memory_health": "good" if performance_metrics.memory_usage_mb < performance_thresholds.memory_warning else "warning",
-		"fps_stability": "stable" if performance_metrics.fps > performance_thresholds.fps_warning else "unstable",
+		"memory_health":
+		(
+			"good"
+			if performance_metrics.memory_usage_mb < performance_thresholds.memory_warning
+			else "warning"
+		),
+		"fps_stability":
+		"stable" if performance_metrics.fps > performance_thresholds.fps_warning else "unstable",
 		"overall_status": _calculate_overall_performance_status()
 	}
+
 
 func _calculate_overall_performance_status() -> String:
 	"""Calcular estado general de performance"""
@@ -454,6 +501,7 @@ func _calculate_overall_performance_status() -> String:
 		_:
 			return "poor"
 
+
 func optimize_for_launch():
 	"""
 	LAUNCH READINESS: Optimización final para lanzamiento
@@ -475,10 +523,12 @@ func optimize_for_launch():
 
 	print("✅ Optimizaciones de Launch aplicadas correctamente")
 
+
 func _preload_critical_resources():
 	"""Precargar recursos críticos para mejor rendimiento"""
 	# Implementar precarga de recursos esenciales
 	pass
+
 
 func _set_optimal_quality_settings():
 	"""Configurar ajustes de calidad óptimos para lanzamiento"""

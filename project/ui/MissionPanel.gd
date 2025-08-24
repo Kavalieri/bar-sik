@@ -49,11 +49,13 @@ var mission_icons: Dictionary = {
 	"💎": "res://gfx/missions/diamond_icon.png"
 }
 
+
 func _ready():
 	_setup_ui()
 	_connect_signals()
 	_setup_refresh_timer()
 	_load_missions()
+
 
 # 🎨 UI SETUP
 func _setup_ui():
@@ -65,6 +67,7 @@ func _setup_ui():
 
 	# Style tabs
 	_update_tab_styles()
+
 
 func _connect_signals():
 	# UI signals
@@ -81,6 +84,7 @@ func _connect_signals():
 		if mission_manager.has_signal("missions_refreshed"):
 			mission_manager.missions_refreshed.connect(_on_missions_refreshed)
 
+
 func _setup_refresh_timer():
 	refresh_timer = Timer.new()
 	refresh_timer.wait_time = 60.0  # Update every minute
@@ -89,6 +93,7 @@ func _setup_refresh_timer():
 	add_child(refresh_timer)
 
 	_update_timers()
+
 
 # 📋 MISSION LOADING
 func _load_missions():
@@ -111,10 +116,12 @@ func _load_missions():
 
 	_update_stats_display()
 
+
 func _clear_mission_list():
 	for child in mission_list.get_children():
 		child.queue_free()
 	mission_items.clear()
+
 
 func _create_mission_item(mission_data: Dictionary) -> Control:
 	# Main mission container
@@ -225,6 +232,7 @@ func _create_mission_item(mission_data: Dictionary) -> Control:
 
 	return mission_item
 
+
 # 🔄 TAB SYSTEM
 func _switch_tab(tab_type: String):
 	if current_tab == tab_type:
@@ -234,6 +242,7 @@ func _switch_tab(tab_type: String):
 	_update_tab_styles()
 	_load_missions()
 	mission_tab_changed.emit(tab_type)
+
 
 func _update_tab_styles():
 	# Reset tab styles
@@ -246,6 +255,7 @@ func _update_tab_styles():
 	active_tab.modulate = Color.WHITE
 	active_tab.flat = false
 
+
 # 📊 STATS UPDATE
 func _update_stats_display():
 	if not mission_manager:
@@ -255,10 +265,17 @@ func _update_stats_display():
 
 	if current_tab == "daily":
 		var daily_stats = stats.daily
-		stats_label.text = "Completadas: %d/%d (%.0f%%)" % [daily_stats.completed, daily_stats.total, daily_stats.percentage]
+		stats_label.text = (
+			"Completadas: %d/%d (%.0f%%)"
+			% [daily_stats.completed, daily_stats.total, daily_stats.percentage]
+		)
 	else:
 		var weekly_stats = stats.weekly
-		stats_label.text = "Completadas: %d/%d (%.0f%%)" % [weekly_stats.completed, weekly_stats.total, weekly_stats.percentage]
+		stats_label.text = (
+			"Completadas: %d/%d (%.0f%%)"
+			% [weekly_stats.completed, weekly_stats.total, weekly_stats.percentage]
+		)
+
 
 func _update_timers():
 	if not mission_manager:
@@ -270,7 +287,9 @@ func _update_timers():
 	else:
 		var time_data = mission_manager.get_time_until_weekly_reset()
 		if time_data.days > 0:
-			refresh_timer_label.text = "Reset en: %dd %02d:%02d" % [time_data.days, time_data.hours, time_data.minutes]
+			refresh_timer_label.text = (
+				"Reset en: %dd %02d:%02d" % [time_data.days, time_data.hours, time_data.minutes]
+			)
 		else:
 			refresh_timer_label.text = "Reset en: %02d:%02d" % [time_data.hours, time_data.minutes]
 
@@ -281,10 +300,12 @@ func _update_timers():
 	else:
 		streak_label.text = "Racha: %d semanas" % stats.streaks.weekly
 
+
 # 📡 EVENT HANDLERS
 func _on_close_pressed():
 	mission_panel_closed.emit()
 	queue_free()
+
 
 func _on_mission_completed(mission_id: String, mission_data: Dictionary):
 	# Update mission item if visible
@@ -306,6 +327,7 @@ func _on_mission_completed(mission_id: String, mission_data: Dictionary):
 	_update_stats_display()
 	print("🎉 Misión completada en UI: ", mission_data.get("name", "Unknown"))
 
+
 func _on_mission_progress_updated(mission_id: String, progress: int, total: int):
 	# Update progress bar for specific mission
 	for item in mission_items:
@@ -320,27 +342,33 @@ func _on_mission_progress_updated(mission_id: String, progress: int, total: int)
 
 			break
 
+
 func _on_missions_refreshed(mission_type: String):
 	if mission_type == current_tab:
 		_load_missions()
 		print("🔄 Misiones refrescadas: ", mission_type)
+
 
 # 🔧 UTILITY FUNCTIONS
 func refresh_current_tab():
 	"""Refrescar el tab activo manualmente"""
 	_load_missions()
 
+
 func switch_to_daily_tab():
 	"""Cambiar al tab de misiones diarias"""
 	_switch_tab("daily")
+
 
 func switch_to_weekly_tab():
 	"""Cambiar al tab de misiones semanales"""
 	_switch_tab("weekly")
 
+
 func get_current_tab() -> String:
 	"""Obtener el tab activo actual"""
 	return current_tab
+
 
 # 🎮 INPUT HANDLING
 func _input(event):

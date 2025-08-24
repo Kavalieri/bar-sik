@@ -24,6 +24,7 @@ const BUTTON_COLOR_LOCKED = Color.GRAY
 const BUTTON_COLOR_ACTIVE = Color.YELLOW
 const BUTTON_COLOR_COMPLETED = Color.BLUE
 
+
 func _ready():
 	print("🔬 ResearchPanel inicializado (T035)")
 	_create_ui_structure()
@@ -121,10 +122,11 @@ func _populate_research_tree():
 		var grid = categories_tabs[category]
 
 		# Ordenar por tier
-		researches.sort_custom(func(a, b):
-			var tier_a = research_manager.research_tree[a].get("tier", 1)
-			var tier_b = research_manager.research_tree[b].get("tier", 1)
-			return tier_a < tier_b
+		researches.sort_custom(
+			func(a, b):
+				var tier_a = research_manager.research_tree[a].get("tier", 1)
+				var tier_b = research_manager.research_tree[b].get("tier", 1)
+				return tier_a < tier_b
 		)
 
 		for research_id in researches:
@@ -216,7 +218,10 @@ func _on_research_button_pressed(research_id: String):
 		var research_info = research_manager.get_research_info(research_id)
 		var message = "No se puede iniciar: "
 		if research_manager.research_points < research_info["cost"]:
-			message += "Puntos insuficientes (%d/%d)" % [research_manager.research_points, research_info["cost"]]
+			message += (
+				"Puntos insuficientes (%d/%d)"
+				% [research_manager.research_points, research_info["cost"]]
+			)
 		else:
 			message += "Prerequisitos no cumplidos"
 		print("❌ " + message)
@@ -229,10 +234,10 @@ func _update_research_display():
 
 	# Actualizar puntos
 	var progress = research_manager.get_research_tree_progress()
-	research_points_label.text = "Puntos: %d | Progreso: %.1f%%" % [
-		progress["research_points"],
-		progress["completion_percentage"]
-	]
+	research_points_label.text = (
+		"Puntos: %d | Progreso: %.1f%%"
+		% [progress["research_points"], progress["completion_percentage"]]
+	)
 
 	# Actualizar estado de cada investigación
 	for research_id in research_buttons.keys():
@@ -291,7 +296,10 @@ func _update_research_node_state(research_id: String):
 		progress_bar.visible = false
 
 		if research_manager.research_points < research_info["cost"]:
-			info_label.text = "Puntos insuficientes: %d/%d" % [research_manager.research_points, research_info["cost"]]
+			info_label.text = (
+				"Puntos insuficientes: %d/%d"
+				% [research_manager.research_points, research_info["cost"]]
+			)
 		else:
 			info_label.text = "Prerequisitos requeridos"
 
@@ -324,10 +332,10 @@ func _on_research_unlocked(research_id: String):
 func _show_research_completed_notification(research_data: Dictionary):
 	"""Muestra notificación de investigación completada"""
 	# Aquí se podría implementar una notificación popup
-	var notification_text = "🎉 INVESTIGACIÓN COMPLETADA:\n%s\n\n%s" % [
-		research_data["name"],
-		research_data["description"]
-	]
+	var notification_text = (
+		"🎉 INVESTIGACIÓN COMPLETADA:\n%s\n\n%s"
+		% [research_data["name"], research_data["description"]]
+	)
 	print(notification_text)
 
 
@@ -337,7 +345,8 @@ func _show_research_tree_overview():
 		return
 
 	var progress = research_manager.get_research_tree_progress()
-	var overview_text = """
+	var overview_text = (
+		"""
 🔬 RESUMEN DEL ÁRBOL DE INVESTIGACIÓN:
 
 📊 Progreso General:
@@ -348,14 +357,16 @@ func _show_research_tree_overview():
    • Puntos: %d
 
 🏆 Por Categoría:
-""" % [
-	progress["total"],
-	progress["completed"],
-	progress["completion_percentage"],
-	progress["active"],
-	progress["available"],
-	progress["research_points"]
-]
+"""
+		% [
+			progress["total"],
+			progress["completed"],
+			progress["completion_percentage"],
+			progress["active"],
+			progress["available"],
+			progress["research_points"]
+		]
+	)
 
 	# Agregar progreso por categoría
 	var categories = ["production", "economic", "automation", "resources", "legendary"]
@@ -366,18 +377,24 @@ func _show_research_tree_overview():
 			if research_manager.completed_researches.has(research_id):
 				completed_in_category += 1
 
-		var category_progress = float(completed_in_category) / float(category_researches.size()) * 100
-		overview_text += "   • %s: %d/%d (%.1f%%)\n" % [
-			category.capitalize(),
-			completed_in_category,
-			category_researches.size(),
-			category_progress
-		]
+		var category_progress = (
+			float(completed_in_category) / float(category_researches.size()) * 100
+		)
+		overview_text += (
+			"   • %s: %d/%d (%.1f%%)\n"
+			% [
+				category.capitalize(),
+				completed_in_category,
+				category_researches.size(),
+				category_progress
+			]
+		)
 
 	print(overview_text)
 
 
 ## === API PÚBLICAS ===
+
 
 func set_research_manager(manager: ResearchManager):
 	"""Conecta con el ResearchManager"""
@@ -411,7 +428,8 @@ func show_research_details(research_id: String):
 	if research_info.is_empty():
 		return
 
-	var details = """
+	var details = (
+		"""
 🔬 %s
 
 📝 Descripción: %s
@@ -422,14 +440,16 @@ func show_research_details(research_id: String):
 🎯 Tier: %d
 
 🔗 Prerequisitos:
-""" % [
-	research_info["name"],
-	research_info["description"],
-	research_info["cost"],
-	research_info["time"],
-	research_info["category"],
-	research_info["tier"]
-]
+"""
+		% [
+			research_info["name"],
+			research_info["description"],
+			research_info["cost"],
+			research_info["time"],
+			research_info["category"],
+			research_info["tier"]
+		]
+	)
 
 	if research_info["prerequisites"].size() > 0:
 		for prereq in research_info["prerequisites"]:
@@ -446,9 +466,12 @@ func show_research_details(research_id: String):
 	else:
 		details += "   • Ninguna investigación adicional\n"
 
-	details += "\n⚡ Bonus:\n   • %s: +%.1f%%\n" % [
-		research_info["bonus"]["type"].replace("_", " ").capitalize(),
-		research_info["bonus"]["value"] * 100
-	]
+	details += (
+		"\n⚡ Bonus:\n   • %s: +%.1f%%\n"
+		% [
+			research_info["bonus"]["type"].replace("_", " ").capitalize(),
+			research_info["bonus"]["value"] * 100
+		]
+	)
 
 	print(details)

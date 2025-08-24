@@ -49,7 +49,7 @@ func _update_panel_data(game_data: Dictionary) -> void:
 	update_sales_displays(game_data)
 
 	# Actualizar dinero en las tiendas
-	var money = game_data.get("money", 0.0)
+	var money = game_data["money"] if game_data.has("money") else 0.0
 	if products_shop:
 		products_shop.update_player_money(money)
 	if ingredients_shop:
@@ -193,9 +193,9 @@ func update_sales_displays(game_data: Dictionary) -> void:
 	if not is_initialized:
 		return
 
-	var sales_data = game_data.get("sales", {})
-	var total_sales = sales_data.get("total", 0.0)
-	var recent_sales = sales_data.get("recent", [])
+	var sales_data = game_data["sales"] if game_data.has("sales") else {}
+	var total_sales = sales_data["total"] if sales_data.has("total") else 0.0
+	var recent_sales = sales_data["recent"] if sales_data.has("recent") else []
 
 	# Actualizar información de ventas si hay tarjetas configuradas
 	print(
@@ -211,7 +211,7 @@ func update_stats_displays(game_data: Dictionary) -> void:
 	if not is_initialized:
 		return
 
-	var sales_stats = game_data.get("sales_stats", {})
+	var sales_stats = game_data["sales_stats"] if game_data.has("sales_stats") else {}
 
 	# Actualizar cada tarjeta de estadística
 	for i in range(stats_cards.size()):
@@ -222,7 +222,7 @@ func update_stats_displays(game_data: Dictionary) -> void:
 		var stats_configs = ["total_sales", "daily_revenue", "best_product", "profit_margin"]
 		if i < stats_configs.size():
 			var stat_id = stats_configs[i]
-			var stat_value = sales_stats.get(stat_id, "N/A")
+			var stat_value = sales_stats[stat_id] if sales_stats.has(stat_id) else "N/A"
 
 			card.update_data({id = stat_id, value = str(stat_value), status = "Actualizado"})
 

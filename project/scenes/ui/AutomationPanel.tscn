@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://by8vywp87wdxj"]
 
-[ext_resource type="Script" path="res://scripts/ui/AutomationPanel.gd" id="1_x7y2b"]
+[ext_resource type="Script" uid="uid://dp2z1d3kqnpox" path="res://scripts/ui/AutomationPanel.gd" id="1_x7y2b"]
 
 [node name="AutomationPanel" type="Control"]
 layout_mode = 3

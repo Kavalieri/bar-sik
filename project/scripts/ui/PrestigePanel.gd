@@ -86,6 +86,14 @@ func _ready():
 	print("✅ PrestigePanel inicializado")
 
 
+func _input(event):
+	"""Manejar input del panel (ESC para cerrar)"""
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_ESCAPE:
+			hide_panel()
+			get_viewport().set_input_as_handled()  # Evitar que se propague
+
+
 func _connect_ui_signals():
 	"""Conectar señales de la UI"""
 	close_button.pressed.connect(_on_close_button_pressed)
@@ -234,7 +242,7 @@ func _update_stats_display():
 		current_cash_label.text = "💰 Cash Actual: %s" % _format_number(game_data.money)
 
 	# Cash total histórico
-	var total_cash = game_data.get("total_cash_earned", 0.0)
+	var total_cash = game_data["total_cash_earned"] if game_data.has("total_cash_earned") else 0.0
 	if total_cash_label:
 		total_cash_label.text = "📈 Cash Total: %s" % _format_number(total_cash)
 

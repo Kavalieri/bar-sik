@@ -40,7 +40,7 @@ var active_star_bonuses: Array[String] = []
 
 # Referencias externas
 var game_data: GameData
-var achievement_manager: AchievementManager
+var achievement_manager: Node  # Temporal - AchievementManager
 var game_controller: GameController
 
 # =============================================================================
@@ -76,7 +76,7 @@ func set_game_data(data: GameData):
 	print("🔗 PrestigeManager: GameData conectado")
 
 
-func set_achievement_manager(manager: AchievementManager):
+func set_achievement_manager(manager: Node):  # Temporal
 	"""Establecer referencia a AchievementManager externamente"""
 	achievement_manager = manager
 	print("🔗 PrestigeManager: AchievementManager conectado")
@@ -95,7 +95,7 @@ func can_prestige() -> bool:
 	var requirements = get_prestige_requirements()
 
 	# Verificar cash requirement
-	var total_cash = game_data.get("total_cash_earned", 0.0)
+	var total_cash = game_data.total_earnings
 	if total_cash < MIN_CASH_REQUIREMENT:
 		return false
 
@@ -105,8 +105,9 @@ func can_prestige() -> bool:
 		return false
 
 	# Verificar customer system desbloqueado
-	if not game_data.get("customer_system_unlocked", false):
-		return false
+	# Asumimos que está desbloqueado por defecto si no hay una propiedad específica
+	# if not game_data.customer_system_unlocked:
+	#	return false
 
 	return true
 
@@ -116,7 +117,7 @@ func calculate_prestige_stars() -> int:
 	if not game_data:
 		return 0
 
-	var total_cash = game_data.get("total_cash_earned", 0.0)
+	var total_cash = game_data.total_earnings
 	var stars_to_gain = int(total_cash / CASH_TO_STARS_RATIO)
 
 	# Limitar máximo de stars por prestige
@@ -172,9 +173,9 @@ func get_prestige_requirements() -> Dictionary:
 	if not game_data:
 		return {}
 
-	var total_cash = game_data.get("total_cash_earned", 0.0)
+	var total_cash = game_data.total_cash_earned
 	var completed_achievements = get_completed_achievements_count()
-	var customer_system = game_data.get("customer_system_unlocked", false)
+	var customer_system = game_data.customer_system_unlocked
 
 	return {
 		"cash":
@@ -211,12 +212,12 @@ func _get_preserved_data() -> Dictionary:
 		"prestige_stars": prestige_stars,
 		"prestige_count": prestige_count,
 		"active_star_bonuses": active_star_bonuses.duplicate(),
-		"total_cash_earned": game_data.get("total_cash_earned", 0.0),
-		"customer_system_unlocked": game_data.get("customer_system_unlocked", false),
+		"total_cash_earned": game_data.total_cash_earned,
+		"customer_system_unlocked": game_data.customer_system_unlocked,
 		"completed_achievements": get_completed_achievements_list(),
 		# Agregar otros datos que deben preservarse
-		"unlocked_recipes": game_data.get("unlocked_recipes", []).duplicate(),
-		"unlocked_stations": game_data.get("unlocked_stations", []).duplicate()
+		"unlocked_recipes": game_data.unlocked_achievements.duplicate(),
+		"unlocked_stations": game_data.stations.keys()
 	}
 
 
@@ -393,7 +394,7 @@ func _apply_instant_stations_bonus():
 
 	# Desbloquear todas las estaciones básicas
 	var stations = ["brewery_station", "bar_station"]
-	var unlocked_stations = game_data.get("unlocked_stations", [])
+	var unlocked_stations = game_data.stations.keys()
 
 	for station in stations:
 		if station not in unlocked_stations:
@@ -415,10 +416,10 @@ func _apply_master_bartender_bonus(multiplier: float):
 		return
 
 	# Multiplicar todos los bonos existentes
-	var income_mult = game_data.get("prestige_income_multiplier", 1.0)
-	var speed_mult = game_data.get("prestige_speed_multiplier", 1.0)
-	var token_mult = game_data.get("prestige_customer_token_multiplier", 1.0)
-	var gems_per_hour = game_data.get("prestige_gems_per_hour", 0.0)
+	var income_mult = 1.0 + prestige_stars * 0.25  # Multiplicador basado en estrellas
+	var speed_mult = 1.0 + prestige_stars * 0.15  # Multiplicador de velocidad
+	var token_mult = 1.0 + prestige_stars * 0.1   # Multiplicador de tokens
+	var gems_per_hour = prestige_stars * 0.5      # Gemas por hora
 
 	game_data.set("prestige_income_multiplier", income_mult * (1.0 + multiplier))
 	game_data.set("prestige_speed_multiplier", speed_mult * (1.0 + multiplier))
@@ -587,7 +588,7 @@ func get_completed_achievements_count() -> int:
 		return achievement_manager.get_completed_count()
 
 	# Fallback si no hay AchievementManager
-	var completed = game_data.get("completed_achievements", [])
+	var completed = game_data.unlocked_achievements
 	return completed.size() if completed is Array else 0
 
 
@@ -597,7 +598,7 @@ func get_completed_achievements_list() -> Array:
 		return achievement_manager.get_completed_achievements()
 
 	# Fallback si no hay AchievementManager
-	return game_data.get("completed_achievements", [])
+	return game_data.unlocked_achievements
 
 
 # =============================================================================
@@ -620,9 +621,9 @@ func load_prestige_data_from_game_data():
 	if not game_data:
 		return
 
-	prestige_stars = game_data.get("prestige_stars", 0)
-	prestige_count = game_data.get("prestige_count", 0)
-	active_star_bonuses = game_data.get("active_star_bonuses", []).duplicate()
+	prestige_stars = game_data.prestige_stars
+	prestige_count = game_data.prestige_count
+	active_star_bonuses = game_data.active_star_bonuses.duplicate()
 
 	print(
 		(
@@ -650,8 +651,8 @@ func get_prestige_progress_info() -> Dictionary:
 	}
 
 	if game_data:
-		info["total_cash_earned"] = game_data.get("total_cash_earned", 0.0)
-		info["current_cash"] = game_data.get("money", 0.0)
+		info["total_cash_earned"] = game_data.total_cash_earned
+		info["current_cash"] = game_data.money
 
 	return info
 
@@ -673,7 +674,7 @@ func get_next_star_progress() -> Dictionary:
 	if not game_data:
 		return {}
 
-	var total_cash = game_data.get("total_cash_earned", 0.0)
+	var total_cash = game_data.total_cash_earned
 	var current_stars_value = int(total_cash / CASH_TO_STARS_RATIO) * CASH_TO_STARS_RATIO
 	var next_star_value = current_stars_value + CASH_TO_STARS_RATIO
 	var progress = (total_cash - current_stars_value) / CASH_TO_STARS_RATIO

@@ -31,6 +31,7 @@ var research_timer: Timer
 const BASE_RESEARCH_TIME = 300  # 5 minutos base
 const RESEARCH_POINT_GENERATION_RATE = 1.0  # Por segundo cuando es elegible
 
+
 func _ready():
 	print("🔬 ResearchManager inicializado (T035)")
 	_initialize_research_tree()
@@ -43,7 +44,8 @@ func _initialize_research_tree():
 
 	research_tree = {
 		# === RAMA DE PRODUCCIÓN ===
-		"production_efficiency_1": {
+		"production_efficiency_1":
+		{
 			"name": "Optimización Básica",
 			"category": "production",
 			"description": "Mejora la eficiencia de producción base en 15%",
@@ -54,8 +56,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "production_speed", "value": 0.15},
 			"tier": 1
 		},
-
-		"production_efficiency_2": {
+		"production_efficiency_2":
+		{
 			"name": "Optimización Avanzada",
 			"category": "production",
 			"description": "Mejora adicional de eficiencia de producción en 25%",
@@ -66,8 +68,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "production_speed", "value": 0.25},
 			"tier": 2
 		},
-
-		"production_efficiency_3": {
+		"production_efficiency_3":
+		{
 			"name": "Maestría en Producción",
 			"category": "production",
 			"description": "Máxima optimización: +40% eficiencia de producción",
@@ -78,8 +80,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "production_speed", "value": 0.40},
 			"tier": 3
 		},
-
-		"quality_control_1": {
+		"quality_control_1":
+		{
 			"name": "Control de Calidad Básico",
 			"category": "production",
 			"description": "Reduce defectos en 20% y mejora calidad promedio",
@@ -90,8 +92,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "quality_improvement", "value": 0.20},
 			"tier": 2
 		},
-
-		"batch_brewing": {
+		"batch_brewing":
+		{
 			"name": "Producción en Lotes",
 			"category": "production",
 			"description": "Permite producir múltiples cervezas simultáneamente",
@@ -102,9 +104,9 @@ func _initialize_research_tree():
 			"bonus": {"type": "batch_size", "value": 2},
 			"tier": 3
 		},
-
 		# === RAMA ECONÓMICA ===
-		"market_analysis_1": {
+		"market_analysis_1":
+		{
 			"name": "Análisis de Mercado I",
 			"category": "economic",
 			"description": "Incrementa precios de venta en 10%",
@@ -115,8 +117,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "price_multiplier", "value": 0.10},
 			"tier": 1
 		},
-
-		"market_analysis_2": {
+		"market_analysis_2":
+		{
 			"name": "Análisis de Mercado II",
 			"category": "economic",
 			"description": "Incremento adicional de precios en 18%",
@@ -127,8 +129,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "price_multiplier", "value": 0.18},
 			"tier": 2
 		},
-
-		"customer_psychology": {
+		"customer_psychology":
+		{
 			"name": "Psicología del Cliente",
 			"category": "economic",
 			"description": "Aumenta frecuencia de compra de clientes en 25%",
@@ -139,8 +141,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "customer_frequency", "value": 0.25},
 			"tier": 2
 		},
-
-		"brand_recognition": {
+		"brand_recognition":
+		{
 			"name": "Reconocimiento de Marca",
 			"category": "economic",
 			"description": "Atrae 30% más clientes premium",
@@ -151,9 +153,9 @@ func _initialize_research_tree():
 			"bonus": {"type": "premium_customer_rate", "value": 0.30},
 			"tier": 3
 		},
-
 		# === RAMA DE AUTOMATIZACIÓN ===
-		"automation_basics": {
+		"automation_basics":
+		{
 			"name": "Fundamentos de Automatización",
 			"category": "automation",
 			"description": "Reduce costo de automatización en 20%",
@@ -164,8 +166,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "automation_cost_reduction", "value": 0.20},
 			"tier": 1
 		},
-
-		"smart_systems": {
+		"smart_systems":
+		{
 			"name": "Sistemas Inteligentes",
 			"category": "automation",
 			"description": "Automatización es 35% más eficiente",
@@ -176,8 +178,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "automation_efficiency", "value": 0.35},
 			"tier": 2
 		},
-
-		"ai_optimization": {
+		"ai_optimization":
+		{
 			"name": "Optimización por IA",
 			"category": "automation",
 			"description": "IA gestiona automáticamente la producción óptima",
@@ -188,9 +190,9 @@ func _initialize_research_tree():
 			"bonus": {"type": "ai_management", "value": 1},
 			"tier": 3
 		},
-
 		# === RAMA DE RECURSOS ===
-		"resource_optimization_1": {
+		"resource_optimization_1":
+		{
 			"name": "Optimización de Recursos I",
 			"category": "resources",
 			"description": "Reduce consumo de ingredientes en 15%",
@@ -201,8 +203,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "resource_efficiency", "value": 0.15},
 			"tier": 1
 		},
-
-		"recycling_systems": {
+		"recycling_systems":
+		{
 			"name": "Sistemas de Reciclaje",
 			"category": "resources",
 			"description": "Recupera 25% de recursos desperdiciados",
@@ -213,9 +215,9 @@ func _initialize_research_tree():
 			"bonus": {"type": "waste_recovery", "value": 0.25},
 			"tier": 2
 		},
-
 		# === INVESTIGACIONES LEGENDARIAS (TIER 4) ===
-		"legendary_brewing": {
+		"legendary_brewing":
+		{
 			"name": "Arte Legendario",
 			"category": "legendary",
 			"description": "Desbloquea cervezas legendarias con precios 5x",
@@ -226,8 +228,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "legendary_recipes", "value": 5.0},
 			"tier": 4
 		},
-
-		"market_monopoly": {
+		"market_monopoly":
+		{
 			"name": "Monopolio del Mercado",
 			"category": "legendary",
 			"description": "Control total: +100% a todos los ingresos",
@@ -238,8 +240,8 @@ func _initialize_research_tree():
 			"bonus": {"type": "total_income_multiplier", "value": 1.0},
 			"tier": 4
 		},
-
-		"full_automation": {
+		"full_automation":
+		{
 			"name": "Automatización Total",
 			"category": "legendary",
 			"description": "El negocio funciona completamente solo",
@@ -259,7 +261,8 @@ func _initialize_research_tree():
 func _add_missing_researches():
 	"""Agrega las investigaciones intermedias faltantes"""
 	var missing_researches = {
-		"quality_control_2": {
+		"quality_control_2":
+		{
 			"name": "Control de Calidad Avanzado",
 			"category": "production",
 			"description": "Calidad perfecta: +35% calidad, reduce defectos 40%",
@@ -270,8 +273,8 @@ func _add_missing_researches():
 			"bonus": {"type": "quality_improvement", "value": 0.35},
 			"tier": 3
 		},
-
-		"premium_ingredients": {
+		"premium_ingredients":
+		{
 			"name": "Ingredientes Premium",
 			"category": "production",
 			"description": "Ingredientes de lujo mejoran calidad en 25%",
@@ -282,8 +285,8 @@ func _add_missing_researches():
 			"bonus": {"type": "ingredient_quality", "value": 0.25},
 			"tier": 3
 		},
-
-		"market_domination": {
+		"market_domination":
+		{
 			"name": "Dominación de Mercado",
 			"category": "economic",
 			"description": "Elimina 50% de la competencia",
@@ -294,8 +297,8 @@ func _add_missing_researches():
 			"bonus": {"type": "competition_reduction", "value": 0.50},
 			"tier": 3
 		},
-
-		"efficiency_protocols": {
+		"efficiency_protocols":
+		{
 			"name": "Protocolos de Eficiencia",
 			"category": "automation",
 			"description": "Sistemas automatizados son 20% más rápidos",
@@ -323,6 +326,7 @@ func _setup_research_timer():
 
 ## === GESTIÓN DE INVESTIGACIÓN ===
 
+
 func start_research(research_id: String) -> bool:
 	"""Inicia una investigación si es posible"""
 
@@ -347,7 +351,9 @@ func start_research(research_id: String) -> bool:
 
 	# Verificar costo
 	if research_points < research["cost"]:
-		print("❌ Puntos de investigación insuficientes: %d/%d" % [research_points, research["cost"]])
+		print(
+			"❌ Puntos de investigación insuficientes: %d/%d" % [research_points, research["cost"]]
+		)
 		return false
 
 	# Iniciar investigación
@@ -447,8 +453,15 @@ func _apply_production_speed_bonus(bonus: float):
 		if not game_data.research_bonuses.has("production_speed_multiplier"):
 			game_data.research_bonuses["production_speed_multiplier"] = 1.0
 		game_data.research_bonuses["production_speed_multiplier"] += bonus
-		print("⚡ Bonus de producción aplicado: +%.0f%% (Total: %.0f%%)" %
-			[bonus * 100, (game_data.research_bonuses["production_speed_multiplier"] - 1) * 100])
+		print(
+			(
+				"⚡ Bonus de producción aplicado: +%.0f%% (Total: %.0f%%)"
+				% [
+					bonus * 100,
+					(game_data.research_bonuses["production_speed_multiplier"] - 1) * 100
+				]
+			)
+		)
 
 
 func _apply_quality_bonus(bonus: float):
@@ -521,6 +534,7 @@ func _apply_total_income_multiplier(bonus: float):
 
 ## === GESTIÓN DE PUNTOS DE INVESTIGACIÓN ===
 
+
 func add_research_points(amount: int):
 	"""Agrega puntos de investigación"""
 	research_points += amount
@@ -564,6 +578,7 @@ func _calculate_available_researches():
 
 ## === SAVE/LOAD ===
 
+
 func _save_research_data():
 	"""Guarda datos de investigación en GameData"""
 	if not game_data:
@@ -606,6 +621,7 @@ func load_research_data():
 
 
 ## === API PÚBLICAS ===
+
 
 func get_research_info(research_id: String) -> Dictionary:
 	"""Obtiene información de una investigación"""
@@ -670,6 +686,7 @@ func can_start_research(research_id: String) -> bool:
 
 
 ## === INTEGRATION ===
+
 
 func set_game_data(data: GameData):
 	"""Conectar con GameData"""

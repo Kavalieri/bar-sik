@@ -29,12 +29,14 @@ var game_data: GameData
 var music_player: AudioStreamPlayer
 var sfx_player: AudioStreamPlayer
 
+
 func _ready():
 	print("🔊 AudioManager inicializado (T032)")
 	_setup_audio_buses()
 	_setup_audio_players()
 	_load_synthetic_assets()
 	_connect_game_events()
+
 
 func _load_assets():
 	# Cargar assets de SFX y música
@@ -139,6 +141,7 @@ func _delayed_connect_events():
 		prestige_manager.prestige_completed.connect(_on_prestige_completed)
 		print("🔗 AudioManager conectado con PrestigeManager")
 
+
 ## === SFX ===
 func play_sfx(sfx_id: String, volume_db: float = -6.0):
 	if not sfx_enabled:
@@ -183,6 +186,7 @@ func stop_music():
 
 
 ## === EVENT HANDLERS ===
+
 
 func _on_achievement_unlocked(achievement_id: String, achievement_data: Dictionary):
 	"""Reproduce sonido cuando se desbloquea un logro"""
@@ -230,26 +234,32 @@ func _on_error_occurred(error_msg: String):
 	play_sfx("error", -6.0)
 	print("🎵 SFX: Error - ", error_msg)
 
+
 ## === CONFIGURACIÓN ===
 func set_music_enabled(enabled: bool):
 	music_enabled = enabled
 	if not enabled:
 		stop_music()
 
+
 func set_sfx_enabled(enabled: bool):
 	sfx_enabled = enabled
+
 
 func set_master_volume(volume: float):
 	master_volume = clamp(volume, 0.0, 1.0)
 	_update_volumes()
 
+
 func set_sfx_volume(volume: float):
 	sfx_volume = clamp(volume, 0.0, 1.0)
 	_update_volumes()
 
+
 func set_music_volume(volume: float):
 	music_volume = clamp(volume, 0.0, 1.0)
 	_update_volumes()
+
 
 func _update_volumes():
 	"""Actualizar volúmenes de todos los audio players"""
@@ -261,29 +271,36 @@ func _update_volumes():
 
 ## === API PÚBLICAS PARA MANAGERS ===
 
+
 func play_ui_click():
 	"""Sonido para clicks de UI"""
 	_on_button_click()
+
 
 func play_purchase_sound(amount: float):
 	"""Sonido para compras exitosas"""
 	_on_purchase_made(amount)
 
+
 func play_production_sound(beer_type: String, amount: int):
 	"""Sonido para producción completada"""
 	_on_production_complete(beer_type, amount)
+
 
 func play_customer_sound(customer_type: String, amount: float):
 	"""Sonido para cliente comprando"""
 	_on_customer_purchase(customer_type, amount)
 
+
 func play_error_sound(error_msg: String):
 	"""Sonido para errores"""
 	_on_error_occurred(error_msg)
 
+
 func play_achievement_sound(achievement_name: String):
 	"""Sonido para logros desbloqueados"""
 	_on_achievement_unlocked("", {"name": achievement_name})
+
 
 func play_prestige_sound():
 	"""Sonido para prestigio completado"""
@@ -294,6 +311,7 @@ func play_prestige_sound():
 func preload_sfx_asset(sfx_id: String, asset_stream: AudioStream):
 	"""Agregar un asset de SFX desde código"""
 	sfx_assets[sfx_id] = asset_stream
+
 
 func preload_music_asset(track_id: String, asset_stream: AudioStream):
 	"""Agregar un asset de música desde código"""
@@ -310,6 +328,7 @@ func to_dict() -> Dictionary:
 		"sfx_volume": sfx_volume,
 		"music_volume": music_volume
 	}
+
 
 func from_dict(data: Dictionary):
 	"""Deserializar configuración de audio"""

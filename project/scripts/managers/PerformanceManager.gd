@@ -124,7 +124,7 @@ func _check_performance():
 
 func _update_memory_usage():
 	"""Update memory usage statistics"""
-	memory_usage = OS.get_static_memory_usage_by_type().get("Object", 0)
+	memory_usage = OS.get_static_memory_peak_usage()
 	if memory_usage > peak_memory_usage:
 		peak_memory_usage = memory_usage
 
@@ -188,8 +188,9 @@ func _enable_performance_optimizations():
 	optimizations_enabled.emergency_mode = false
 
 	# Trigger object pool cleanup
-	if ObjectPoolManager.instance:
-		ObjectPoolManager.instance.cleanup_unused_objects()
+	var object_pool = get_node_or_null("/root/ObjectPoolManager")
+	if object_pool:
+		object_pool.cleanup_unused_objects()
 
 
 func _enable_emergency_optimizations():
@@ -202,8 +203,9 @@ func _enable_emergency_optimizations():
 	_force_garbage_collection()
 
 	# Aggressive object pool cleanup
-	if ObjectPoolManager.instance:
-		ObjectPoolManager.instance.force_cleanup_all()
+	var object_pool = get_node_or_null("/root/ObjectPoolManager")
+	if object_pool:
+		object_pool.force_cleanup_all()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════
@@ -215,7 +217,7 @@ func _force_garbage_collection():
 	"""Force garbage collection to free memory"""
 	# Call GC multiple times to ensure thorough cleanup
 	for i in range(3):
-		if GDScript.is_class_instance_valid(self):  # Safety check
+		if is_instance_valid(self):  # Safety check
 			await get_tree().process_frame
 
 	print(
@@ -223,7 +225,7 @@ func _force_garbage_collection():
 			"🗑️ Forced garbage collection - Memory: %s → %s"
 			% [
 				_format_memory(memory_usage),
-				_format_memory(OS.get_static_memory_usage_by_type().get("Object", 0))
+				_format_memory(OS.get_static_memory_peak_usage())
 			]
 		)
 	)
@@ -237,8 +239,9 @@ func optimize_memory_usage():
 	_clear_performance_caches()
 
 	# Request object pool cleanup
-	if ObjectPoolManager.instance:
-		ObjectPoolManager.instance.cleanup_unused_objects()
+	var object_pool = get_node_or_null("/root/ObjectPoolManager")
+	if object_pool:
+		object_pool.cleanup_unused_objects()
 
 
 func _clear_performance_caches():

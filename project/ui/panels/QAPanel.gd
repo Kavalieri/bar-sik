@@ -14,6 +14,7 @@ var qa_validator: QAValidator
 var game_data: GameData
 var qa_results: Dictionary = {}
 
+
 func _ready():
 	_setup_ui()
 	_connect_signals()
@@ -35,6 +36,7 @@ func _connect_signals():
 
 
 ## === QA EXECUTION ===
+
 
 func _on_run_qa_pressed():
 	"""Ejecuta el QA pass completo"""
@@ -83,7 +85,19 @@ func _on_qa_issue_found(category: String, issue: String, severity: String):
 	var color = _get_severity_color(severity)
 	var icon = _get_severity_icon(severity)
 
-	var issue_text = "[color=" + color + "]" + icon + " [" + severity + "] " + category + ": " + issue + "[/color]\n"
+	var issue_text = (
+		"[color="
+		+ color
+		+ "]"
+		+ icon
+		+ " ["
+		+ severity
+		+ "] "
+		+ category
+		+ ": "
+		+ issue
+		+ "[/color]\n"
+	)
 	results_text.text += issue_text
 
 
@@ -95,11 +109,14 @@ func _on_qa_completed(passed: bool, total_issues: int):
 	var status_color = "green" if passed else "red"
 	var status_text = "✅ PASSED" if passed else "❌ FAILED"
 
-	results_text.text += "\n[center][color=" + status_color + "][b]" + status_text + "[/b][/color][/center]\n"
+	results_text.text += (
+		"\n[center][color=" + status_color + "][b]" + status_text + "[/b][/color][/center]\n"
+	)
 	results_text.text += "[center]Total Issues Found: " + str(total_issues) + "[/center]"
 
 
 ## === RESULTS DISPLAY ===
+
 
 func _display_qa_results():
 	"""Muestra resultados detallados del QA"""
@@ -131,9 +148,21 @@ func _build_results_header(summary: Dictionary) -> String:
 	header += "[center][size=18][color=gray]Professional Quality Assurance Pass[/color][/size][/center]\n\n"
 
 	header += "[b]📊 QUALITY METRICS[/b]\n"
-	header += "• Quality Score: [color=" + score_color + "][b]" + str(int(quality_score)) + "/100[/b][/color]\n"
+	header += (
+		"• Quality Score: [color="
+		+ score_color
+		+ "][b]"
+		+ str(int(quality_score))
+		+ "/100[/b][/color]\n"
+	)
 	header += "• Pass Rate: [color=blue][b]" + str(int(pass_rate)) + "%[/b][/color]\n"
-	header += "• Release Status: [color=" + readiness_color + "][b]" + release_readiness + "[/b][/color]\n\n"
+	header += (
+		"• Release Status: [color="
+		+ readiness_color
+		+ "][b]"
+		+ release_readiness
+		+ "[/b][/color]\n\n"
+	)
 
 	return header
 
@@ -151,7 +180,16 @@ func _build_categories_section(categories: Dictionary) -> String:
 		var status = "✅ PASSED" if issues.is_empty() else "⚠️ ISSUES FOUND"
 		var status_color = "green" if issues.is_empty() else "orange"
 
-		section += icon + " [b]" + category_name + "[/b] - [color=" + status_color + "]" + status + "[/color]\n"
+		section += (
+			icon
+			+ " [b]"
+			+ category_name
+			+ "[/b] - [color="
+			+ status_color
+			+ "]"
+			+ status
+			+ "[/color]\n"
+		)
 
 		if not issues.is_empty():
 			for issue in issues:
@@ -160,7 +198,17 @@ func _build_categories_section(categories: Dictionary) -> String:
 				var severity_color = _get_severity_color(severity)
 				var severity_icon = _get_severity_icon(severity)
 
-				section += "  " + severity_icon + " [color=" + severity_color + "][" + severity + "][/color] " + description + "\n"
+				section += (
+					"  "
+					+ severity_icon
+					+ " [color="
+					+ severity_color
+					+ "]["
+					+ severity
+					+ "][/color] "
+					+ description
+					+ "\n"
+				)
 
 		section += "\n"
 
@@ -185,7 +233,9 @@ func _build_recommendations_section(recommendations: Array) -> String:
 func _build_footer() -> String:
 	"""Construye footer del reporte"""
 	var timestamp = Time.get_datetime_string_from_system()
-	var footer = "[center][size=12][color=gray]Generated: " + timestamp + "[/color][/size][/center]\n"
+	var footer = (
+		"[center][size=12][color=gray]Generated: " + timestamp + "[/color][/size][/center]\n"
+	)
 	footer += "[center][size=12][color=gray]Bar-Sik Professional QA System v1.0[/color][/size][/center]"
 
 	return footer
@@ -193,13 +243,16 @@ func _build_footer() -> String:
 
 ## === EXPORT FUNCTIONALITY ===
 
+
 func _on_export_pressed():
 	"""Exporta resultados del QA"""
 	if qa_results.is_empty():
 		return
 
 	var export_data = _prepare_export_data()
-	var file_path = "user://qa_report_" + Time.get_datetime_string_from_system().replace(":", "-") + ".json"
+	var file_path = (
+		"user://qa_report_" + Time.get_datetime_string_from_system().replace(":", "-") + ".json"
+	)
 
 	var file = FileAccess.open(file_path, FileAccess.WRITE)
 	if file:
@@ -228,6 +281,7 @@ func _show_export_notification(message: String):
 
 
 ## === HELPER METHODS ===
+
 
 func _get_severity_color(severity: String) -> String:
 	"""Obtiene color para severidad"""
@@ -303,6 +357,7 @@ func _get_category_icon(category: String) -> String:
 
 
 ## === SCENE MANAGEMENT ===
+
 
 func _input(event):
 	"""Manejo de input"""
